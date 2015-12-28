@@ -183,7 +183,7 @@ function LevelUp()
 		LevelSpell(Sequence[myHero.level])
 		
 		if myHero.level < 18 then
-			PrintChat("<font color='#00BFFF'>This Level: </font><font color='#EE82EE'>"..Skills[Sequence[myHero.level]].."</font><font color='#00BFFF'> ---> Next level: </font><font color='#EE82EE'>"..Skills[Sequence[myHero.level + 1]].. "</font><font color='#EE82EE'>. </font>")
+			PrintChat("<font color='#00BFFF'>This Level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level]].."</font><font color='#00BFFF'><font color='#FF0000'> ===></font> Next level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level + 1]].. "</font><font color='#EE82EE'>. </font>")
 		end
 		
 		LastLevel = myHero.level
