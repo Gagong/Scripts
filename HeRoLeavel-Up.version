@@ -3,7 +3,8 @@
 ---1.0 - Reliased For Bol---
 ---1.1 - Fix Punctuation errors---
 ---1.2 - Fix Color Bug---
-Version = 1.2
+---1.3 - Added on ScriptStatus---
+Version = 1.3
 Sequences = {
 	[0]					=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	[1]					=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, 
