@@ -4,7 +4,8 @@
 ---1.1 - Fix Punctuation errors---
 ---1.2 - Fix Color Bug---
 ---1.3 - Added on ScriptStatus---
-local version = "1.3"
+---1.4 - Add New Taric and Yorick logic---
+local version = "1.4"
 Sequences = {
 	[0]					=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	[1]					=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, 
