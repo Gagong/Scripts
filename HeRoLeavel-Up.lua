@@ -5,7 +5,8 @@
 ---1.2 - Fix Color Bug---
 ---1.3 - Added on ScriptStatus---
 ---1.4 - Add New Taric and Yorick logic---
-local version = "1.4"
+---1.5 - Added AutoUpdater (Credit - Simple)---
+local version = "1.5"
 Sequences = {
 	[0]					=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	[1]					=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, 
@@ -146,9 +147,13 @@ Sequences = {
 
 Skills = {"Q", "W", "E", "R"}
 
-LastLevel = 0;
+LastLevel = 0
 
 function OnLoad()
+DelayAction(function ()
+  AutoUpdate()
+end,2)
+
 print("<font color='#FF0000'>HeRo Level-UP by HeRoBaNd </font><font color='#FFFF00'>-</font><font color='#FFFFFF'> Loaded! </font>")
 	HLUMainMenu = scriptConfig('HeRoLevel-UP', 'HLU_MAIN')
 	
@@ -212,3 +217,35 @@ _G.LevelSpell = function(id)
   for i = 1, 4 do p:Encode1(0x00) end
   SendPacket(p)
  end
+
+
+ class('AutoUpdate')
+function AutoUpdate:__init()
+    self.updating = false
+    self.updated = false
+    self:download()
+end
+
+function AutoUpdate:download()
+    self.updating = true 
+    local serveradress = "raw.githubusercontent.com"
+    local scriptadress = "/HeRoBaNd/Scripts/master" 
+    local ServerVersionDATA = GetWebResult(serveradress , scriptadress.."/HeRoLeavel-Up.version")
+    if ServerVersionDATA then
+        local ServerVersion = tonumber(ServerVersionDATA)
+        if ServerVersion then
+            if ServerVersion > tonumber(version) then
+                print("Updating, don't press F9")
+                DownloadFile("http://"..serveradress..scriptadress.."/HeRoLeavel-Up.lua",SCRIPT_PATH.."HeRoLeavel-Up.lua", function () 
+                    updated = true 
+                    print("Updated press F9 twice.")
+                end)
+            end
+        else
+            print("An error occured, while updating, please reload")
+        end
+    else
+        print("Could not connect to update Server")
+    end
+    self.updating = false
+end
