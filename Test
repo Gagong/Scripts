@@ -1,0 +1,36 @@
+local version = 1.4
+
+function OnLoad()
+	AutoUpdate()
+	my code
+end
+
+class('AutoUpdate')
+function AutoUpdate:__init()
+	self.updating = false
+	self.updated = false
+	self:download()
+end
+
+function AutoUpdate:download()
+	self.updating = true 
+	local serveradress = "raw.githubusercontent.com"
+	local scriptadress = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.lua" 
+	local ServerVersionDATA = GetWebResult(serveradress , scriptadress.."/HeRoLeavel-Up.version")
+	if ServerVersionDATA then
+		local ServerVersion = tonumber(ServerVersionDATA)
+		if ServerVersion then
+			if ServerVersion > tonumber(version) then
+				print("Updating, don't press F9")
+				DownloadFile("http://"..serveradress..scriptadress.."/HeRoLeavel-Up.lua",SCRIPT_PATH.."HeRoLeavel-Up.lua", function () 
+					updated = true 
+				end)
+			end
+		else
+			print("An error occured, while updating, please reload")
+		end
+	else
+		print("Could not connect to update Server")
+	end
+	self.updating = false
+end
