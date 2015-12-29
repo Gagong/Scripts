@@ -1,8 +1,21 @@
 local version = 1.4
 
 function OnLoad()
-	AutoUpdate()
-	my code
+AutoUpdate()
+
+print("<font color='#FF0000'>HeRo Level-UP by HeRoBaNd </font><font color='#FFFF00'>-</font><font color='#FFFFFF'> Loaded! </font>")
+	HLUMainMenu = scriptConfig('HeRoLevel-UP', 'HLU_MAIN')
+	
+	HLUMainMenu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
+	HLUMainMenu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
+	HLUMainMenu:addParam('Mode', 'Mode:', SCRIPT_PARAM_LIST, 1, {'Auto', 'Manual'})
+    HLUMainMenu:addParam('Level13', 'Level 1-3:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
+    HLUMainMenu:addParam('Level418', 'Level 4-18:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
+	
+	HLUMainMenu.Enable = false
+	
+	PrintChat("<font color='#EE82EE'><font color='#FF0000'>HeRo Level-UP: </font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font>")
+	
 end
 
 class('AutoUpdate')
@@ -34,3 +47,52 @@ function AutoUpdate:download()
 	end
 	self.updating = false
 end
+
+function OnTick()
+	if (LastLevel < myHero.level) then
+		LevelUp()
+	end
+end
+
+function LevelUp()
+	if HLUMainMenu.Enable or HLUMainMenu.AlwaysON then
+		if HLUMainMenu.Mode == 1 then
+			Sequence = Sequences[myHero.charName]
+		elseif myHero.level < 4 then
+			Sequence = Sequences[HLUMainMenu.Level13]
+		else
+			Sequence = Sequences[HLUMainMenu.Level418]
+		end
+		
+		-- autoLevelSetSequence(Sequence)
+		LevelSpell(Sequence[myHero.level])
+		
+		if myHero.level < 18 then
+			PrintChat("<font color='#00BFFF'>This Level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level]].."</font><font color='#00BFFF'><font color='#FF0000'> ===></font> Next level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level + 1]].. "</font><font color='#EE82EE'>. </font>")
+		end
+		
+		LastLevel = myHero.level
+	else
+		--autoLevelSetSequence(Sequences[0])
+	end
+
+end
+
+_G.LevelSpell = function(id)
+  local offsets = { 
+   [1] = 0x1E,
+   [2] = 0xD3,
+   [3] = 0x3A,
+   [4] = 0xA8,
+  }
+  local p = CLoLPacket(0x00B6)
+  p.vTable = 0xFE3124
+  p:EncodeF(myHero.networkID)
+  p:Encode1(0xC1)
+  p:Encode1(offsets[id])
+  for i = 1, 4 do p:Encode1(0x63) end
+  for i = 1, 4 do p:Encode1(0xC5) end
+  for i = 1, 4 do p:Encode1(0x6A) end
+  for i = 1, 4 do p:Encode1(0x00) end
+  SendPacket(p)
+ end
