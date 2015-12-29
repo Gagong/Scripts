@@ -15,7 +15,7 @@ end
 function AutoUpdate:download()
 	self.updating = true 
 	local serveradress = "raw.githubusercontent.com"
-	local scriptadress = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.lua" 
+	local scriptadress = "/HeRoBaNd/Scripts/master" 
 	local ServerVersionDATA = GetWebResult(serveradress , scriptadress.."/HeRoLeavel-Up.version")
 	if ServerVersionDATA then
 		local ServerVersion = tonumber(ServerVersionDATA)
