@@ -6,7 +6,7 @@
 ---1.3 - Added on ScriptStatus---
 ---1.4 - Add New Taric and Yorick logic---
 ---1.5 - Added AutoUpdater (Credit - Simple)---
-local version = "1.6"
+local version = "1.5"
 Sequences = {
 	[0]					=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	[1]					=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, 
