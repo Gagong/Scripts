@@ -155,12 +155,13 @@ DelayAction(function ()
   AutoUpdate()
 end,2)
 
-PrintChat("<font color=\"#415cf6\"><b>[HeRo Leavel-UP] </b></font>".."<font color=\"#01cc9c\"><b>Loaded.</b></font>")
+PrintChat("<font color='#FF0000'><b>[HeRo Leavel-UP] </b></font>".."<font color='#FF0000'><b>Loaded.</b></font>")
 
 	HLUMainMenu = scriptConfig('HeRoLevel-UP', 'HLU_MAIN')
 	
 	HLUMainMenu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
 	HLUMainMenu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
+	HLUMainMenu:addParam('Info', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 	HLUMainMenu:addParam('Mode', 'Mode:', SCRIPT_PARAM_LIST, 1, {'Auto', 'Manual'})
     HLUMainMenu:addParam('Level13', 'Level 1-3:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
     HLUMainMenu:addParam('Level418', 'Level 4-18:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
@@ -168,7 +169,7 @@ PrintChat("<font color=\"#415cf6\"><b>[HeRo Leavel-UP] </b></font>".."<font colo
 	HLUMainMenu.Enable = false
 	
 
-	PrintChat("<font color='#EE82EE'><b><font color=\"#415cf6\"><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>")
+	PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>")
 	
 end
 
