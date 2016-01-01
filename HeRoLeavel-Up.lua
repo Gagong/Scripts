@@ -66,7 +66,7 @@ Sequences = {
     ["Katarina"]		=	{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Kayle"]		  	=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Kennen"]			=	{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Khazix"]			=	{1, 2, 3, 1 ,1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
+    ["Khazix"]			=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Kindred"]     = {2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["KogMaw"]			=	{2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
     ["Leblanc"]			=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3},
@@ -148,14 +148,15 @@ Sequences = {
 
 Skills = {"Q", "W", "E", "R"}
 
-LastLevel = 0
+LastLevel = 0;
 
 function OnLoad()
 DelayAction(function ()
   AutoUpdate()
 end,2)
 
-print("<font color='#FF0000'>HeRo Level-UP by HeRoBaNd </font><font color='#FFFF00'>-</font><font color='#FFFFFF'> Loaded! </font>")
+PrintChat("<font color=\"#415cf6\"><b>[HeRo Leavel-UP] </b></font>".."<font color=\"#01cc9c\"><b>Loaded.</b></font>")
+
 	HLUMainMenu = scriptConfig('HeRoLevel-UP', 'HLU_MAIN')
 	
 	HLUMainMenu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
@@ -166,7 +167,8 @@ print("<font color='#FF0000'>HeRo Level-UP by HeRoBaNd </font><font color='#FFFF
 	
 	HLUMainMenu.Enable = false
 	
-	PrintChat("<font color='#EE82EE'><font color='#FF0000'>HeRo Level-UP: </font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font>")
+
+	PrintChat("<font color='#EE82EE'><b><font color=\"#415cf6\"><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>")
 	
 end
 
@@ -228,7 +230,7 @@ function AutoUpdate:__init()
 end
 
 function AutoUpdate:download()
-    self.updating = true 
+    self.updating = false
     local serveradress = "raw.githubusercontent.com"
     local scriptadress = "/HeRoBaNd/Scripts/master" 
     local ServerVersionDATA = GetWebResult(serveradress , scriptadress.."/HeRoLeavel-Up.version")
