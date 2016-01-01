@@ -1,3 +1,6 @@
+---Auto Smite Developed by HeRoBaNd---
+---Changelog---
+---1.0 - Reliased For Bol---
 local RangeSmite = 560
 
 	if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
