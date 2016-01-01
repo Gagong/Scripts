@@ -5,13 +5,14 @@ local RangeSmite = 560
 
 	if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
 
-	PrintChat("<font color=\"#415cf6\"><b>[HeRo Smite] </b></font>".."<font color=\"#01cc9c\"><b>Loaded.</b></font>")	
-	if Smite ~= nil then
-	PrintChat("<font color=\"#415cf6\"><b>[HeRo Smite] </b></font>".."<font color=\"#01cc9c\"><b>Smite found.</b></font>")
-	else
-	PrintChat("<font color=\"#415cf6\"><b>[HeRo Smite] </b></font>".."<font color=\"#01cc9c\"><b>Smite not found.</b></font>")	
-	return
-	end
+PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#FF0000'><b>Loaded.</b></font>") 
+
+if Smite ~= nil then 
+PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#FF0000'><b>Smite found.</b></font>") 
+else 
+PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#FF0000'><b>Smite not found.</b></font>") 
+return 
+end
 
 function OnLoad()
 
