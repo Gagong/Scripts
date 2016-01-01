@@ -23,7 +23,7 @@ function HSMenuInit()
 	HSMenu = scriptConfig("HeRo Smite", "HSSmite")
 	
 	HSMenu:addParam("SmiteActive", "Smite Active", SCRIPT_PARAM_ONKEYTOGGLE, true, 76)
-
+  HSMenu:addParam("rangeSmite", "Draw Range Smite", SCRIPT_PARAM_ONOFF, true)
 	HSMenu:addSubMenu("Smite Monsters:", "smitethat")
     HSMenu.smitethat:addParam("SRUDragon", "Use Smite on: Dragon", SCRIPT_PARAM_ONOFF, true)
     HSMenu.smitethat:addParam("SRUBaron", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
@@ -33,7 +33,7 @@ function HSMenuInit()
     HSMenu.smitethat:addParam("SRUGromp", "Use Smite on: Gromp", SCRIPT_PARAM_ONOFF, false)
     HSMenu.smitethat:addParam("SRURed", "Use Smite on: Red", SCRIPT_PARAM_ONOFF, true)
     HSMenu.smitethat:addParam("SRUBlue", "Use Smite on: Blue", SCRIPT_PARAM_ONOFF, true)
-    HSMenu.smitethat:addParam("rangeSmite", "Draw Range Smite", SCRIPT_PARAM_ONOFF, true)
+    
    DelayAction(function() HSMenu:permaShow("SmiteActive") end, 5.0)
 end
 
@@ -82,7 +82,7 @@ end
 function OnDraw()
 	if myHero.dead then return end
 
-	if HSMenu.smitethat.rangeSmite and myHero:CanUseSpell(Smite) == READY and HSMenu.SmiteActive then
+	if HSMenu.rangeSmite and myHero:CanUseSpell(Smite) == READY and HSMenu.SmiteActive then
 	DrawCircle(myHero.x, myHero.y, myHero.z, RangeSmite,ARGB(255, 128, 128, 128))
 	end
 
