@@ -6,8 +6,10 @@
 ---1.3 - Added on ScriptStatus---
 ---1.4 - Add New Taric and Yorick logic---
 ---1.5 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
-local LocalVersion = "1.6"
+local LocalVersion = "1.5"
 local autoupdate = true 
+local serveradress = "raw.githubusercontent.com"
+local scriptadress = "/HeRoBaNd/Scripts/master"
 Sequences = {
 	[0]					=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	[1]					=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, 
@@ -220,8 +222,6 @@ _G.LevelSpell = function(id)
   SendPacket(p)
  end
 
-local serveradress = "raw.githubusercontent.com"
-local scriptadress = "/HeRoBaNd/Scripts/master"
 	function FindUpdates()
 	if not autoupdate then return end
 	local ServerVersionDATA = GetWebResult(serveradress , scriptadress.."/HeRoLeavel-Up.version")
@@ -229,21 +229,21 @@ local scriptadress = "/HeRoBaNd/Scripts/master"
 		local ServerVersion = tonumber(ServerVersionDATA)
 		if ServerVersion then
 			if ServerVersion > tonumber(LocalVersion) then
-			PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>Updating, don't press F9.</b></font>")
+			PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up] </b></font>".."<font color='#FAEBD7'><b>Updating, don't press F9.</b></font>")
 			Update()
 			else
-			PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>You have the latest version.</b></font>")
+			PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up] </b></font>".."<font color='#FAEBD7'><b>You have the latest version.</b></font>")
 			end
 		else
-		PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>An error occured, while updating, please reload.</b></font>")
+		PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up] </b></font>".."<font color='#FAEBD7'><b>An error occured, while updating, please reload.</b></font>")
 		end
 	else
-	PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>Could not connect to update Server.</b></font>")
+	PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up] </b></font>".."<font color='#FAEBD7'><b>Could not connect to update Server.</b></font>")
 	end
 end
 
 function Update()
 	DownloadFile("http://"..serveradress..scriptadress.."/HeRoLeavel-Up.lua",SCRIPT_PATH.."HeRoLeavel-Up.lua", function ()
-	PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>Updated, press 2xF9.</b></font>")
+	PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up] </b></font>".."<font color='#FAEBD7'><b>Updated, press 2xF9.</b></font>")
 	end)
-end
+	end
