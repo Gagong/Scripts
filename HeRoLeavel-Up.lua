@@ -5,9 +5,9 @@
 ---1.2 - Fix Color Bug---
 ---1.3 - Added on ScriptStatus---
 ---1.4 - Add New Taric and Yorick logic---
----1.5 - Added AutoUpdater (Credit - Simple)---
----Test on BF---
-version = "1.6" ---testing now---
+---1.5 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
+local LocalVersion = "1.6"
+local autoupdate = true 
 Sequences = {
 	[0]					=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	[1]					=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, 
@@ -151,10 +151,8 @@ Skills = {"Q", "W", "E", "R"}
 LastLevel = 0;
 
 function OnLoad()
-DelayAction(function ()
-  AutoUpdate()
-end,2)
 
+FindUpdates()
 PrintChat("<font color='#FF0000'><b>[HeRo Leavel-UP] </b></font>".."<font color='#FF0000'><b>Loaded.</b></font>")
 
 	HLUMainMenu = scriptConfig('HeRoLevel-UP', 'HLU_MAIN')
@@ -189,7 +187,7 @@ function LevelUp()
 			Sequence = Sequences[HLUMainMenu.Level418]
 		end
 		
-		-- autoLevelSetSequence(Sequence)
+		
 		LevelSpell(Sequence[myHero.level])
 		
 		if myHero.level < 18 then
@@ -198,7 +196,7 @@ function LevelUp()
 		
 		LastLevel = myHero.level
 	else
-		--autoLevelSetSequence(Sequences[0])
+		
 	end
 
 end
@@ -222,34 +220,30 @@ _G.LevelSpell = function(id)
   SendPacket(p)
  end
 
-
- class('AutoUpdate')
-function AutoUpdate:__init()
-    self.updating = false
-    self.updated = false
-    self:download()
+local serveradress = "raw.githubusercontent.com"
+local scriptadress = "/HeRoBaNd/Scripts/master"
+	function FindUpdates()
+	if not autoupdate then return end
+	local ServerVersionDATA = GetWebResult(serveradress , scriptadress.."/HeRoLeavel-Up.version")
+	if ServerVersionDATA then
+		local ServerVersion = tonumber(ServerVersionDATA)
+		if ServerVersion then
+			if ServerVersion > tonumber(LocalVersion) then
+			PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>Updating, don't press F9.</b></font>")
+			Update()
+			else
+			PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>You have the latest version.</b></font>")
+			end
+		else
+		PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>An error occured, while updating, please reload.</b></font>")
+		end
+	else
+	PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>Could not connect to update Server.</b></font>")
+	end
 end
 
-function AutoUpdate:download()
-    self.updating = false
-    local serveradress = "raw.githubusercontent.com"
-    local scriptadress = "/HeRoBaNd/Scripts/master" 
-    local ServerVersionDATA = GetWebResult(serveradress , scriptadress.."/HeRoLeavel-Up.version")
-    if ServerVersionDATA then
-        local ServerVersion = tonumber(ServerVersionDATA)
-        if ServerVersion then
-            if ServerVersion > tonumber(version) then
-                print("Updating, don't press F9")
-                DownloadFile("http://"..serveradress..scriptadress.."/HeRoLeavel-Up.lua",SCRIPT_PATH.."HeRoLeavel-Up.lua", function () 
-                    updated = true 
-                    print("Updated press F9 twice.")
-                end)
-            end
-        else
-            print("An error occured, while updating, please reload")
-        end
-    else
-        print("Could not connect to update Server")
-    end
-    self.updating = false
+function Update()
+	DownloadFile("http://"..serveradress..scriptadress.."/HeRoLeavel-Up.lua",SCRIPT_PATH.."HeRoLeavel-Up.lua", function ()
+	PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>Updated, press 2xF9.</b></font>")
+	end)
 end
