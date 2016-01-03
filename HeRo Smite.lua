@@ -1,7 +1,12 @@
 ---Auto Smite Developed by HeRoBaNd---
 ---Changelog---
 ---1.0 - Reliased For Bol---
+---1.1 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
 local RangeSmite = 560
+local serveradress = "raw.githubusercontent.com"
+local scriptadress = "/HeRoBaNd/Scripts/master"
+local LocalVersion = "1.1"
+local autoupdate = true
 
 	if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
 
@@ -15,7 +20,7 @@ return
 end
 
 function OnLoad()
-
+  FindUpdates()
 	jungleMinions = minionManager(MINION_JUNGLE, RangeSmite, myHero, MINION_SORT_MAXHEALTH_DEC)
 	HSMenuInit()
 end
@@ -87,4 +92,30 @@ function OnDraw()
 	DrawCircle(myHero.x, myHero.y, myHero.z, RangeSmite,ARGB(255, 128, 128, 128))
 	end
 
+end
+
+function FindUpdates()
+	if not autoupdate then return end
+	local ServerVersionDATA = GetWebResult(serveradress , scriptadress.."/HeRo Smite.version")
+	if ServerVersionDATA then
+		local ServerVersion = tonumber(ServerVersionDATA)
+		if ServerVersion then
+			if ServerVersion > tonumber(LocalVersion) then
+			PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#FAEBD7'><b>Updating, don't press F9.</b></font>")
+			Update()
+			else
+			PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#FAEBD7'><b>You have the latest version.</b></font>")
+			end
+		else
+		PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#FAEBD7'><b>An error occured, while updating, please reload.</b></font>")
+		end
+	else
+	PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#FAEBD7'><b>Could not connect to update Server.</b></font>")
+	end
+end
+
+function Update()
+	DownloadFile("http://"..serveradress..scriptadress.."/HeRo Smite.lua",SCRIPT_PATH.."HeRo Smite.lua", function ()
+	PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#FAEBD7'><b>Updated, press 2xF9.</b></font>")
+	end)
 end
