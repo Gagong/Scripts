@@ -6,6 +6,7 @@
 ---1.3 - Added on ScriptStatus---
 ---1.4 - Add New Taric and Yorick logic---
 ---1.5 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
+---1.6 - Fixed Rek'Sai spam error---
 local LocalVersion = "1.6"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
