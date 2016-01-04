@@ -6,7 +6,7 @@
 ---1.3 - Added on ScriptStatus---
 ---1.4 - Add New Taric and Yorick logic---
 ---1.5 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
-local LocalVersion = "1.5"
+local LocalVersion = "1.6"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -98,7 +98,7 @@ Sequences = {
     ["Poppy"]		  	=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Quinn"]		  	=	{3, 1, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Rammus"]			=	{2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
-    ["Rek'Sai"]			=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["RekSai"]			=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Renekton"]		=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Rengar"]			=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Riven"]		  	=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
