@@ -7,7 +7,8 @@
 ---1.4 - Add New Taric and Yorick logic---
 ---1.5 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
 ---1.6 - Fixed Rek'Sai spam error---
-local LocalVersion = "1.6"
+---1.7 - 6.1 Updated---
+local LocalVersion = "1.7"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -204,24 +205,24 @@ function LevelUp()
 
 end
 
-_G.LevelSpell = function(id)
+function lvlspell(id)
   local offsets = { 
-   [1] = 0x1E,
-   [2] = 0xD3,
-   [3] = 0x3A,
-   [4] = 0xA8,
+    [_Q] = 0x71,
+    [_W] = 0xF1,
+    [_E] = 0x31,
+    [_R] = 0xB1,
   }
-  local p = CLoLPacket(0x00B6)
-  p.vTable = 0xFE3124
+  local p = CLoLPacket(0x00DB)
+  p.vTable = 0xF6D830
   p:EncodeF(myHero.networkID)
-  p:Encode1(0xC1)
-  p:Encode1(offsets[id])
-  for i = 1, 4 do p:Encode1(0x63) end
-  for i = 1, 4 do p:Encode1(0xC5) end
+  for i = 1, 4 do p:Encode1(0x30) end
+  p:Encode1(0x17)
+  for i = 1, 4 do p:Encode1(0x81) end
   for i = 1, 4 do p:Encode1(0x6A) end
+  p:Encode1(offsets[id])
   for i = 1, 4 do p:Encode1(0x00) end
   SendPacket(p)
- end
+end
 
 	function FindUpdates()
 	if not autoupdate then return end
