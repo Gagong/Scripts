@@ -2,10 +2,11 @@
 ---Changelog---
 ---1.0 - Reliased For Bol---
 ---1.1 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
+---1.2 - 6.1 Updated---
 local RangeSmite = 560
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
-local LocalVersion = "1.1"
+local LocalVersion = "1.2"
 local autoupdate = true
 
 	if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
