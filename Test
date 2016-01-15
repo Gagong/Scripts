@@ -423,9 +423,9 @@ function OnDraw()
 			if drawMinion and GetDistance(drawMinion) <= 550 then
 				self.drawDamage = drawMinion.health - GetSmiteDmg
 				if drawMinion.health > GetSmiteDmg then
-					DrawText(tostring(math.ceil(self.drawDamage)),drawMinion.x, drawMinion.y+450, drawMinion.z, 24, 0xFFFF0000)
+					DrawText3D(tostring(math.ceil(self.drawDamage)),drawMinion.x, drawMinion.y+450, drawMinion.z, 24, 0xFFFF0000)
 				else
-					DrawText("Smitable",drawMinion.x,drawMinion.y+450, _G.drawMinion.z, 24, 0xff00ff00)
+					DrawText3D("Smitable",drawMinion.x,drawMinion.y+450, _G.drawMinion.z, 24, 0xff00ff00)
 				end
 			end
 		end
