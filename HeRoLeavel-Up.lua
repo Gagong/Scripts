@@ -8,7 +8,8 @@
 ---1.5 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
 ---1.6 - Fixed Rek'Sai spam error---
 ---1.7 - 6.1 Updated---
-local LocalVersion = "1.7"
+---1.8 - BugSplat Fixed---
+local LocalVersion = "1.8"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -205,7 +206,7 @@ function LevelUp()
 
 end
 
-function lvlspell(id)
+function LevelSpell(id)
   local offsets = { 
     [_Q] = 0x71,
     [_W] = 0xF1,
