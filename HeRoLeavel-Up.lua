@@ -206,12 +206,12 @@ function LevelUp()
 
 end
 
-function LevelSpell(id)
-  local offsets = { 
-    [_Q] = 0x71,
-    [_W] = 0xF1,
-    [_E] = 0x31,
-    [_R] = 0xB1,
+_G.LevelSpell = function(id)
+  local offsets = {
+  [_Q] = 0x71,
+  [_W] = 0xF1,
+  [_E] = 0x31,
+  [_R] = 0xB1,
   }
   local p = CLoLPacket(0x00DB)
   p.vTable = 0xF6D830
@@ -223,7 +223,7 @@ function LevelSpell(id)
   p:Encode1(offsets[id])
   for i = 1, 4 do p:Encode1(0x00) end
   SendPacket(p)
-end
+  end
 
 	function FindUpdates()
 	if not autoupdate then return end
