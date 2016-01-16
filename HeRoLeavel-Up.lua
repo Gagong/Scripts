@@ -208,10 +208,10 @@ end
 
 _G.LevelSpell = function(id)
   local offsets = {
-  [_Q] = 0x71,
-  [_W] = 0xF1,
-  [_E] = 0x31,
-  [_R] = 0xB1,
+  [1] = 0x71,
+  [2] = 0xF1,
+  [3] = 0x31,
+  [4] = 0xB1,
   }
   local p = CLoLPacket(0x00DB)
   p.vTable = 0xF6D830
