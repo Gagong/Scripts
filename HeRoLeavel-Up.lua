@@ -9,7 +9,7 @@
 ---1.6 - Fixed Rek'Sai spam error---
 ---1.7 - 6.1 Updated---
 ---1.8 - BugSplat Fixed---
-local LocalVersion = "1.8"
+local LocalVersion = "1.9"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
