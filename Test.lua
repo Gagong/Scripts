@@ -17,13 +17,11 @@ end
 
 local Require = Require("SourceLib")
 Require:Add("vPrediction", "https://raw.github.com/Hellsing/BoL/master/common/VPrediction.lua")
-Require:Add("SOW", "https://raw.github.com/Hellsing/BoL/master/common/SOW.lua")
 
 Require:Check()
 
 if Require.downloadNeeded == true then return end
 
-require 'SOW'
 require 'VPrediction'
 
 local VP = nil
@@ -41,9 +39,34 @@ function OnLoad()
 	
 	HMenu = scriptConfig("Hero Jarvan", "Hero Jarvan")
 	VP = VPrediction()
-	Orbwalker = SOW(VP)
-	
-	HMenu:addSubMenu("[HeRo Jarvan - Orbwalker]", "SOWorb")
+
+	if _G.Reborn_Initialised then
+      print("HeRo Jarvan: <font> <font color = \"#FF0000\">SAC loaded and authed! </font>")
+      isSac = true
+      loaded = true
+			HMenu:addSubMenu("[HeRo Jarvan - Orbwalker]", "OrbWalker")
+      HMenu.Orbwalker:addParam("info", "SAC:R detected", SCRIPT_PARAM_INFO, "")
+   elseif _G.Reborn_Loaded and not _G.Reborn_Initialised and count < 30 then
+      if printedWaiting == false then
+      print("HeRo Jarvan: <font> <font color = \"#FF0000\">Waiting SAC auth. </font>")      printedWaiting = true
+      end
+      DelayAction(LoadOrbwalker, 1)
+      count = count + 1
+   else
+      if count >= 30 then
+      print("HeRo Jarvan: <font> <font color = \"#FF0000\">SAC AUTH FAILED! </font>")
+      end
+			else
+			require 'SxOrbWalk'
+			print("<font color = \"#33CCCC\">SxOrbWalk: Loading...</font>")
+			HMenu:addSubMenu("[HeRo Jarvan - Orbwalker]", "OrbWalker")
+			HMenu.OrbWalker:addParam("info","SxOrbWalker Loaded.", SCRIPT_PARAM_INFO, "")
+			HMenu.OrbWalker:addParam("info","Sync your KeySettings SxOrb and KeySettings my script!", SCRIPT_PARAM_INFO, "")
+			SxOrb:LoadToMenu(HMenu.Orbwalker)
+			isSx = true
+			print("<font color = \"#33CCCC\">SxOrbWalk: Loaded</font>")
+			loaded = true
+			end
 	
 	HMenu:addSubMenu("[HeRo Jarvan - Combo]", "Combo")
 	HMenu.Combo:addParam("ComboMode", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32)
@@ -284,22 +307,22 @@ function ComboW()
 end
 
 function ComboEQ()
-	if HMenu.Combo.combo then
+    if HMenu.Combo.combo then
 		if HMenu.Combo.ComboSaveEQ then
 			for i, target in pairs(GetEnemyHeroes()) do
-				local CastPosition, HitChance, Position = VP:GetCircularCastPosition(target, 0.5, 70, 800, 1000)
-				if target ~= nil and Qready and Eready and ValidTarget(target) and HitChance >= 2 and GetDistance(CastPosition) < 800 then
+				local CastPosition, HitChance, Position = VP:GetCircularCastPosition(target, 0.5, 70, 770, 1000)
+				if target ~= nil and Qready and Eready and ValidTarget(target, 770) and HitChance >= 2 then
 						CastSpell(_E, CastPosition.x, CastPosition.z)
-						CastSpell(_Q, CastPosition.x, CastPosition.z)
+						DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.2)
 					end
 				end
 			end
 		else
 			for i, target in pairs(GetEnemyHeroes()) do
-				local CastPosition, HitChance, CastPosition = VP:GetCircularCastPosition(target, 0.5, 70, 800, 1000)
-				if target ~= nil and ValidTarget(target) and HitChance >= 2 and GetDistance(CastPosition) < 800 then
+				local CastPosition, HitChance, CastPosition = VP:GetCircularCastPosition(target, 0.5, 70, 770, 1000)
+				if target ~= nil and ValidTarget(target, 770) and HitChance >= 2 then
 						CastSpell(_E, CastPosition.x, CastPosition.z)
-						CastSpell(_Q, CastPosition.x, CastPosition.z)
+						DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.2)
 				end
 			end
 		end
