@@ -92,28 +92,11 @@ function OnLoad()
 end
 
 function Variables()
-	
 	AARange = 175
-	
-	Qrange = 700
-	Qwidth = 70 
-	Qspeed = math.huge
-	Qdelay = 0.5
-	
-	Wrange = 300
-	Wwidth = 300 
-	Wspeed = nil
-	Wdelay = 0.5
-	
-	Erange = 830
-	Ewidth = 75 
-	Espeed = math.huge 
-	Edelay = 0.5
-	
-	Rrange = 650
-	Rwidth = 325 
-	Rspeed = nil
-	Rdelay = 0.5
+	Q = {Range = 700, Wigth = 70, Speed = math.huge, Delay = 0.5}
+	Q = {Range = 300, Wigth = 300, Speed = nil, Delay = 0.5}
+	Q = {Range = 830, Wigth = 75, Speed = math.huge, Delay = 0.5}
+	Q = {Range = 650, Wigth = 325, Speed = nil, Delay = 0.5}
 end
 
 function OnTick()
@@ -311,27 +294,27 @@ end
 function OnDraw()
 	if myHero.dead then return end
 	
-	if HMenu.DrawCircleEQ and Qready and Eready then
+	if HMenu.Drawings.DrawCircleEQ and Qready and Eready then
 		DrawCircle(myHero.x, myHero.y, myHero.z, 800, ARGB(255, 0, 0, 80))
 	end
 
-	if HMenu.DrawCircleQ and Qready == READY then
+	if HMenu.Drawings.DrawCircleQ and Qready == READY then
 		DrawCircle(myHero.x, myHero.y, myHero.z, 700, ARGB(255, 0, 0, 80))
 	end	
 
-	if HMenu.DrawCircleW and Wready == READY then
+	if HMenu.Drawings.DrawCircleW and Wready == READY then
 		DrawCircle(myHero.x, myHero.y, myHero.z, 300, ARGB(255, 0, 0, 80))
 	end
 
-	if HMenu.DrawCircleE and Eready == READY then
+	if HMenu.Drawings.DrawCircleE and Eready == READY then
 		DrawCircle(myHero.x, myHero.y, myHero.z, 830, ARGB(255, 0, 0, 80))
 	end
 
-	if HMenu.drawCircleAA then
+	if HMenu.Drawings.drawCircleAA then
 		DrawCircle(myHero.x, myHero.y, myHero.z, 250, ARGB(255, 0, 0, 80))
 	end
 	
-	if HMenu.drawCircleR and Rready then
+	if HMenu.Drawings.drawCircleR and Rready then
 		DrawCircle(myHero.x, myHero.y, myHero.z, 650, ARGB(255, 0, 0, 80))
 	end
 end
@@ -370,13 +353,15 @@ function blCheck(target)
 end
 
 function OnCreateObj(obj)
-	if obj.name:find("JarvanCataclysm_tar.troy") then
-		ultActive = true
+if obj == nil then return end
+	if obj.name:lower():find("jarvancataclysm_sound") then
+	ultActive = true
+	DelayAction(function() ultActive = false) end, 3.5)
 	end
-end
 
-function OnDeleteObj(obj)
-	if obj.name:find("JarvanCataclysm_tar.troy") then
-		ultActive = false
+function OnDeleteteObj(obj)
+if obj == nil then return end
+	if obj.name:lower():find("jarvancataclysm_sound") then
+	ultActive = true
+	DelayAction(function() ultActive = false) end, 3.5)
 	end
-end
