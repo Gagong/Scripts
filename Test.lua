@@ -40,34 +40,6 @@ function OnLoad()
 	HMenu = scriptConfig("Hero Jarvan", "Hero Jarvan")
 	VP = VPrediction()
 
-	if _G.Reborn_Initialised then
-      print("HeRo Jarvan: <font> <font color = \"#FF0000\">SAC loaded and authed! </font>")
-      isSac = true
-      loaded = true
-			HMenu:addSubMenu("[HeRo Jarvan - Orbwalker]", "OrbWalker")
-      HMenu.Orbwalker:addParam("info", "SAC:R detected", SCRIPT_PARAM_INFO, "")
-   elseif _G.Reborn_Loaded and not _G.Reborn_Initialised and count < 30 then
-      if printedWaiting == false then
-      print("HeRo Jarvan: <font> <font color = \"#FF0000\">Waiting SAC auth. </font>")      printedWaiting = true
-      end
-      DelayAction(LoadOrbwalker, 1)
-      count = count + 1
-   else
-      if count >= 30 then
-      print("HeRo Jarvan: <font> <font color = \"#FF0000\">SAC AUTH FAILED! </font>")
-      end
-			else
-			require 'SxOrbWalk'
-			print("<font color = \"#33CCCC\">SxOrbWalk: Loading...</font>")
-			HMenu:addSubMenu("[HeRo Jarvan - Orbwalker]", "OrbWalker")
-			HMenu.OrbWalker:addParam("info","SxOrbWalker Loaded.", SCRIPT_PARAM_INFO, "")
-			HMenu.OrbWalker:addParam("info","Sync your KeySettings SxOrb and KeySettings my script!", SCRIPT_PARAM_INFO, "")
-			SxOrb:LoadToMenu(HMenu.Orbwalker)
-			isSx = true
-			print("<font color = \"#33CCCC\">SxOrbWalk: Loaded</font>")
-			loaded = true
-			end
-	
 	HMenu:addSubMenu("[HeRo Jarvan - Combo]", "Combo")
 	HMenu.Combo:addParam("ComboMode", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32)
 	HMenu.Combo:addParam("ComboEQ", "Use Q+E and QE in Combo", SCRIPT_PARAM_ONOFF, true)
