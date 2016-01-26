@@ -150,6 +150,15 @@ function spell_check()
 	Rready = (myHero:CanUseSpell(_R) == READY)
 end
 
+function UseHarass()
+	for i, target in pairs(GetEnemyHeroes()) do
+		local CastPosition, HitChance, Position = VP:GetLineCastPosition(target, 0.5, 70, 700, 1000, myHero, false)
+			if target ~= nil and Qready and ValidTarget(target) and HitChance >= 2 and GetDistance(CastPosition) < 700 then
+				CastSpell(_Q, CastPosition.x, CastPosition.z)
+		end
+	end
+end
+
 function GetDamageSpell()
 	local QDamage
 		QLevel = myHero:GetSpellData(_Q).level
@@ -196,6 +205,39 @@ function GetDamageSpell()
 	end
 	return RDamage
 end
+	
+
+function killsteal()
+local target = ts.target
+	for i, enemy in ipairs (GetEnemyHeroes()) do
+			local CastPosition, HitChance, Position = VP:GetLineCastPosition(enemy, 0.5, 70, 700, 1000, myHero, false)
+				if HMenu.KillSteal.QSteal and Qready and enemy ~= nil and not enemy.dead and enemy.health < QDamage and GetDistance(CastPosition) < 700 then
+					CastSpell(_Q, pos.x, pos.z)
+					end
+					end
+					
+	for i, enemy in ipairs (GetEnemyHeroes()) do
+			local CastPosition, HitChance, Position = VP:GetCircularCastPosition(target, 0.5, 70, 800, 1000)
+				if HMenu.KillSteal.ESteal and Eready and enemy ~= nil and not enemy.dead and enemy.health < EDamage and GetDistance(CastPosition) < 830 then
+					CastSpell(_E, pos.x, pos.z)
+					end
+					end
+					
+  local target = ts.target
+  for i, target in pairs (GetEnemyHeroes()) do
+			if HMenu.KillSteal.RSteal and target ~= nil and ValidTarget(target, 650) and not targer.dead and target.health < RDamage and GetDistance(CastPosition) < 650 then
+					CastSpell(_R, target)
+					end
+					end
+end
+
+function autokill()
+	local target = ts.target
+	if HMenu.ALLIN and Eready and Qready and Rready and not target.dead and target.health < QDamage + EDamage + RDamage then
+		ComboEQ()
+		ComboR()
+	end
+end
 
 function AutoUlt()
 local target = ts.target
@@ -218,46 +260,6 @@ function CountEnemies(range, unit)
 	return Enemies
 end
 
-function ManaCheck(unit, ManaValue)
-	if unit.mana < (unit.maxMana * (ManaValue/100))
-	then return true
-	else
-		return false
-	end
-end
-
-function HealthCheck(unit, HealthValue)
-	if unit.health < (unit.maxHealth * (HealthValue/100))
-	then return true
-	else
-		return false
-	end
-end
-
-function blCheck(target)
-	if target ~= nil and HMenu.ultb[target.charName] then
-		return true
-	else
-		return false
-	end
-end
-
-function OnCreateObj(obj)
-if obj == nil then return end
-	if obj.name:lower():find("jarvancataclysm_sound") then
-	ultActive = true
-	DelayAction(function() ultActive = false end, 3.5)
-	end
-	end
-
-function OnDeleteteObj(obj)
-if obj == nil then return end
-	if obj.name:lower():find("jarvancataclysm_sound") then
-	ultActive = true
-	DelayAction(function() ultActive = false end, 3.5)
-	end
-	end
-
 function JarvanCombo()
 	if HMenu.Combo.ComboEQ then
 		ComboEQ()
@@ -277,6 +279,99 @@ function JarvanCombo()
 	
 	if HMenu.Combo.comboR then
 		ComboR()
+	end
+end
+
+function ComboR()
+	local target = ts.target
+	if HMenu.Combo.combo then
+		for i, target in pairs(GetEnemyHeroes()) do
+			if target ~= nil and ValidTarget(target, 650) and not ultActive then
+				if blCheck(target) then
+						CastSpell(_R, target)
+					end
+				end
+			end
+		end
+	end
+
+function ComboQ()
+local target = ts.target
+	for i, target in pairs(GetEnemyHeroes()) do
+		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(target, 0.5, 70, 770, 1000)
+		if target ~= nil and Qready and ValidTarget(target, 770) and HitChance >= 2 then
+			CastSpell(_E, CastPosition.x, CastPosition.z)
+				DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.2)
+			end
+		end
+	end
+
+	
+function ComboE()
+local target = ts.target
+	for i, target in pairs(GetEnemyHeroes()) do
+		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(target, 0.5, 70, 800, 1000)
+			if target ~= nil and Eready and ValidTarget(target) and HitChance >= 2 and GetDistance(CastPosition) < 830 then
+				CastSpell(_E, CastPosition.x, CastPosition.z)
+		end
+	end
+end
+
+	
+function ComboW()
+	if CountEnemyHeroInRange(280) >= 1 then
+		CastSpell(_W)
+	end
+end
+
+function ComboEQ()
+local target = ts.target
+	if HMenu.Combo.ComboMode then
+		if HMenu.Combo.ComboSaveEQ then
+			for i, target in pairs(GetEnemyHeroes()) do
+				local CastPosition, HitChance, Position = VP:GetCircularCastPosition(target, 0.5, 70, 770, 1000)
+				if target ~= nil and Qready and Eready and ValidTarget(target, 770) and HitChance >= 2 then
+					CastSpell(_E, CastPosition.x, CastPosition.z)
+					DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.2)
+				end
+			end
+		end
+	else
+		for i, target in pairs(GetEnemyHeroes()) do
+			local CastPosition, HitChance, CastPosition = VP:GetCircularCastPosition(target, 0.5, 70, 770, 1000)
+			if target ~= nil and ValidTarget(target, 770) and HitChance >= 2 then
+				CastSpell(_E, CastPosition.x, CastPosition.z)
+				DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.2)
+			end
+		end
+	end
+end
+
+function LCLR()
+		for i, minion in pairs(EnemyMinions.objects) do
+			if minion ~= nil and ValidTarget(minion, 700) then
+				local CastPosition, HitChance, Position = VP:GetLineCastPosition(minion, 0.5, 70, 700, 1000, myHero, false)
+				if HitChance >= 2 and Qready and GetDistance(CastPosition) < 700 and ManaCheck(myHero, HMenu.LaneClear.lclrMana) == false then
+					CastSpell(_Q, CastPosition.x, CastPosition.z)
+				end
+				CastSpell(_E, minion.x, minion.z)
+			end
+		end
+		end
+
+function ManaCheck(unit, ManaValue)
+	if unit.mana < (unit.maxMana * (ManaValue/100))
+	then return true
+	else
+		return false
+	end
+end
+
+function HealthCheck(unit, HealthValue)
+	if unit.health < (unit.maxHealth * (HealthValue/100))
+	then return true
+	else
+		return false
 	end
 end
 
@@ -303,3 +398,52 @@ function OnDraw()
 		DrawCircle(myHero.x, myHero.y, myHero.z, 650, ARGB(255, 0, 0, 80))
 	end
 end
+
+
+function JungleClear()
+	for i, jungleMinion in pairs(jungleMinions.objects) do
+		if jungleMinion ~= nil then
+			if Eready and Qready and HMenu.JungleClear.JungleClearQ and HMenu.JungleClear.JungleClearE then
+				if ValidTarget(jungleMinion, 830) then
+					CastSpell(_E, jungleMinion.x, jungleMinion.z)
+					CastSpell(_Q, jungleMinion.x, jungleMinion.z)
+				end
+			else
+				if HMenu.JungleClear.jungleclearQ and ValidTarget(jungleMinion, 700) and Qready then
+					CastSpell(_Q, jungleMinion.x, jungleMinion.z)
+				end
+				
+				if HMenu.JungleClear.jungleclearE and ValidTarget(jungleMinion, 830) and Eready then
+					CastSpell(_E, jungleMinion)
+				end
+			end
+			if HMenu.JungleClear.jungleclearW and ValidTarget(jungleMinion, 300) and Wready then
+				CastSpell(_W)
+			end
+		end
+	end
+end
+
+function blCheck(target)
+	if target ~= nil and HMenu.ultb[target.charName] then
+		return true
+	else
+		return false
+	end
+end
+
+function OnCreateObj(obj)
+if obj == nil then return end
+	if obj.name:lower():find("jarvancataclysm_sound") then
+	ultActive = true
+	DelayAction(function() ultActive = false end, 3.5)
+	end
+	end
+
+function OnDeleteteObj(obj)
+if obj == nil then return end
+	if obj.name:lower():find("jarvancataclysm_sound") then
+	ultActive = true
+	DelayAction(function() ultActive = false end, 3.5)
+	end
+	end
