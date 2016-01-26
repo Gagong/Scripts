@@ -171,7 +171,7 @@ function OnLoad()
 
 FindUpdates()
 
-    DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Leavel-UP] </b></font>".."<font color='#FF0000'><b>Loaded.</b></font>") end, 4.0)
+    DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRoLeavel-Up] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
 
 	HLUMainMenu = scriptConfig('HeRoLevel-UP', 'HLU_MAIN')
 	
