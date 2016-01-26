@@ -1,23 +1,32 @@
 ---Auto Smite Developed by HeRoBaNd---
+--[[
+ _   _     ______        _____           _ _       
+| | | |    | ___ \      /  ___|         (_) |      
+| |_| | ___| |_/ /___   \ `--. _ __ ___  _| |_ ___ 
+|  _  |/ _ \    // _ \   `--. \ '_ ` _ \| | __/ _ \
+| | | |  __/ |\ \ (_) | /\__/ / | | | | | | ||  __/
+\_| |_/\___\_| \_\___/  \____/|_| |_| |_|_|\__\___|
+]]--
 ---Changelog---
 ---1.0 - Reliased For Bol---
 ---1.1 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
 ---1.2 - 6.1 Updated---
 ---1.3 - Added SpellUsage for more Champions and 3x3 map support---
+---1.4 - Fixed some colorbug---
 local RangeSmite = 560
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
-local LocalVersion = "1.3"
+local LocalVersion = "1.4"
 local autoupdate = true
 
 if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
 
-PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>") 
+ DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>")  end, 4.0)
 
 if Smite ~= nil then 
-	PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") 
-else 
-	PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Smite not found.</b></font>") 
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") end, 4.0) 
+else
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Smite not found.</b></font>")  end, 4.0) 
 	return 
 end
 
@@ -32,7 +41,6 @@ function HSMenuInit()
 	
 	HSMenu:addParam('Info', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 	
-	--HSMenu:addParam("Intro", "---HeRo Smite---", SCRIPT_PARAM_INFO, "")
 	HSMenu:addParam("SmiteActive", "Smite Active", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("H"))
 	HSMenu:addParam("UseSpells", "Use Spells", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("N"))
 	
@@ -57,9 +65,12 @@ function HSMenuInit()
 			HSMenu.smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
 		end
 		
- -- DelayAction(function() HSMenu:permaShow("Intro") end, 2.0)
-   DelayAction(function() HSMenu:permaShow("SmiteActive") end, 2.0)
-   DelayAction(function() HSMenu:permaShow("UseSpells") end, 2.0)
+	IDPerma = HSMenu:permaShow("SmiteActive")
+	HSMenu.permaShowEdit(IDPerma, "lText", "[HeRo Smite Active]")
+	HSMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+	IDPerma = HSMenu:permaShow("UseSpells")
+	HSMenu.permaShowEdit(IDPerma, "lText", "[HeRo Smite - Use Spells]")
+	HSMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 end
 
 function GetSmiteDamage()
