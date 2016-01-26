@@ -251,16 +251,16 @@ _G.LevelSpell = function(id)
 		local ServerVersion = tonumber(ServerVersionDATA)
 		if ServerVersion then
 			if ServerVersion > tonumber(LocalVersion) then
-			PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up] </b></font>".."<font color='#FAEBD7'><b>Updating, don't press F9.</b></font>")
-			Update()
-			else
-			PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up] </b></font>".."<font color='#00BFFF'><b>You have the latest version.</b></font>")
-			end
-		else
-		PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up] </b></font>".."<font color='#FAEBD7'><b>An error occured, while updating, please reload.</b></font>")
-		end
-	else
-	PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up] </b></font>".."<font color='#FAEBD7'><b>Could not connect to update Server.</b></font>")
+			PrintChat("<font color='#FF0000'><b>[HeRo Leavel-UP] </b></font>".."<font color='#00BFFF'><b>Updating, don't press F9.</b></font>")
+                                Update()
+                                    else
+                                PrintChat("<font color='#FF0000'><b>[HeRo Leavel-UP] </b></font>".."<font color='#00BFFF'><b>You have the latest version.</b></font>")
+                            end
+                        else
+                    PrintChat("<font color='#FF0000'><b>[HeRo Leavel-UP] </b></font>".."<font color='#00BFFF'><b>An error occured, while updating, please reload.</b></font>")
+                end
+            else
+        PrintChat("<font color='#FF0000'><b>[HeRo Leavel-UP] </b></font>".."<font color='#00BFFF'><b>Could not connect to update Server.</b></font>")
 	end
 end
 
