@@ -21,7 +21,8 @@
 ---1.8 - BugSplat Fixed---
 ---1.9 - Fixed random lvlup of some Champion---
 ---2.0 - Fixed some ColorBug---
-local LocalVersion = "2.0"
+---2.1 - 6.2 Updated---
+local LocalVersion = "2.1"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -226,21 +227,20 @@ function LevelUp()
 end
 
 _G.LevelSpell = function(id)
-  local offsets = {
-  [1] = 0x71,
-  [2] = 0xF1,
-  [3] = 0x31,
-  [4] = 0xB1,
+  local offsets = { 
+  [1] = 0x41,
+  [2] = 0xFC,
+  [3] = 0x64,
+  [4] = 0xAA,
   }
-  local p = CLoLPacket(0x00DB)
-  p.vTable = 0xF6D830
+  local p = CLoLPacket(0x0153)
+  p.vTable = 0xFE9264
   p:EncodeF(myHero.networkID)
-  for i = 1, 4 do p:Encode1(0x30) end
-  p:Encode1(0x17)
-  for i = 1, 4 do p:Encode1(0x81) end
-  for i = 1, 4 do p:Encode1(0x6A) end
   p:Encode1(offsets[id])
-  for i = 1, 4 do p:Encode1(0x00) end
+  for i = 1, 4 do p:Encode1(0xF7) end
+  for i = 1, 4 do p:Encode1(0xAF) end
+  p:Encode1(0x8F)
+  for i = 1, 4 do p:Encode1(0xA5) end
   SendPacket(p)
   end
 
