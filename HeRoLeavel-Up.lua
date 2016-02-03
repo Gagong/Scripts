@@ -22,7 +22,7 @@
 ---1.9 - Fixed random lvlup of some Champion---
 ---2.0 - Fixed some ColorBug---
 ---2.1 - 6.2 Updated---
----2.2 - Fixed---
+---2.2 - Jhin added---
 ---2.3 - 6.2 PreHF---
 local LocalVersion = "2.3"
 local autoupdate = true 
