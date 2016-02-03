@@ -234,15 +234,15 @@ _G.LevelSpell = function(id)
   [3] = 0x64,
   [4] = 0xAA,
   }
-  local p = CLoLPacket(0x0153)
-  p.vTable = 0xFE9264
-  p:EncodeF(myHero.networkID)
-  p:Encode1(offsets[id])
-  for i = 1, 4 do p:Encode1(0xF7) end
-  for i = 1, 4 do p:Encode1(0xAF) end
-  p:Encode1(0x8F)
-  for i = 1, 4 do p:Encode1(0xA5) end
-  SendPacket(p)
+local p = CLoLPacket(0x0153)
+p.vTable = 0xF700D0
+p:EncodeF(myHero.networkID)
+p:Encode1(offsets[id])
+for i = 1, 4 do p:Encode1(0xF7) end
+for i = 1, 4 do p:Encode1(0xAF) end
+p:Encode1(0x8F)
+for i = 1, 4 do p:Encode1(0xA5) end
+SendPacket(p)
   end
 
 	function FindUpdates()
