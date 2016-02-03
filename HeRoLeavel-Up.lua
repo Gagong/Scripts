@@ -22,7 +22,9 @@
 ---1.9 - Fixed random lvlup of some Champion---
 ---2.0 - Fixed some ColorBug---
 ---2.1 - 6.2 Updated---
-local LocalVersion = "2.2"
+---2.2 - Fixed---
+---2.3 - 6.2 PreHF---
+local LocalVersion = "2.3"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
