@@ -134,7 +134,6 @@ function OnLoad()
 	HMenu.permaShowEdit(IDPerma, "lText", "[Always save E+Q for Combo mode]")
 	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
 	
-	DelayAction(function() PrintChat("HeRo Jarvan Version " ..version.. " Loaded.") end, 4)
 end
 
 function Variables()
