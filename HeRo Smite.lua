@@ -821,7 +821,7 @@ function FindUpdates()
 					PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>An error occured, while updating, please reload.</b></font>")
 				end
 			else
-		PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#00BFFF'><b>Could not connect to update Server.</b></font>")
+		PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Could not connect to update Server.</b></font>")
 	end
 end
 
