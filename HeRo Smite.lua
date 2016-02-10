@@ -771,7 +771,7 @@ function KillStealSmite()
 	if myHero:GetSpellData(Smite).name:find("ganker") then
 			for i = 1, heroManager.iCount do
 				local enemy = heroManager:GetHero(i)
-				if ValidTarget(enemy, 560) and enemy.health <= KillSmiteDmg() and HSMenu.KillSteal.[enemy.charName] then
+				if ValidTarget(enemy, 560) and enemy.health <= KillSmiteDmg() and HSMenu.KillSteal[enemy.charName] then
 					CastSpell(Smite, enemy)
 				end
 			end
