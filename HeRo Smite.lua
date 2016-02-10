@@ -13,10 +13,12 @@
 ---1.2 - 6.1 Updated---
 ---1.3 - Added SpellUsage for more Champions and 3x3 map support---
 ---1.4 - Fixed some colorbug---
+---1.5 - Added KillSteal---
 local RangeSmite = 560
+local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
-local LocalVersion = "1.40"
+local LocalVersion = "1.5"
 local autoupdate = true
 
 if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
@@ -64,6 +66,14 @@ function HSMenuInit()
 			HSMenu.smite:addParam("SRURed", "Use Smite on: Red Buff", SCRIPT_PARAM_ONOFF, true)
 			HSMenu.smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
 		end
+
+	HSMenu:addSubMenu("KillSteal", "Smite KillSteal")
+		for i = 1, heroManager.iCount do
+			local enemy = heroManager:GetHero(i)
+			if enemy.team ~= myHero.team then
+				HSMenu.KillSteal:addParam(enemy.charName, enemy.charName, SCRIPT_PARAM_ONOFF, true)
+			end	
+		end	
 		
 	IDPerma = HSMenu:permaShow("SmiteActive")
 	HSMenu.permaShowEdit(IDPerma, "lText", "[HeRo Smite Active]")
@@ -751,7 +761,22 @@ function OnTick()
 	if myHero.dead then return end
 	jungleMinions:update()
 	CheckJungle()
+
+	if HSMenu.KillSteal then
+		KillStealSmite()
+	end
 end
+
+function KillStealSmite()
+	if myHero:GetSpellData(Smite).name:find("ganker") then
+			for i = 1, heroManager.iCount do
+				local enemy = heroManager:GetHero(i)
+				if ValidTarget(enemy, 560) and enemy.health <= KillSmiteDmg() and HSMenu.KillSteal.[enemy.charName] then
+					CastSpell(Smite, enemy)
+				end
+			end
+		end
+	end
 
 function CheckJungle()
 	if HSMenu.SmiteActive then
@@ -821,7 +846,7 @@ function FindUpdates()
 					PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>An error occured, while updating, please reload.</b></font>")
 				end
 			else
-		PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Could not connect to update Server.</b></font>")
+		PrintChat("<font color='#FF0000'><b>[HR Smite] </b></font>".."<font color='#00BFFF'><b>Could not connect to update Server.</b></font>")
 	end
 end
 
