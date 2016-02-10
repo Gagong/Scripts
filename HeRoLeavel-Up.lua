@@ -24,7 +24,8 @@
 ---2.1 - 6.2 Updated---
 ---2.2 - Jhin added---
 ---2.3 - 6.2 PreHF---
-local LocalVersion = "2.30"
+---2.4 - 6.3 Updated---
+local LocalVersion = "2.4"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -79,7 +80,7 @@ Sequences = {
     ["Jax"]		     	=	{3, 2, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
     ["Jayce"]		  	=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Jinx"]		  	=	{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
-    ["Jhin"]                    =       {1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["Jhin"]        = {1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Kalista"]			=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Karma"]		  	=	{1, 3, 2, 1, 1, 4, 1, 3, 3, 1, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Karthus"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
@@ -236,16 +237,16 @@ _G.LevelSpell = function(id)
   [3] = 0x64,
   [4] = 0xAA,
   }
-local p = CLoLPacket(0x0153)
-p.vTable = 0xF700D0
-p:EncodeF(myHero.networkID)
-p:Encode1(offsets[id])
-for i = 1, 4 do p:Encode1(0xF7) end
-for i = 1, 4 do p:Encode1(0xAF) end
-p:Encode1(0x8F)
-for i = 1, 4 do p:Encode1(0xA5) end
-SendPacket(p)
-  end
+  local p = CLoLPacket(0x00E7)
+  p.vTable = 0xF9C650
+  p:EncodeF(myHero.networkID)
+  p:Encode1(0x9B)
+  p:Encode1(offsets[id])
+  for i = 1, 4 do p:Encode1(0x2D) end
+  for i = 1, 4 do p:Encode1(0x6A) end
+  for i = 1, 4 do p:Encode1(0x0F) end
+  SendPacket(p)
+end
 
 	function FindUpdates()
 	if not autoupdate then return end
