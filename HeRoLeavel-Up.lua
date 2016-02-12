@@ -232,10 +232,10 @@ end
 
 _G.LevelSpell = function(id)
   local offsets = { 
-  [1] = 0x41,
-  [2] = 0xFC,
-  [3] = 0x64,
-  [4] = 0xAA,
+  [1] = 0x8A,
+  [2] = 0xE1,
+  [3] = 0x23,
+  [4] = 0x14,
   }
   local p = CLoLPacket(0x00E7)
   p.vTable = 0xF9C650
