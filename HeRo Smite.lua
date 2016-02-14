@@ -15,7 +15,7 @@
 ---1.4 - Fixed some colorbug---
 ---1.5 - Added KillSteal---
 ---1.6 - Fixed KillSteal error---
----1.7 - Fixed FillSteal Error---
+---1.7 - Fixed KillSteal Error---
 local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local serveradress = "raw.githubusercontent.com"
@@ -69,13 +69,13 @@ function HSMenuInit()
 			HSMenu.smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
 		end
 
-	HSMenu:addSubMenu("KillSteal", "Smite KillSteal")
+	--[[HSMenu:addSubMenu("KillSteal", "Smite KillSteal")
 		for i = 1, heroManager.iCount do
 			local enemy = heroManager:GetHero(i)
 			if enemy.team ~= myHero.team then
 				HSMenu.KillSteal:addParam(enemy.charName, enemy.charName, SCRIPT_PARAM_ONOFF, true)
 			end	
-		end	
+		end	]]--
 		
 	IDPerma = HSMenu:permaShow("SmiteActive")
 	HSMenu.permaShowEdit(IDPerma, "lText", "[HeRo Smite Active]")
@@ -764,9 +764,9 @@ function OnTick()
 	jungleMinions:update()
 	CheckJungle()
 
-	if HSMenu.KillSteal then
-		KillStealSmite()
-	end
+	--if HSMenu.KillSteal then
+	--	KillStealSmite()
+	--end
 end
 
 function KillStealSmite()
