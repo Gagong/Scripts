@@ -25,7 +25,9 @@
 ---2.2 - Jhin added---
 ---2.3 - 6.2 PreHF---
 ---2.4 - 6.3 Updated---
-local LocalVersion = "2.5"
+---2.5 - Fixed---
+---2.6 - Find Patch added---
+local LocalVersion = "2.6"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -175,7 +177,7 @@ LastLevel = 0;
 function OnLoad()
 
 FindUpdates()
-
+PrintChat("<font color='#F0F8FF'><b>" ..GetGameVersion().. "</b></font>")
     DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRoLeavel-Up] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
 
 	HLUMainMenu = scriptConfig('HeRoLevel-UP', 'HLU_MAIN')
@@ -186,6 +188,7 @@ FindUpdates()
 	HLUMainMenu:addParam('Mode', 'Mode:', SCRIPT_PARAM_LIST, 1, {'Auto', 'Manual'})
     HLUMainMenu:addParam('Level13', 'Level 1-3:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
     HLUMainMenu:addParam('Level418', 'Level 4-18:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
+		HLUMainMenu:addParam('GameVer', GetGameVersion(), SCRIPT_PARAM_INFO, "")
 	
 	HLUMainMenu.Enable = false
 	
@@ -231,6 +234,7 @@ function LevelUp()
 end
 
 _G.LevelSpell = function(id)
+  if (string.find(GetGameVersion(), 'Releases/6.3') ~= nil) then
   local offsets = { 
   [1] = 0x8A,
   [2] = 0xE1,
@@ -246,6 +250,7 @@ _G.LevelSpell = function(id)
   for i = 1, 4 do p:Encode1(0x6A) end
   for i = 1, 4 do p:Encode1(0x0F) end
   SendPacket(p)
+end
 end
 
 	function FindUpdates()
