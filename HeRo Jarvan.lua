@@ -680,13 +680,28 @@ ___GetInventorySlotItem = rawget(_G, "GetInventorySlotItem")
   	_G.ITEM_6 = 11
  	_G.ITEM_7 = 12
 ItemNames = {
-	[3748] = "TitanicHydra",
-	[3333] = "Tiamat (Melee Only)",
-	[3330] = "Ravenous Hydra (Melee Only)",
-	[3142] = "YoumusBlade",
-	[3153] = "Blade of the Ruined King",
-	[3144] = "Bilgewater Cutlass",
-	}
+		    [3144]        = "BilgewaterCutlass",
+		    [3748]		  =	"TitanicHydra",
+			[3153]        = "ItemSwordOfFeastAndFamine",
+			[3405]        = "TrinketSweeperLvl1",
+			[3166]        = "TrinketTotemLvl1",
+		  	[3361]        = "TrinketTotemLvl3",
+		  	[3362]        = "TrinketTotemLvl4",
+		  	[2003]        = "RegenerationPotion",
+		  	[3146]        = "HextechGunblade",
+		  	[3187]        = "HextechSweeper",
+		  	[3364]        = "TrinketSweeperLvl3",
+		  	[3074]        = "ItemTiamatCleave",
+		  	[3077]        = "ItemTiamatCleave",
+		  	[3340]        = "TrinketTotemLvl1",
+		 	[3090]        = "ZhonyasHourglass",
+		  	[3142]        = "YoumusBlade",
+			[3157]        = "ZhonyasHourglass",
+		 	[3350]        = "TrinketTotemLvl2",
+		 	[3140]        = "QuicksilverSash",
+		  	[3139]        = "ItemMercurial",
+		  	[3153]		  = "Blade Of The Ruined King"
+			}
 
 --[[GetSlotItem]]--
 
