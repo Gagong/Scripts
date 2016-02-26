@@ -26,10 +26,9 @@ local autoupdate = true
 
 if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
 
- DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>")  end, 4.0)
-
 if Smite ~= nil then 
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") end, 4.0) 
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>")  end, 4.0)
 else
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Smite not found.</b></font>")  end, 4.0) 
 	return 
@@ -71,12 +70,9 @@ function HSMenuInit()
 		end
 
 	--[[HSMenu:addSubMenu("KillSteal", "Smite KillSteal")
-		for i = 1, heroManager.iCount do
-			local enemy = heroManager:GetHero(i)
-			if enemy.team ~= myHero.team then
-				HSMenu.KillSteal:addParam(enemy.charName, enemy.charName, SCRIPT_PARAM_ONOFF, true)
-			end	
-		end	]]--
+		for i, enemy in pairs(GetEnemyHeroes()) do
+			HSMenu.KillSteal:addParam(enemy.charName, "Use KillSteal Smite on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
+		end]]--
 		
 	IDPerma = HSMenu:permaShow("SmiteActive")
 	HSMenu.permaShowEdit(IDPerma, "lText", "[HeRo Smite Active]")
@@ -102,6 +98,13 @@ function GetSmiteDamage()
 	end
 	return SmiteDamage
 end
+
+function GetKillStealSmiteDmg()
+	local KillStealDmg
+	KillStealDmg = myHero.level * 8 + 20
+	return KillStealDmg
+end
+	
 
 function GetDamageSpell()
 	local SpellDamage
