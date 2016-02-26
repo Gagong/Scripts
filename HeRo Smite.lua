@@ -21,16 +21,16 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
-local LocalVersion = "1.9"
+local LocalVersion = "2.0"
 local autoupdate = true
 
 if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
 
 if Smite ~= nil then 
-	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") end, 4.0) 
-	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>")  end, 4.0)
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.0] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") end, 4.0) 
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.0] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>")  end, 4.0)
 else
-	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite] </b></font>".."<font color='#00BFFF'><b>Smite not found.</b></font>")  end, 4.0) 
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.0] </b></font>".."<font color='#00BFFF'><b>Smite not found.</b></font>")  end, 4.0) 
 	return 
 end
 
@@ -768,16 +768,16 @@ function OnTick()
 	jungleMinions:update()
 	CheckJungle()
 
-	--if HSMenu.KillSteal then
-	--	KillStealSmite()
-	--end
+	if HSMenu.KillSteal then
+		KillStealSmite()
+	end
 end
 
 function KillStealSmite()
 	if myHero:GetSpellData(Smite).name:find("ganker") then
 			for i = 1, heroManager.iCount do
 				local enemy = heroManager:GetHero(i)
-				if ValidTarget(enemy, 560) and enemy.health <= KillSmiteDmg() and HSMenu.KillSteal[enemy.charName] then
+				if ValidTarget(enemy, 560) and enemy.health <= GetKillStealSmiteDmg() and HSMenu.KillSteal[enemy.charName] then
 					CastSpell(Smite, enemy)
 				end
 			end
