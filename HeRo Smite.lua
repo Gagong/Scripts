@@ -21,7 +21,7 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
-local LocalVersion = "1.8"
+local LocalVersion = "1.9"
 local autoupdate = true
 
 if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
@@ -69,10 +69,10 @@ function HSMenuInit()
 			HSMenu.smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
 		end
 
-	--[[HSMenu:addSubMenu("KillSteal", "Smite KillSteal")
+	HSMenu:addSubMenu("KillSteal", "Smite KillSteal")
 		for i, enemy in pairs(GetEnemyHeroes()) do
-			HSMenu.KillSteal:addParam(enemy.charName, "Use KillSteal Smite on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
-		end]]--
+			HSMenu.KillSteal:addParam(enemy.charName, ">SOON< Use KillSteal Smite on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
+		end
 		
 	IDPerma = HSMenu:permaShow("SmiteActive")
 	HSMenu.permaShowEdit(IDPerma, "lText", "[HeRo Smite Active]")
