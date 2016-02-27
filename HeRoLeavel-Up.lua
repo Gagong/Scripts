@@ -34,7 +34,7 @@
 ---assert() ScriptStatus("XiDFjfqj2dRfEv5v")
 ---ScriptStatus---
 
-local LocalVersion = "2.702"
+local LocalVersion = "2.8"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
