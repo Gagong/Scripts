@@ -27,6 +27,8 @@
 ---2.4 - 6.3 Updated---
 ---2.5 - Fixed---
 ---2.6 - Find Patch added---
+---2.7 - 6.4 Updated---
+---2.8 - 6.4 HF---
 
 ---ScriptStatus---
 ---assert() ScriptStatus("XiDFjfqj2dRfEv5v")
@@ -247,7 +249,7 @@ _G.LevelSpell = function(id)
   [4] = 0xC4,
   }
   local p = CLoLPacket(0x0016)
-  p.vTable = 0xF3C42C
+  p.vTable = 0xE4C8D4
   p:EncodeF(myHero.networkID)
   p:Encode4(0x99)
   p:Encode1(0x83)
