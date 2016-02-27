@@ -19,11 +19,16 @@
 ---1.8 - Delete KillStealSmite(soon)---
 ---1.9 - Fixed KillSteal---
 ---2.0 - Reliased KillSteal---
+
+---ScriptStatus---
+ScriptStatus("bNcYC6SsMjdS12ov")
+---ScriptStatus---
+
 local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
-local LocalVersion = "2.0"
+local LocalVersion = "2.00001"
 local autoupdate = true
 
 if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
