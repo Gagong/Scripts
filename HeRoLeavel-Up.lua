@@ -27,7 +27,12 @@
 ---2.4 - 6.3 Updated---
 ---2.5 - Fixed---
 ---2.6 - Find Patch added---
-local LocalVersion = "2.7"
+
+---ScriptStatus---
+ScriptStatus("XiDFjfqj2dRfEv5v")
+---ScriptStatus---
+
+local LocalVersion = "2.701"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
