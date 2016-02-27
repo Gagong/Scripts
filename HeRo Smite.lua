@@ -28,10 +28,10 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
-local LocalVersion = "2.00002"
+local LocalVersion = "2.00003"
 local autoupdate = true
 
-if myHero:GetSpellData(SUMMONER_1).name:find("summonersmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("summonersmite") then Smite = SUMMONER_2 end
+if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerSmite") then Smite = SUMMONER_2 end
 
 if Smite ~= nil then 
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.0] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") end, 4.0) 
@@ -76,10 +76,10 @@ function HSMenuInit()
 			HSMenu.smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
 		end
 
-	HSMenu:addSubMenu("KillSteal", "Smite KillSteal")
+	--[[HSMenu:addSubMenu("KillSteal", "Smite KillSteal")
 		for i, enemy in pairs(GetEnemyHeroes()) do
-			HSMenu.KillSteal:addParam(enemy.charName, ">SOON< Use KillSteal Smite on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
-		end
+			HSMenu.KillSteal:addParam("enemy.charName", ">SOON< Use KillSteal Smite on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
+		end]]--
 		
 	IDPerma = HSMenu:permaShow("SmiteActive")
 	HSMenu.permaShowEdit(IDPerma, "lText", "[HeRo Smite Active]")
@@ -775,9 +775,9 @@ function OnTick()
 	jungleMinions:update()
 	CheckJungle()
 
-	if HSMenu.KillSteal then
-		KillStealSmite()
-	end
+	---if HSMenu.KillSteal then
+		---KillStealSmite()
+	---end
 end
 
 function KillStealSmite()
