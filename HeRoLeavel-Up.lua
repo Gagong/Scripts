@@ -29,10 +29,10 @@
 ---2.6 - Find Patch added---
 
 ---ScriptStatus---
-ScriptStatus("XiDFjfqj2dRfEv5v")
+---assert() ScriptStatus("XiDFjfqj2dRfEv5v")
 ---ScriptStatus---
 
-local LocalVersion = "2.701"
+local LocalVersion = "2.702"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
