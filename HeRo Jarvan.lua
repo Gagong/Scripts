@@ -315,6 +315,10 @@ function OnTick()
 		if SMITE and Menu.Smite.UseSmiteCombo and GetDlina(myHero, ts.target) <= 560  then
             CastSmite(ts.target)
         end
+    if TITANIC then CastTITANIC() end
+    if TIAMAT then CastTiamat() end
+    if YOUMU then CastYoumu() end
+    if BOTRK then CastBOTRK(ts.target) end
 	end
 	
 	if Menu.Combo.Burst then
@@ -323,23 +327,33 @@ function OnTick()
 	
 	if Menu.KillSteal.Steal then
 		KSteal()
+    if TITANIC then CastTITANIC() end
+    if TIAMAT then CastTiamat() end
+    if YOUMU then CastYoumu() end
+    if BOTRK then CastBOTRK(ts.target) end
 		if SMITE and Menu.Smite.StealSmite and GetDlina(myHero, ts.target) <= 560 and ts.target.health <= KSmiteDmg then
             CastSmite(ts.target)
         end
 	end
 
 	if Menu.Harass.HS then
+		    if TITANIC then CastTITANIC() end
+    if TIAMAT then CastTiamat() end
 		if ((myHero.mana*100)/myHero.maxMana) <= Menu.Harass.HarassMana then return end
 		Harass()
 	end
 
 	if Menu.Clear.LaneClear then
+		    if TITANIC then CastTITANIC() end
+    if TIAMAT then CastTiamat() end
 		if ((myHero.mana*100)/myHero.maxMana) <= Menu.Clear.ClearMana then return end
 		enemyMinions:update()
 		LCLR()
 	end
 
 	if Menu.JClear.JungleClear then
+		    if TITANIC then CastTITANIC() end
+    if TIAMAT then CastTiamat() end
 		if ((myHero.mana*100)/myHero.maxMana) <= Menu.JClear.JClearMana then return end
 		jungleMinions:update()
 		JCLR()
@@ -352,6 +366,7 @@ function OnTick()
 	end
 	
 	if Menu.Escape.EnableEscape then
+		 if YOUMU then CastYoumu() end
 		EQEscape()
     CastYoumu()
 	end
@@ -413,7 +428,7 @@ function BurstCombo()
     if TITANIC then CastTITANIC() end
     if TIAMAT then CastTiamat() end
     if YOUMU then CastYoumu() end
-    if BOTRK then CastBOTRK() end
+    if BOTRK then CastBOTRK(ts.target) end
     CastE(ts.target)
     DelayAction(function() CastQ(ts.target) end, 0.2)
     if SAC then
