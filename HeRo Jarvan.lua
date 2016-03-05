@@ -40,6 +40,7 @@ local VARS = {
   E = {RANGE = 830, WIDTH = 75, DELAY = 0.5, SPEED = math.huge},
   R = {RANGE = 650, WIDTH = 325, DELAY = 0.5, SPEED = nil}
 }
+local ultActive = false
 
 JQ = {range = VARS.Q.RANGE, speed = VARS.Q.SPEED, delay = VARS.Q.DELAY, radius = VARS.Q.WIDTH, type = "DelayLine", width = VARS.Q.WIDTH}
 JW = {range = VARS.W.RANGE, speed = VARS.W.SPEED, delay = VARS.W.DELAY, radius = VARS.W.WIDTH, type = "DelayLine", width = VARS.W.WIDTH}
@@ -53,7 +54,7 @@ function OnLoad()
 	ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 900, DAMAGE_PHYSICAL)
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
 	ultActive = false
-	Variables()
+	--Variables()
 	AddApplyBuffCallback(Buff_Add)
   AddRemoveBuffCallback(Buff_Rem)
 
@@ -136,6 +137,12 @@ function OnLoad()
 	Menu:addSubMenu("[HeRo Jarvan - Auto]", "Auto")
 		Menu.Auto:addParam("autoPOT", "Auto Potions Usage", SCRIPT_PARAM_ONOFF, true)
  		Menu.Auto:addParam("autoPOTHealth", "% Health for autoPOT", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
+		
+--[[Others]]--
+
+	Menu:addSubMenu("[HeRo Jarvan - Others]", "Others")
+		Menu.Others:addParam("ChangeShow", "Change PermaShow Color(Green)", SCRIPT_PARAM_ONOFF, true)
+		Menu.Others:addParam("info", "Reload this(2xF9)", SCRIPT_PARAM_INFO, "")
 	
 --[[Escape]]--
 	
@@ -167,7 +174,7 @@ function OnLoad()
 
 --[[Predictions]]--
 
-	Menu:addSubMenu("[Prediction]", "Prediction")
+	Menu:addSubMenu("[HeRo Jarvan - Prediction]", "Prediction")
   		Menu.Prediction:addParam("activePred", "Prediction (require reload)", SCRIPT_PARAM_LIST, 1, {"VPred", "DPred", "FHPred", "KPred"})
   		if Menu.Prediction.activePred == 1 then
     		if FileExist(LIB_PATH .. "VPrediction.lua") then
@@ -206,7 +213,8 @@ function OnLoad()
   end
 
 --[[PermaShow]]--
-	
+
+	if Menu.Others.ChangeShow then
 	IDPerma = Menu.Combo:permaShow("ComboMode")
 	Menu.permaShowEdit(IDPerma, "lText", "[Combo Mode]")
 	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
@@ -237,6 +245,25 @@ function OnLoad()
 	
 	IDPerma = Menu.Prediction:permaShow("activePred")
 	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
+	
+	else
+	
+	Menu.Combo:permaShow("ComboMode")
+	
+	Menu.Combo:permaShow("Burst")
+	
+	Menu.Harass:permaShow("HS")
+	
+	Menu.Clear:permaShow("LaneClear")
+	
+	Menu.JClear:permaShow("JungleClear")
+	
+	Menu.Escape:permaShow("EnableEscape")
+	
+	Menu.Combo:permaShow("ComboSaveEQ")
+	
+	Menu.Prediction:permaShow("activePred")
+	end
 end
 
 --[[OnTick]]--
