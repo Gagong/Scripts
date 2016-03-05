@@ -19,7 +19,7 @@ local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local VP, DP, KP = nil
 local ts
-local HMenu
+local Menu
 local Qready, Wready, Eready, Rready = false, false, false, false
 local REGENTIME = false
 local POT = {"ItemCrystalFlask", "REGENTIMEerationPotion", "ItemMiniREGENTIMEPotion", "ItemCrystalFlaskJungle", "ItemDarkCrystalFlask"}
@@ -43,7 +43,7 @@ local VARS = {
 
 JQ = {range = VARS.Q.RANGE, speed = VARS.Q.SPEED, delay = VARS.Q.DELAY, radius = VARS.Q.WIDTH, type = "DelayLine", width = VARS.Q.WIDTH}
 JW = {range = VARS.W.RANGE, speed = VARS.W.SPEED, delay = VARS.W.DELAY, radius = VARS.W.WIDTH, type = "DelayLine", width = VARS.W.WIDTH}
-JE = {range = VARS.E.RANGE, speed = VARS.E.SPEED, delay = VARS.E.DELAY, radius = VARS.E.WIDTH, type = "DelayLine", width = VARS.E.WIDTH, collision = true}
+JE = {range = VARS.E.RANGE, speed = VARS.E.SPEED, delay = VARS.E.DELAY, radius = VARS.E.WIDTH, type = "DelayLine", width = VARS.E.WIDTH}
 JR = {range = VARS.R.RANGE, speed = VARS.R.SPEED, delay = VARS.R.DELAY, radius = VARS.R.WIDTH, type = "DelayLine", width = VARS.W.WIDTH}
 
 --[[OnLoad]]--
@@ -59,184 +59,184 @@ function OnLoad()
 
 --[[Menu]]--
 
-	HMenu = scriptConfig("Hero Jarvan", "Hero Jarvan")
+	Menu = scriptConfig("Hero Jarvan", "Hero Jarvan")
 	
 --[[Combo]]--
 	
-	HMenu:addSubMenu("[HeRo Jarvan - Combo]", "Combo")
-		HMenu.Combo:addParam("ComboMode", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32)
-    HMenu.Combo:addParam("Burst", "All In/Burst Combo (Toggle)", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("S"))
-		HMenu.Combo:addParam("ComboEQ", "Use Q+E in Combo", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Combo:addParam("ComboSaveEQ", "Always save E+Q for Combo mode", SCRIPT_PARAM_ONOFF, false)
-		HMenu.Combo:addParam("ComboQ", "Use Q in Combo", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Combo:addParam("ComboW", "Use W in Combo", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Combo:addParam("ComboE", "Use E in Combo", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Combo:addParam("ComboR", "Use R in Combo", SCRIPT_PARAM_ONOFF, true)
+	Menu:addSubMenu("[HeRo Jarvan - Combo]", "Combo")
+		Menu.Combo:addParam("ComboMode", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32)
+    Menu.Combo:addParam("Burst", "All In/Burst Combo (Toggle)", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("S"))
+		Menu.Combo:addParam("ComboEQ", "Use Q+E in Combo", SCRIPT_PARAM_ONOFF, true)
+		Menu.Combo:addParam("ComboSaveEQ", "Always save E+Q for Combo mode", SCRIPT_PARAM_ONOFF, false)
+		Menu.Combo:addParam("ComboQ", "Use Q in Combo", SCRIPT_PARAM_ONOFF, true)
+		Menu.Combo:addParam("ComboW", "Use W in Combo", SCRIPT_PARAM_ONOFF, true)
+		Menu.Combo:addParam("ComboE", "Use E in Combo", SCRIPT_PARAM_ONOFF, true)
+		Menu.Combo:addParam("ComboR", "Use R in Combo", SCRIPT_PARAM_ONOFF, true)
 	
 --[[KillSteal]]--
 	
-	HMenu:addSubMenu("[HeRo Jarvan - KillSteal]", "KillSteal")
-		HMenu.KillSteal:addParam("Steal", "Endble or Disable KillSteal", SCRIPT_PARAM_ONOFF, true)
-		HMenu.KillSteal:addParam("EQSteal", "Use E+Q Combo for KillSteal", SCRIPT_PARAM_ONOFF, true)
-		HMenu.KillSteal:addParam("QSteal", "Use Q", SCRIPT_PARAM_ONOFF, true)
-		HMenu.KillSteal:addParam("ESteal", "Use E", SCRIPT_PARAM_ONOFF, true)
-		HMenu.KillSteal:addParam("RSteal", "Use R", SCRIPT_PARAM_ONOFF, false)
+	Menu:addSubMenu("[HeRo Jarvan - KillSteal]", "KillSteal")
+		Menu.KillSteal:addParam("Steal", "Endble or Disable KillSteal", SCRIPT_PARAM_ONOFF, true)
+		Menu.KillSteal:addParam("EQSteal", "Use E+Q Combo for KillSteal", SCRIPT_PARAM_ONOFF, true)
+		Menu.KillSteal:addParam("QSteal", "Use Q", SCRIPT_PARAM_ONOFF, true)
+		Menu.KillSteal:addParam("ESteal", "Use E", SCRIPT_PARAM_ONOFF, true)
+		Menu.KillSteal:addParam("RSteal", "Use R", SCRIPT_PARAM_ONOFF, false)
 	
 --[[Harass]]--
 	
-	HMenu:addSubMenu("[HeRo Jarvan - Harass]", "Harass")
-		HMenu.Harass:addParam("HS", "Harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C"))
-		HMenu.Harass:addParam("HarassEQ", "Use E+Q Combo in Harass", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Harass:addParam("HarassQ", "Use Q in Harass", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Harass:addParam("HarassE", "Use E in Harass", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Harass:addParam("HarassW", "Use W in Harass", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Harass:addParam("HarassMana", "% Mana for Harass", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
+	Menu:addSubMenu("[HeRo Jarvan - Harass]", "Harass")
+		Menu.Harass:addParam("HS", "Harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C"))
+		Menu.Harass:addParam("HarassEQ", "Use E+Q Combo in Harass", SCRIPT_PARAM_ONOFF, true)
+		Menu.Harass:addParam("HarassQ", "Use Q in Harass", SCRIPT_PARAM_ONOFF, true)
+		Menu.Harass:addParam("HarassE", "Use E in Harass", SCRIPT_PARAM_ONOFF, true)
+		Menu.Harass:addParam("HarassW", "Use W in Harass", SCRIPT_PARAM_ONOFF, true)
+		Menu.Harass:addParam("HarassMana", "% Mana for Harass", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 	
 --[[LaneClear]]--
 	
-	HMenu:addSubMenu("[HeRo Jarvan - LaneClear]", "Clear")
-		HMenu.Clear:addParam("LaneClear", "LaneClear with spells", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
-		HMenu.Clear:addParam("LaneClearQE", "Use E+Q Combo in LineClear", SCRIPT_PARAM_ONOFF, false)
-		HMenu.Clear:addParam("LaneClearQ", "Use Q in LaneClear", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Clear:addParam("LaneClearE", "Use E in LaneClear", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Clear:addParam("LaneClearW", "Use W in LaneClear", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Clear:addParam("ClearMana", "% Mana for LaneClear", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
+	Menu:addSubMenu("[HeRo Jarvan - LaneClear]", "Clear")
+		Menu.Clear:addParam("LaneClear", "LaneClear with spells", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
+		Menu.Clear:addParam("LaneClearQE", "Use E+Q Combo in LineClear", SCRIPT_PARAM_ONOFF, false)
+		Menu.Clear:addParam("LaneClearQ", "Use Q in LaneClear", SCRIPT_PARAM_ONOFF, true)
+		Menu.Clear:addParam("LaneClearE", "Use E in LaneClear", SCRIPT_PARAM_ONOFF, true)
+		Menu.Clear:addParam("LaneClearW", "Use W in LaneClear", SCRIPT_PARAM_ONOFF, true)
+		Menu.Clear:addParam("ClearMana", "% Mana for LaneClear", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 	
 --[[JungleClear]]--
 	
-	HMenu:addSubMenu("[HeRo Jarvan - JungleClear]", "JClear")
-		HMenu.JClear:addParam("JungleClear", "Jungleclear with spells", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
-		HMenu.JClear:addParam("JungleClearEQ", "Use E+Q Combo in LineClear", SCRIPT_PARAM_ONOFF, true)
-		HMenu.JClear:addParam("JungleClearQ", "Use Q in JungleClear", SCRIPT_PARAM_ONOFF, true)
-		HMenu.JClear:addParam("JungleClearE", "Use E in JungleClear", SCRIPT_PARAM_ONOFF, true)
-		HMenu.JClear:addParam("JungleClearW", "Use W in JungleClear", SCRIPT_PARAM_ONOFF, true)
-		HMenu.JClear:addParam("JClearMana", "% Mana for JungleClear", SCRIPT_PARAM_SLICE, 75, 0, 100, 0)
+	Menu:addSubMenu("[HeRo Jarvan - JungleClear]", "JClear")
+		Menu.JClear:addParam("JungleClear", "Jungleclear with spells", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
+		Menu.JClear:addParam("JungleClearEQ", "Use E+Q Combo in LineClear", SCRIPT_PARAM_ONOFF, true)
+		Menu.JClear:addParam("JungleClearQ", "Use Q in JungleClear", SCRIPT_PARAM_ONOFF, true)
+		Menu.JClear:addParam("JungleClearE", "Use E in JungleClear", SCRIPT_PARAM_ONOFF, true)
+		Menu.JClear:addParam("JungleClearW", "Use W in JungleClear", SCRIPT_PARAM_ONOFF, true)
+		Menu.JClear:addParam("JClearMana", "% Mana for JungleClear", SCRIPT_PARAM_SLICE, 75, 0, 100, 0)
 
 --[[ItemUsage]]--
 
-	HMenu:addSubMenu("[HeRo Jarvan - Item Usage]", "Item")
-		HMenu.Item:addParam("UseItem", "Enable Item Usage", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Item:addSubMenu("[Offensive Items]", "AttackItem")
-		HMenu.Item.AttackItem:addParam("UseTiamat", "Use Tiamat/Hydra", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Item.AttackItem:addParam("UseTitanic", "Use Titanic Hydra", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Item.AttackItem:addParam("UseCutlass", "Use Bilgewater Cutlass", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Item.AttackItem:addParam("UseBOTRK", "Use BOTRK", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Item.AttackItem:addParam("UseYoumu", "Use Youmus Blade", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Item.AttackItem:addParam("UseGunblade", "Use Hextech Gunblade", SCRIPT_PARAM_ONOFF, true)
+	Menu:addSubMenu("[HeRo Jarvan - Item Usage]", "Item")
+		Menu.Item:addParam("UseItem", "Enable Item Usage", SCRIPT_PARAM_ONOFF, true)
+		Menu.Item:addSubMenu("[Offensive Items]", "AttackItem")
+		Menu.Item.AttackItem:addParam("UseTiamat", "Use Tiamat/Hydra", SCRIPT_PARAM_ONOFF, true)
+		Menu.Item.AttackItem:addParam("UseTitanic", "Use Titanic Hydra", SCRIPT_PARAM_ONOFF, true)
+		Menu.Item.AttackItem:addParam("UseCutlass", "Use Bilgewater Cutlass", SCRIPT_PARAM_ONOFF, true)
+		Menu.Item.AttackItem:addParam("UseBOTRK", "Use BOTRK", SCRIPT_PARAM_ONOFF, true)
+		Menu.Item.AttackItem:addParam("UseYoumu", "Use Youmus Blade", SCRIPT_PARAM_ONOFF, true)
+		Menu.Item.AttackItem:addParam("UseGunblade", "Use Hextech Gunblade", SCRIPT_PARAM_ONOFF, true)
 
 --[[Anti CC]]--
 
-	HMenu.Item:addSubMenu("[HeRo Jarvan - Anti CC]", "DefItem")
-		HMenu.Item.DefItem:addParam("EnableACC", "Enable AntiCC", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Item.DefItem:addParam("UseQSS", "Use Quicksilver Sash", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Item.DefItem:addParam("UseDervish", "Use Dervish Blade", SCRIPT_PARAM_ONOFF, true)
+	Menu.Item:addSubMenu("[HeRo Jarvan - Anti CC]", "DefItem")
+		Menu.Item.DefItem:addParam("EnableACC", "Enable AntiCC", SCRIPT_PARAM_ONOFF, true)
+		Menu.Item.DefItem:addParam("UseQSS", "Use Quicksilver Sash", SCRIPT_PARAM_ONOFF, true)
+		Menu.Item.DefItem:addParam("UseDervish", "Use Dervish Blade", SCRIPT_PARAM_ONOFF, true)
 
 --[[Auto]]--
 
-	HMenu:addSubMenu("[HeRo Jarvan - Auto]", "Auto")
-		HMenu.Auto:addParam("autoPOT", "Auto Potions Usage", SCRIPT_PARAM_ONOFF, true)
- 		HMenu.Auto:addParam("autoPOTHealth", "% Health for autoPOT", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
+	Menu:addSubMenu("[HeRo Jarvan - Auto]", "Auto")
+		Menu.Auto:addParam("autoPOT", "Auto Potions Usage", SCRIPT_PARAM_ONOFF, true)
+ 		Menu.Auto:addParam("autoPOTHealth", "% Health for autoPOT", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 	
 --[[Escape]]--
 	
-	HMenu:addSubMenu("[HeRo Jarvan - Escape]", "Escape")
-		HMenu.Escape:addParam("EnableEscape", "Escape", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("S"))
+	Menu:addSubMenu("[HeRo Jarvan - Escape]", "Escape")
+		Menu.Escape:addParam("EnableEscape", "Escape", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("S"))
 	
 --[[Blacklist]]--
 	
-	HMenu:addSubMenu("[HeRo Jarvan - Ult Blacklist]", "ultb")
+	Menu:addSubMenu("[HeRo Jarvan - Ult Blacklist]", "ultb")
 		for i, enemy in pairs(GetEnemyHeroes()) do
-			HMenu.ultb:addParam(enemy.charName, "Use ult on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
+			Menu.ultb:addParam(enemy.charName, "Use ult on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
 		end
 	
 --[[Drawings]]--
 	
-	HMenu:addSubMenu("[HeRo Jarvan - Drawings]", "Drawings")
-		HMenu.Drawings:addParam("AllDraw", "Enable or Disable all Draws", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Drawings:addParam("DrawAA", "Draw AA Range", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Drawings:addParam("DrawQ", "Draw Q Range", SCRIPT_PARAM_ONOFF, true)	
-		HMenu.Drawings:addParam("DrawW", "Draw W Range", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Drawings:addParam("DrawE", "Draw E Range", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Drawings:addParam("DrawR", "Draw R Range", SCRIPT_PARAM_ONOFF, true)
+	Menu:addSubMenu("[HeRo Jarvan - Drawings]", "Drawings")
+		Menu.Drawings:addParam("AllDraw", "Enable or Disable all Draws", SCRIPT_PARAM_ONOFF, true)
+		Menu.Drawings:addParam("DrawAA", "Draw AA Range", SCRIPT_PARAM_ONOFF, true)
+		Menu.Drawings:addParam("DrawQ", "Draw Q Range", SCRIPT_PARAM_ONOFF, true)	
+		Menu.Drawings:addParam("DrawW", "Draw W Range", SCRIPT_PARAM_ONOFF, true)
+		Menu.Drawings:addParam("DrawE", "Draw E Range", SCRIPT_PARAM_ONOFF, true)
+		Menu.Drawings:addParam("DrawR", "Draw R Range", SCRIPT_PARAM_ONOFF, true)
 	
 --[[Target Selector]]--
 	
-	HMenu:addSubMenu("[HeRo Jarvan - Target Selector]", "targetSelector")
-		HMenu.targetSelector:addTS(ts)
+	Menu:addSubMenu("[HeRo Jarvan - Target Selector]", "targetSelector")
+		Menu.targetSelector:addTS(ts)
 		ts.name = "Focus"
 
 --[[Predictions]]--
 
-	HMenu:addSubMenu("[Prediction]", "Prediction")
-  		HMenu.Prediction:addParam("activePred", "Prediction (require reload)", SCRIPT_PARAM_LIST, 1, {"VPred", "DPred", "FHPred", "KPred"})
-  		if HMenu.Prediction.activePred == 1 then
+	Menu:addSubMenu("[Prediction]", "Prediction")
+  		Menu.Prediction:addParam("activePred", "Prediction (require reload)", SCRIPT_PARAM_LIST, 1, {"VPred", "DPred", "FHPred", "KPred"})
+  		if Menu.Prediction.activePred == 1 then
     		if FileExist(LIB_PATH .. "VPrediction.lua") then
       			require "VPrediction"
       			VP = VPrediction()
-      			HMenu.Prediction:addParam("QVPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
-      			HMenu.Prediction:addParam("EVPHC", "E HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
+      			Menu.Prediction:addParam("QVPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
+      			Menu.Prediction:addParam("EVPHC", "E HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
       			PrintChat("<font color='#F0F8FF'><b>VPrediction Found!</b></font>")
     		end
-  		elseif HMenu.Prediction.activePred == 2 then
+  		elseif Menu.Prediction.activePred == 2 then
     		if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."DivinePred.luac") then
       			require "DivinePred"
       			DP = DivinePred()
-      			HMenu.Prediction:addParam("QHC", "Q HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
-      			HMenu.Prediction:addParam("EHC", "E HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
+      			Menu.Prediction:addParam("QHC", "Q HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
+      			Menu.Prediction:addParam("EHC", "E HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
       			PrintChat("<font color='#F0F8FF'><b>Divine Prediction Found!</b></font>")
     		end
-  		elseif HMenu.Prediction.activePred == 3 then
+  		elseif Menu.Prediction.activePred == 3 then
     		if FHPrediction.GetVersion() ~= nil then
       			if FHPrediction.GetVersion() >= 0.24 then
         			FHPred = true
         			PrintChat("<font color='#F0F8FF'><b>FHPrediction Found!</b></font>")
-        			HMenu.Prediction:addParam("infoFH", "FHPrediction found!", SCRIPT_PARAM_INFO, "")
+        			Menu.Prediction:addParam("infoFH", "FHPrediction found!", SCRIPT_PARAM_INFO, "")
       			end
     		else
       			PrintChat("<font color='#F0F8FF'><b>FHPrediction don't Loaded!</b></font>")
     		end
-  		elseif HMenu.Prediction.activePred == 4 then
+  		elseif Menu.Prediction.activePred == 4 then
     		if FileExist(LIB_PATH.."KPrediction.lua") then
       			require "KPrediction"
       			KP = KPrediction()
-      			HMenu.Prediction:addParam("QKPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
-      			HMenu.Prediction:addParam("EKPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
+      			Menu.Prediction:addParam("QKPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
+      			Menu.Prediction:addParam("EKPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
       			PrintChat("<font color='#F0F8FF'><b>KPrediction Found!</b></font>")
     	end  
   end
 
 --[[PermaShow]]--
 	
-	IDPerma = HMenu.Combo:permaShow("ComboMode")
-	HMenu.permaShowEdit(IDPerma, "lText", "[Combo Mode]")
-	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+	IDPerma = Menu.Combo:permaShow("ComboMode")
+	Menu.permaShowEdit(IDPerma, "lText", "[Combo Mode]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-  IDPerma = HMenu.Combo:permaShow("Burst")
-  HMenu.permaShowEdit(IDPerma, "lText", "[Burst Mode]")
-  HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+  IDPerma = Menu.Combo:permaShow("Burst")
+  Menu.permaShowEdit(IDPerma, "lText", "[Burst Mode]")
+  Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-	IDPerma = HMenu.Harass:permaShow("HS")
-	HMenu.permaShowEdit(IDPerma, "lText", "[Harass]")
-	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+	IDPerma = Menu.Harass:permaShow("HS")
+	Menu.permaShowEdit(IDPerma, "lText", "[Harass]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 	
-	IDPerma = HMenu.Clear:permaShow("LaneClear")
-	HMenu.permaShowEdit(IDPerma, "lText", "[Lane Clear]")
-	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+	IDPerma = Menu.Clear:permaShow("LaneClear")
+	Menu.permaShowEdit(IDPerma, "lText", "[Lane Clear]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 	
-	IDPerma = HMenu.JClear:permaShow("JungleClear")
-	HMenu.permaShowEdit(IDPerma, "lText", "[Jungle Clear]")
-	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+	IDPerma = Menu.JClear:permaShow("JungleClear")
+	Menu.permaShowEdit(IDPerma, "lText", "[Jungle Clear]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-	IDPerma = HMenu.Escape:permaShow("EnableEscape")
-	HMenu.permaShowEdit(IDPerma, "lText", "[Escape]")
-	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+	IDPerma = Menu.Escape:permaShow("EnableEscape")
+	Menu.permaShowEdit(IDPerma, "lText", "[Escape]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-	IDPerma = HMenu.Combo:permaShow("ComboSaveEQ")
-	HMenu.permaShowEdit(IDPerma, "lText", "[Always save E+Q for Combo mode]")
-	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
+	IDPerma = Menu.Combo:permaShow("ComboSaveEQ")
+	Menu.permaShowEdit(IDPerma, "lText", "[Always save E+Q for Combo mode]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
 	
-	IDPerma = HMenu.Prediction:permaShow("activePred")
-	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
+	IDPerma = Menu.Prediction:permaShow("activePred")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
 end
 
 --[[OnTick]]--
@@ -248,27 +248,27 @@ function OnTick()
 	if myHero.dead then return end
 	spell_check()
 	
-	if HMenu.Combo.ComboMode then
+	if Menu.Combo.ComboMode then
 		JarvanCombo()
 	end
 
-	if HMenu.KillSteal.Steal then
+	if Menu.KillSteal.Steal then
 		KSteal()
 	end
 
-	if HMenu.Harass.HS then
-		if ((myHero.mana*100)/myHero.maxMana) <= HMenu.Harass.HarassMana then return end
+	if Menu.Harass.HS then
+		if ((myHero.mana*100)/myHero.maxMana) <= Menu.Harass.HarassMana then return end
 		Harass()
 	end
 
-	if HMenu.Clear.LaneClear then
-		if ((myHero.mana*100)/myHero.maxMana) <= HMenu.Clear.ClearMana then return end
+	if Menu.Clear.LaneClear then
+		if ((myHero.mana*100)/myHero.maxMana) <= Menu.Clear.ClearMana then return end
 		enemyMinions:update()
 		LCLR()
 	end
 
-	if HMenu.JClear.JungleClear then
-		if ((myHero.mana*100)/myHero.maxMana) <= HMenu.JClear.JClearMana then return end
+	if Menu.JClear.JungleClear then
+		if ((myHero.mana*100)/myHero.maxMana) <= Menu.JClear.JClearMana then return end
 		jungleMinions:update()
 		JCLR()
 	end
@@ -279,25 +279,25 @@ function OnTick()
 		end
 	end
 	
-	if HMenu.Escape.EnableEscape then
+	if Menu.Escape.EnableEscape then
 		EQEscape()
     CastYoumu()
 	end
 
-	if HMenu.Auto.autoPOT and not REGENTIME then
+	if Menu.Auto.autoPOT and not REGENTIME then
    		AutoPotion()
   	end 
 
-  	if HMenu.Item.UseItem then
+  	if Menu.Item.UseItem then
     	FindItems()
   	end
 
-  	if UNDERCC and HMenu.Item.UseItem and HMenu.Item.DefItem.EnableACC then
-    	if HMenu.Item.DefItem.UseQSS and QSS then
+  	if UNDERCC and Menu.Item.UseItem and Menu.Item.DefItem.EnableACC then
+    	if Menu.Item.DefItem.UseQSS and QSS then
       		CastQSS()
     	end
     
-    if HMenu.Item.DefItem.UseDervish and DERVISH then
+    if Menu.Item.DefItem.UseDervish and DERVISH then
       CastDervish()
     end
   	end
@@ -306,27 +306,27 @@ end
 --[[Combo]]--
 
 function JarvanCombo()
-  if HMenu.Combo.Burst then
+  if Menu.Combo.Burst then
     BurstCombo()
   end
 
-	if HMenu.Combo.ComboEQ then
+	if Menu.Combo.ComboEQ then
 		ComboEQ()
 	end
 
-	if HMenu.Combo.ComboQ then
+	if Menu.Combo.ComboQ then
 		ComboQ()
 	end
 	
-	if HMenu.Combo.ComboE then
+	if Menu.Combo.ComboE then
 		ComboE()
 	end
 	
-	if HMenu.Combo.ComboW then
+	if Menu.Combo.ComboW then
 		ComboW()
 	end
 	
-	if HMenu.Combo.ComboR then
+	if Menu.Combo.ComboR then
 		ComboR()
 	end
 end
@@ -361,7 +361,7 @@ end
 --[[ComboQ]]--
 
 function ComboQ()
-	if HMenu.Combo.ComboSaveEQ or not Qready then return end
+	if Menu.Combo.ComboSaveEQ or not Qready then return end
 	if ValidTarget(ts.target, 770) then
 		CastQ(ts.target)
 		end
@@ -370,7 +370,7 @@ function ComboQ()
 --[[ComboE]]--
 
 function ComboE()
-	if HMenu.Combo.ComboSaveEQ or not Eready then return end
+	if Menu.Combo.ComboSaveEQ or not Eready then return end
 	if ValidTarget(ts.target, 830) then
 		CastE(ts.target)
 		end
@@ -379,7 +379,7 @@ function ComboE()
 --[[ComboW]]--
 
 function ComboW()
-if not HMenu.Combo.ComboW or not Wready then return end
+if not Menu.Combo.ComboW or not Wready then return end
   if ValidTarget(ts.target, 520) then
 		CastSpell(_W)
 	end
@@ -388,7 +388,7 @@ end
 --[[ComboR]]--
 
 function ComboR()
-if HMenu.Combo.ComboR and blCheck(ts.target) then
+if Menu.Combo.ComboR and blCheck(ts.target) then
 	if ValidTarget(ts.target, 650) then
 	CastSpell(_R, ts.target)
 	end
@@ -398,19 +398,19 @@ end
 --[[KillSteal]]--
 
 function KSteal()
-	if HMenu.KillSteal.EQSteal then
+	if Menu.KillSteal.EQSteal then
 		EQSteal()
 	end
 
-	if HMenu.KillSteal.QSteal then
+	if Menu.KillSteal.QSteal then
 		QSteal()
 	end
 
-	if HMenu.KillSteal.ESteal then
+	if Menu.KillSteal.ESteal then
 		ESteal()
 	end
 
-	if HMenu.KillSteal.RSteal then
+	if Menu.KillSteal.RSteal then
 		RSteal()
 	end
 end
@@ -463,19 +463,19 @@ end
 --[[Harass]]--
 
 function Harass()
-	if HMenu.Harass.HarassEQ then
+	if Menu.Harass.HarassEQ then
 		HarassEQ()
 	end
 
-	if HMenu.Harass.HarassQ then
+	if Menu.Harass.HarassQ then
 		HarassQ()
 	end
 	
-	if HMenu.Harass.HarassE then
+	if Menu.Harass.HarassE then
 		HarassE()
 	end
 	
-	if HMenu.Harass.HarassW then
+	if Menu.Harass.HarassW then
 		HarassW()
 	end
 end
@@ -493,7 +493,7 @@ function HarassEQ()
 --[[HarassQ]]--
 
 function HarassQ()
-	if HMenu.Combo.ComboSaveEQ or not Qready then return end
+	if Menu.Combo.ComboSaveEQ or not Qready then return end
 	if ValidTarget(ts.target, 770) then
 		CastQ(ts.target)
 		end
@@ -502,7 +502,7 @@ end
 --[[HarassE]]--
 
 function HarassE()
-	if HMenu.Combo.ComboSaveEQ or not Eready then return end
+	if Menu.Combo.ComboSaveEQ or not Eready then return end
 	if ValidTarget(ts.target, 830) then
 		CastE(ts.target)
 		end
@@ -511,7 +511,7 @@ function HarassE()
 --[[HarassW]]--
 
 function HarassW()
-if not HMenu.Harass.HarassW or not Wready then return end
+if not Menu.Harass.HarassW or not Wready then return end
   if ValidTarget(ts.target, 520) then
 		CastSpell(_W)
 	end
@@ -520,19 +520,19 @@ end
 --[[LaneClear]]--
 
 function LCLR()
-	if HMenu.Clear.LaneClearQE then
+	if Menu.Clear.LaneClearQE then
 		LCLREQ()
 	end
 
-	if HMenu.Clear.LineClearQ then
+	if Menu.Clear.LineClearQ then
 		LCLRQ()
 	end
 	
-	if HMenu.Clear.LineClearE then
+	if Menu.Clear.LineClearE then
 		LCLRE()
 	end
 	
-	if HMenu.Clear.LineClearW then
+	if Menu.Clear.LineClearW then
 		LCLRW()
 	end
 end
@@ -552,7 +552,7 @@ end
 --[[LaneClearQ]]--
 
 function LCLRQ()
-	if HMenu.Combo.ComboSaveEQ or not Qready then return end
+	if Menu.Combo.ComboSaveEQ or not Qready then return end
 	for _, minions in pairs(enemyMinions.objects) do
 		if ValidTarget(minions, 770) then
 			CasrQ(minions)
@@ -563,7 +563,7 @@ end
 --[[LaneClearE]]--
 
 function LCLRE()
-	if HMenu.Combo.ComboSaveEQ or not Qready then return end
+	if Menu.Combo.ComboSaveEQ or not Qready then return end
 	for _, minions in pairs(enemyMinions.objects) do
 		if ValidTarget(minions, 830) then
 			CastE(minions)
@@ -587,19 +587,19 @@ end
 --[[JungleClear]]--
 
 function JCLR()
-	if HMenu.JClear.JungleClearQE then
+	if Menu.JClear.JungleClearQE then
 		JCLREQ()
 	end
 
-	if HMenu.JClear.JungleClearQ then
+	if Menu.JClear.JungleClearQ then
 		JCLRQ()
 	end
 	
-	if HMenu.JClear.JungleClearE then
+	if Menu.JClear.JungleClearE then
 		JCLRE()
 	end
 	
-	if HMenu.JClear.JungleClearW then
+	if Menu.JClear.JungleClearW then
 		JCLRW()
 	end
 end
@@ -619,7 +619,7 @@ end
 --[[JungleClearQ]]--
 
 function JCLRQ()
-	if HMenu.Combo.ComboSaveEQ or not Qready then return end
+	if Menu.Combo.ComboSaveEQ or not Qready then return end
 	for _, jminions in pairs(jungleMinions.objects) do
 		if ValidTarget(jminions, 770) then
 			CastQ(jminions)
@@ -630,7 +630,7 @@ end
 --[[JungleClearE]]--
 
 function JCLRE()
-	if HMenu.Combo.ComboSaveEQ or not Qready then return end
+	if Menu.Combo.ComboSaveEQ or not Qready then return end
 	for _, jminions in pairs(jungleMinions.objects) do
 		if ValidTarget(jminions, 830) then
 			CastE(jminions)
@@ -655,25 +655,25 @@ end
 
 function OnDraw()
 	if myHero.dead then return end
-	if HMenu.Drawings.AllDraw then
+	if Menu.Drawings.AllDraw then
 	
-		if HMenu.Drawings.DrawQ and Qready then
+		if Menu.Drawings.DrawQ and Qready then
 			DrawCircle(myHero.x, myHero.y, myHero.z, 700, ARGB(255, 0, 0, 80))
 		end	
 
-		if HMenu.Drawings.DrawW and Wready then
+		if Menu.Drawings.DrawW and Wready then
 			DrawCircle(myHero.x, myHero.y, myHero.z, 525, ARGB(255, 0, 0, 80))
 		end
 
-		if HMenu.Drawings.DrawE and Eready then
+		if Menu.Drawings.DrawE and Eready then
 			DrawCircle(myHero.x, myHero.y, myHero.z, 830, ARGB(255, 0, 0, 80))
 		end
 
-		if HMenu.Drawings.DrawAA then
+		if Menu.Drawings.DrawAA then
 			DrawCircle(myHero.x, myHero.y, myHero.z, 250, ARGB(255, 0, 0, 80))
 		end
 	
-		if HMenu.Drawings.DrawR and Rready then
+		if Menu.Drawings.DrawR and Rready then
 			DrawCircle(myHero.x, myHero.y, myHero.z, 650, ARGB(255, 0, 0, 80))
 		end
 	end
@@ -721,7 +721,7 @@ end
 --[[BlockList]]--
 
 function blCheck(target)
-	if ts.target ~= nil and HMenu.ultb[target.charName] then
+	if ts.target ~= nil and Menu.ultb[target.charName] then
 		return true
 	else
 		return false
@@ -765,17 +765,17 @@ function CastQ(unit)
   if unit == nil and Qready then return end
   if VP ~= nil then
     local CastPosition, HitChance = VP:GetLineCastPosition(unit, VARS.Q.DELAY, VARS.Q.WIDTH, VARS.Q.RANGE, VARS.Q.SPEED, myHero, false)
-    if HitChance >= HMenu.Prediction.QVPHC then
+    if HitChance >= Menu.Prediction.QVPHC then
       CastSpell(_Q, CastPosition.x, CastPosition.z)
     end
   end
   if DP ~= nil then
     local state,hitPos,perc = DP:predict(nil,unit,myHero,SkillShot.TYPE.LINE,VARS.Q.SPEED,VARS.Q.RANGE,VARS.Q.WIDTH,VARS.Q.DELAY*1000,0,{Minions = false,Champions = false})
-    if perc >= HMenu.Prediction.QHC then
+    if perc >= Menu.Prediction.QHC then
       CastSpell(_Q, hitPos.x, hitPos.z)
     end
   end
-  if FHPred and HMenu.Prediction.activePred == 3 then
+  if FHPred and Menu.Prediction.activePred == 3 then
     local CastPosition, hc, info = FHPrediction.GetPrediction("Q", unit)
     if hc > 0 and CastPosition ~= nil then
       CastSpell(_Q, CastPosition.x, CastPosition.z)
@@ -783,7 +783,7 @@ function CastQ(unit)
   end
   if KP ~= nil then
     local CastPosition, hc = KP:GetPrediction(JQ, unit, myHero)
-    if hc >= HMenu.Prediction.QKPHC then
+    if hc >= Menu.Prediction.QKPHC then
       CastSpell(_Q, CastPosition.x, CastPosition.z)
     end
   end
@@ -795,17 +795,17 @@ function CastE(unit)
   if unit == nil and Eready then return end
   if VP ~= nil then
     local CastPosition, HitChance = VP:GetLineCastPosition(unit, VARS.E.DELAY, VARS.E.WIDTH, VARS.E.RANGE, VARS.E.SPEED, myHero, true)
-    if HitChance >= HMenu.Prediction.EVPHC then
+    if HitChance >= Menu.Prediction.EVPHC then
       CastSpell(_E, CastPosition.x, CastPosition.z)
     end
   end
   if DP ~= nil then
     local state,hitPos,perc = DP:predict(nil,unit,myHero,SkillShot.TYPE.CIRCLE,VARS.E.SPEED,VARS.E.RANGE,VARS.E.WIDTH,VARS.E.DELAY*1000,0,{Minions = false,Champions = false})
-    if perc >= HMenu.Prediction.EHC then
+    if perc >= Menu.Prediction.EHC then
       CastSpell(_E, hitPos.x, hitPos.z)
     end
   end
-  if FHPred and HMenu.Prediction.activePred == 3 then
+  if FHPred and Menu.Prediction.activePred == 3 then
     local CastPosition, hc, info = FHPrediction.GetPrediction("E", unit)
     if hc > 0 and CastPosition ~= nil then
       CastSpell(_E, CastPosition.x, CastPosition.z)
@@ -813,7 +813,7 @@ function CastE(unit)
   end
   if KP ~= nil then
     local CastPosition, hc = KP:GetPrediction(JE, unit, myHero)
-    if hc >= HMenu.Prediction.EKPHC then
+    if hc >= Menu.Prediction.EKPHC then
       CastSpell(_E, CastPosition.x, CastPosition.z)
     end
   end
@@ -852,28 +852,28 @@ end
 --[[FindItems]]--
 
 function FindItems()
-  if (HMenu.Item.AttackItem.UseTiamat) then
+  if (Menu.Item.AttackItem.UseTiamat) then
     GetTiamat()
   end
-  if (HMenu.Item.AttackItem.UseTitanic) then
+  if (Menu.Item.AttackItem.UseTitanic) then
     GetTitanic()
   end
-  if (HMenu.Item.AttackItem.UseBOTRK) then
+  if (Menu.Item.AttackItem.UseBOTRK) then
     GetBOTRK()
   end
-  if (HMenu.Item.AttackItem.UseCutlass) then
+  if (Menu.Item.AttackItem.UseCutlass) then
     GetCutlass()
   end
-  if (HMenu.Item.AttackItem.UseYoumu) then
+  if (Menu.Item.AttackItem.UseYoumu) then
     GetYoumu()
   end
-  if (HMenu.Item.AttackItem.UseGunblade) then
+  if (Menu.Item.AttackItem.UseGunblade) then
     GetGunblade()
   end
-  if (HMenu.Item.DefItem.UseQSS) then
+  if (Menu.Item.DefItem.UseQSS) then
     GetQSS()
   end
-  if (HMenu.Item.DefItem.UseDervish) then
+  if (Menu.Item.DefItem.UseDervish) then
     GetDervish()
   end
 end
@@ -1064,7 +1064,7 @@ function AutoPotion()
   for i=1, 5 do
     local pot = GetItem(POT[i])
     if (pot ~= nil) then
-      if (((myHero.health*100)/myHero.maxHealth) <= HMenu.Auto.autoPOTHealth and not REGENTIME) then
+      if (((myHero.health*100)/myHero.maxHealth) <= Menu.Auto.autoPOTHealth and not REGENTIME) then
         CastSpell(pot)
       end
     end
