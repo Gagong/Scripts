@@ -15,6 +15,7 @@ if myHero.charName ~= "JarvanIV" then return end
 local version = "1.0"
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
+local autoupdate = true
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local VP, DP, KP = nil
@@ -36,16 +37,16 @@ local DANGERSPELL = {"MordekaiserChildrenOfTheGrave", "SkarnerImpale", "LuxLight
 local VARS = {
   AA = {RANGE = 250},
   Q = {RANGE = 700, WIDTH = 70, DELAY = 0.5, SPEED = math.huge},
-  W = {RANGE = 525, WIDTH = 525, DELAY = 0.5, SPEED = nil},
+  W = {RANGE = 525, WIDTH = 525, DELAY = 0, SPEED = nil},
   E = {RANGE = 830, WIDTH = 75, DELAY = 0.5, SPEED = math.huge},
-  R = {RANGE = 650, WIDTH = 325, DELAY = 0.5, SPEED = nil}
+  R = {RANGE = 650, WIDTH = 325, DELAY = 0, SPEED = nil}
 }
 local ultActive = false
 
 JQ = {range = VARS.Q.RANGE, speed = VARS.Q.SPEED, delay = VARS.Q.DELAY, radius = VARS.Q.WIDTH, type = "DelayLine", width = VARS.Q.WIDTH}
-JW = {range = VARS.W.RANGE, speed = VARS.W.SPEED, delay = VARS.W.DELAY, radius = VARS.W.WIDTH, type = "DelayLine", width = VARS.W.WIDTH}
-JE = {range = VARS.E.RANGE, speed = VARS.E.SPEED, delay = VARS.E.DELAY, radius = VARS.E.WIDTH, type = "DelayLine", width = VARS.E.WIDTH}
-JR = {range = VARS.R.RANGE, speed = VARS.R.SPEED, delay = VARS.R.DELAY, radius = VARS.R.WIDTH, type = "DelayLine", width = VARS.W.WIDTH}
+JW = {range = VARS.W.RANGE, speed = VARS.W.SPEED, delay = VARS.W.DELAY, radius = VARS.W.WIDTH, type = "DelayCircle", width = VARS.W.WIDTH}
+JE = {range = VARS.E.RANGE, speed = VARS.E.SPEED, delay = VARS.E.DELAY, radius = VARS.E.WIDTH, type = "PromptCircle", width = VARS.E.WIDTH}
+JR = {range = VARS.R.RANGE, speed = VARS.R.SPEED, delay = VARS.R.DELAY, radius = VARS.R.WIDTH, type = "DelayCircle2", width = VARS.W.WIDTH}
 
 --[[OnLoad]]--
 
@@ -54,13 +55,18 @@ function OnLoad()
 	ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 900, DAMAGE_PHYSICAL)
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
 	ultActive = false
-	--Variables()
 	AddApplyBuffCallback(Buff_Add)
   AddRemoveBuffCallback(Buff_Rem)
 
 --[[Menu]]--
 
 	Menu = scriptConfig("Hero Jarvan", "Hero Jarvan")
+	
+--[[Target Selector]]--
+	
+	Menu:addSubMenu("[HeRo Jarvan - Target Selector]", "targetSelector")
+		Menu.targetSelector:addTS(ts)
+		ts.name = "Focus"
 	
 --[[Combo]]--
 	
@@ -74,15 +80,6 @@ function OnLoad()
 		Menu.Combo:addParam("ComboE", "Use E in Combo", SCRIPT_PARAM_ONOFF, true)
 		Menu.Combo:addParam("ComboR", "Use R in Combo", SCRIPT_PARAM_ONOFF, true)
 	
---[[KillSteal]]--
-	
-	Menu:addSubMenu("[HeRo Jarvan - KillSteal]", "KillSteal")
-		Menu.KillSteal:addParam("Steal", "Endble or Disable KillSteal", SCRIPT_PARAM_ONOFF, true)
-		Menu.KillSteal:addParam("EQSteal", "Use E+Q Combo for KillSteal", SCRIPT_PARAM_ONOFF, true)
-		Menu.KillSteal:addParam("QSteal", "Use Q", SCRIPT_PARAM_ONOFF, true)
-		Menu.KillSteal:addParam("ESteal", "Use E", SCRIPT_PARAM_ONOFF, true)
-		Menu.KillSteal:addParam("RSteal", "Use R", SCRIPT_PARAM_ONOFF, false)
-	
 --[[Harass]]--
 	
 	Menu:addSubMenu("[HeRo Jarvan - Harass]", "Harass")
@@ -92,6 +89,16 @@ function OnLoad()
 		Menu.Harass:addParam("HarassE", "Use E in Harass", SCRIPT_PARAM_ONOFF, true)
 		Menu.Harass:addParam("HarassW", "Use W in Harass", SCRIPT_PARAM_ONOFF, true)
 		Menu.Harass:addParam("HarassMana", "% Mana for Harass", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
+
+--[[KillSteal]]--
+	
+	Menu:addSubMenu("[HeRo Jarvan - KillSteal]", "KillSteal")
+		Menu.KillSteal:addParam("Steal", "Endble or Disable KillSteal", SCRIPT_PARAM_ONOFF, true)
+		Menu.KillSteal:addParam("EQSteal", "Use E+Q Combo for KillSteal", SCRIPT_PARAM_ONOFF, true)
+		Menu.KillSteal:addParam("QSteal", "Use Q", SCRIPT_PARAM_ONOFF, true)
+		Menu.KillSteal:addParam("ESteal", "Use E", SCRIPT_PARAM_ONOFF, true)
+		Menu.KillSteal:addParam("RSteal", "Use R", SCRIPT_PARAM_ONOFF, false)
+	
 	
 --[[LaneClear]]--
 	
@@ -112,6 +119,18 @@ function OnLoad()
 		Menu.JClear:addParam("JungleClearE", "Use E in JungleClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.JClear:addParam("JungleClearW", "Use W in JungleClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.JClear:addParam("JClearMana", "% Mana for JungleClear", SCRIPT_PARAM_SLICE, 75, 0, 100, 0)
+		
+--[[Escape]]--
+	
+	Menu:addSubMenu("[HeRo Jarvan - Escape]", "Escape")
+		Menu.Escape:addParam("EnableEscape", "Escape", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("S"))
+	
+--[[Blacklist]]--
+	
+	Menu:addSubMenu("[HeRo Jarvan - Ult Blacklist]", "ultb")
+		for i, enemy in pairs(GetEnemyHeroes()) do
+			Menu.ultb:addParam(enemy.charName, "Use ult on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
+		end
 
 --[[ItemUsage]]--
 
@@ -144,17 +163,6 @@ function OnLoad()
 		Menu.Others:addParam("ChangeShow", "Change PermaShow Color(Green)", SCRIPT_PARAM_ONOFF, true)
 		Menu.Others:addParam("info", "Reload this(2xF9)", SCRIPT_PARAM_INFO, "")
 	
---[[Escape]]--
-	
-	Menu:addSubMenu("[HeRo Jarvan - Escape]", "Escape")
-		Menu.Escape:addParam("EnableEscape", "Escape", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("S"))
-	
---[[Blacklist]]--
-	
-	Menu:addSubMenu("[HeRo Jarvan - Ult Blacklist]", "ultb")
-		for i, enemy in pairs(GetEnemyHeroes()) do
-			Menu.ultb:addParam(enemy.charName, "Use ult on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
-		end
 	
 --[[Drawings]]--
 	
@@ -165,12 +173,6 @@ function OnLoad()
 		Menu.Drawings:addParam("DrawW", "Draw W Range", SCRIPT_PARAM_ONOFF, true)
 		Menu.Drawings:addParam("DrawE", "Draw E Range", SCRIPT_PARAM_ONOFF, true)
 		Menu.Drawings:addParam("DrawR", "Draw R Range", SCRIPT_PARAM_ONOFF, true)
-	
---[[Target Selector]]--
-	
-	Menu:addSubMenu("[HeRo Jarvan - Target Selector]", "targetSelector")
-		Menu.targetSelector:addTS(ts)
-		ts.name = "Focus"
 
 --[[Predictions]]--
 
@@ -182,7 +184,7 @@ function OnLoad()
       			VP = VPrediction()
       			Menu.Prediction:addParam("QVPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
       			Menu.Prediction:addParam("EVPHC", "E HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
-      			PrintChat("<font color='#F0F8FF'><b>VPrediction Found!</b></font>")
+      			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>VPrediction Found!</b></font>")
     		end
   		elseif Menu.Prediction.activePred == 2 then
     		if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."DivinePred.luac") then
@@ -190,17 +192,17 @@ function OnLoad()
       			DP = DivinePred()
       			Menu.Prediction:addParam("QHC", "Q HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
       			Menu.Prediction:addParam("EHC", "E HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
-      			PrintChat("<font color='#F0F8FF'><b>Divine Prediction Found!</b></font>")
+      			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>Divine Prediction Found!</b></font>")
     		end
   		elseif Menu.Prediction.activePred == 3 then
     		if FHPrediction.GetVersion() ~= nil then
       			if FHPrediction.GetVersion() >= 0.24 then
         			FHPred = true
-        			PrintChat("<font color='#F0F8FF'><b>FHPrediction Found!</b></font>")
+        			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>FHPrediction Found!</b></font>")
         			Menu.Prediction:addParam("infoFH", "FHPrediction found!", SCRIPT_PARAM_INFO, "")
       			end
     		else
-      			PrintChat("<font color='#F0F8FF'><b>FHPrediction don't Loaded!</b></font>")
+      			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>FHPrediction don't Loaded!</b></font>")
     		end
   		elseif Menu.Prediction.activePred == 4 then
     		if FileExist(LIB_PATH.."KPrediction.lua") then
@@ -208,7 +210,7 @@ function OnLoad()
       			KP = KPrediction()
       			Menu.Prediction:addParam("QKPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
       			Menu.Prediction:addParam("EKPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
-      			PrintChat("<font color='#F0F8FF'><b>KPrediction Found!</b></font>")
+      			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>KPrediction Found!</b></font>")
     	end  
   end
 
@@ -278,7 +280,11 @@ function OnTick()
 	if Menu.Combo.ComboMode then
 		JarvanCombo()
 	end
-
+	
+	if Menu.Combo.Burst then
+    Zaburstim()
+  end
+	
 	if Menu.KillSteal.Steal then
 		KSteal()
 	end
@@ -333,10 +339,6 @@ end
 --[[Combo]]--
 
 function JarvanCombo()
-  if Menu.Combo.Burst then
-    BurstCombo()
-  end
-
 	if Menu.Combo.ComboEQ then
 		ComboEQ()
 	end
@@ -358,15 +360,21 @@ function JarvanCombo()
 	end
 end
 
---[[ComboEQ]]--
+--[[Burst]]--
+
+function Zaburstim()
+  BurstCombo()
+end
 
 function BurstCombo()
+	myHero:MoveTo(mousePos.x, mousePos.z)
   if not Eready and not Qready and not Wready and not Rready then return end
-  if ValidTarget(ts.target, 830) then
-    CastTITANIC()
-    CastTiamat()
-    CastYoumu()
-    CastBOTRK()
+	myHero:MoveTo(mousePos.x, mousePos.z)
+  if ValidTarget(ts.target, 770) then
+    if TITANIC then CastTITANIC() end
+    if TIAMAT then CastTiamat() end
+    if YOUMU then CastYoumu() end
+    if BOTRK then CastBOTRK() end
     CastE(ts.target)
     DelayAction(function() CastQ(ts.target) end, 0.2)
     DelayAction(function() CastR(ts.target) end, 0.4)
@@ -376,10 +384,15 @@ function BurstCombo()
   end
 end
 
+--[[ComboEQ]]--
 
 function ComboEQ()
 	if not Eready and not Qready then return end
-	if ValidTarget(ts.target, 830) then
+	  if TITANIC then CastTITANIC() end
+    if TIAMAT then CastTiamat() end
+    if YOUMU then CastYoumu() end
+    if BOTRK then CastBOTRK() end
+	if ValidTarget(ts.target, 770) then
 		CastE(ts.target)
 		DelayAction(function() CastQ(ts.target) end, 0.2)
 	end
@@ -389,6 +402,10 @@ end
 
 function ComboQ()
 	if Menu.Combo.ComboSaveEQ or not Qready then return end
+	  if TITANIC then CastTITANIC() end
+    if TIAMAT then CastTiamat() end
+    if YOUMU then CastYoumu() end
+    if BOTRK then CastBOTRK() end
 	if ValidTarget(ts.target, 770) then
 		CastQ(ts.target)
 		end
@@ -398,6 +415,10 @@ function ComboQ()
 
 function ComboE()
 	if Menu.Combo.ComboSaveEQ or not Eready then return end
+	  if TITANIC then CastTITANIC() end
+    if TIAMAT then CastTiamat() end
+    if YOUMU then CastYoumu() end
+    if BOTRK then CastBOTRK() end
 	if ValidTarget(ts.target, 830) then
 		CastE(ts.target)
 		end
@@ -407,6 +428,10 @@ function ComboE()
 
 function ComboW()
 if not Menu.Combo.ComboW or not Wready then return end
+  if TITANIC then CastTITANIC() end
+  if TIAMAT then CastTiamat() end
+  if YOUMU then CastYoumu() end
+  if BOTRK then CastBOTRK() end
   if ValidTarget(ts.target, 520) then
 		CastSpell(_W)
 	end
@@ -416,6 +441,10 @@ end
 
 function ComboR()
 if Menu.Combo.ComboR and blCheck(ts.target) then
+  if TITANIC then CastTITANIC() end
+  if TIAMAT then CastTiamat() end
+  if YOUMU then CastYoumu() end
+  if BOTRK then CastBOTRK() end
 	if ValidTarget(ts.target, 650) then
 	CastSpell(_R, ts.target)
 	end
@@ -445,46 +474,62 @@ end
 --[[KillStealEQ]]--
 
 function EQSteal()
+  for i,enemy in pairs(GetEnemyHeroes()) do 
+	if not enemy.dead and enemy.visible then
 	if not Eready and not Qready then return end
-	if ValidTarget(ts.target, 830) then
-		if ts.target.health < getDmg("Q", ts.target, myHero) + getDmg("E", ts.target, myHero) then
-		CastE(ts.target)
-		DelayAction(function() CastQ(ts.target) end, 0.2)
+	if ValidTarget(enemy, 770) then
+		if enemy.health < getDmg("Q", enemy, myHero) + getDmg("E", enemy, myHero) then
+		CastE(enemy)
+		DelayAction(function() CastQ(enemy) end, 0.2)
 		end
 	end
+end
+end
 end
 
 --[[KillStealQ]]--
 
 function QSteal()
+  for i,enemy in pairs(GetEnemyHeroes()) do
+  if not enemy.dead and enemy.visible then
 	if not Qready then return end
-	if ValidTarget(ts.target, 770) then
-		if ts.target.health < getDmg("Q", ts.target, myHero) then
-		CastQ(ts.target)
+	if ValidTarget(enemy, 770) then
+		if enemy.health < getDmg("Q", enemy, myHero) then
+		CastQ(enemy)
 		end
 	end
+end
+end
 end
 
 --[[KillStealE]]--
 
 function ESteal()
+  for i,enemy in pairs(GetEnemyHeroes()) do
+  if not enemy.dead and enemy.visible then
 	if not Eready then return end
-	if ValidTarget(ts.target, 830) then
-		if ts.target.health < getDmg("E", ts.target, myHero) then
-		CastE(ts.target)
+	if ValidTarget(enemy, 830) then
+		if enemy.health < getDmg("E", enemy, myHero) then
+		CastE(enemy)
 		end
 	end
+end
+end
 end
 
 --[[KillStealR]]--
 
-function RSteal()
+function RSteal() 
+		for i,enemy in pairs(GetEnemyHeroes()) do
+    if not enemy.dead and enemy.visible then
 		if not Rready then return end
-		if ValidTarget(ts.target, 650) then
-			if ts.target.health < getDmg("R", ts.target, myHero) then
-			CastSpell(_R, ts.target)
+		if ValidTarget(enemy, 650) then
+			if enemy.health < getDmg("R", enemy, myHero) then
+			CastSpell(_R, enemy)
 		end
 	end
+end
+end
 end
 
 --[[Harass]]--
@@ -649,6 +694,7 @@ function JCLRQ()
 	if Menu.Combo.ComboSaveEQ or not Qready then return end
 	for _, jminions in pairs(jungleMinions.objects) do
 		if ValidTarget(jminions, 770) then
+			CastSpell(_Q, jminions)
 			CastQ(jminions)
 		end
 	end
@@ -803,7 +849,7 @@ function CastQ(unit)
     end
   end
   if FHPred and Menu.Prediction.activePred == 3 then
-    local CastPosition, hc, info = FHPrediction.GetPrediction("Q", unit)
+    local CastPosition, hc, info = FHPrediction.GetPrediction(JQ, unit)
     if hc > 0 and CastPosition ~= nil then
       CastSpell(_Q, CastPosition.x, CastPosition.z)
     end
@@ -821,19 +867,19 @@ end
 function CastE(unit)
   if unit == nil and Eready then return end
   if VP ~= nil then
-    local CastPosition, HitChance = VP:GetLineCastPosition(unit, VARS.E.DELAY, VARS.E.WIDTH, VARS.E.RANGE, VARS.E.SPEED, myHero, true)
+    local CastPosition, HitChance = VP:GetLineCastPosition(unit, 0, VARS.E.WIDTH, 870, VARS.E.SPEED, myHero, true)
     if HitChance >= Menu.Prediction.EVPHC then
       CastSpell(_E, CastPosition.x, CastPosition.z)
     end
   end
   if DP ~= nil then
-    local state,hitPos,perc = DP:predict(nil,unit,myHero,SkillShot.TYPE.CIRCLE,VARS.E.SPEED,VARS.E.RANGE,VARS.E.WIDTH,VARS.E.DELAY*1000,0,{Minions = false,Champions = false})
+    local state,hitPos,perc = DP:predict(nil,unit,myHero,SkillShot.TYPE.CIRCLE,VARS.E.SPEED,VARS.E.RANGE,0,0,{Minions = false,Champions = false})
     if perc >= Menu.Prediction.EHC then
       CastSpell(_E, hitPos.x, hitPos.z)
     end
   end
   if FHPred and Menu.Prediction.activePred == 3 then
-    local CastPosition, hc, info = FHPrediction.GetPrediction("E", unit)
+    local CastPosition, hc, info = FHPrediction.GetPrediction(JE, unit)
     if hc > 0 and CastPosition ~= nil then
       CastSpell(_E, CastPosition.x, CastPosition.z)
     end
@@ -849,7 +895,7 @@ end
 --[[CastW]]--
 
 function CastW()
-  if Wready and ValidTarget(ts.target, 525) then
+  if Wready and ValidTarget(ts.target, 525) and GetDlina(myHero, ts.target) <= 525 then
     CastSpell(_W)
   end
 end
@@ -858,7 +904,7 @@ end
 
 function CastR(unit)
   if unit == nil then return end
-    if ValidTarget(unit, 650) and blCheck(unit) then
+    if ValidTarget(ts.target, 650) and blCheck(ts.target) then
       CastSpell(_R, unit)
     end
 end
