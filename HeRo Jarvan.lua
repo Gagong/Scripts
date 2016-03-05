@@ -33,7 +33,6 @@ local DANGERSPELL = {"MordekaiserChildrenOfTheGrave", "SkarnerImpale", "LuxLight
 "LeblancSoulShackle", "LeonaSolarFlare", "LissandraR", "AlZaharNetherGrasp", "MonkeyKingDecoy", "NamiQ", "OrianaDetonateCommand", "Pantheon_LeapBash", "PuncturingTaunt",
 "SejuaniGlacialPrisonStart", "SwainShadowGrasp", "Imbue", "ThreshQ", "UrgotSwap2", "VarusR", "VeigarEventHorizon", "ViR", "InfiniteDuress", "ZyraGraspingRoots",
 "paranoiamisschance", "puncturingtauntarmordebuff", "surpression", "zedulttargetmark", "enchantedcrystalarrow", "nasusw"}
-require 'VPrediction'
 local VARS = {
   AA = {RANGE = 250},
   Q = {RANGE = 700, WIDTH = 70, DELAY = 0.5, SPEED = math.huge},
@@ -56,7 +55,7 @@ function OnLoad()
 	ultActive = false
 	Variables()
 	AddApplyBuffCallback(Buff_Add)
-  	AddRemoveBuffCallback(Buff_Rem)
+  AddRemoveBuffCallback(Buff_Rem)
 
 --[[Menu]]--
 
@@ -66,6 +65,7 @@ function OnLoad()
 	
 	HMenu:addSubMenu("[HeRo Jarvan - Combo]", "Combo")
 		HMenu.Combo:addParam("ComboMode", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32)
+    HMenu.Combo:addParam("Burst", "All In/Burst Combo (Toggle)", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("S"))
 		HMenu.Combo:addParam("ComboEQ", "Use Q+E in Combo", SCRIPT_PARAM_ONOFF, true)
 		HMenu.Combo:addParam("ComboSaveEQ", "Always save E+Q for Combo mode", SCRIPT_PARAM_ONOFF, false)
 		HMenu.Combo:addParam("ComboQ", "Use Q in Combo", SCRIPT_PARAM_ONOFF, true)
@@ -114,7 +114,7 @@ function OnLoad()
 
 --[[ItemUsage]]--
 
-	HMenu:addSubMenu("[Item Usage]", "Item")
+	HMenu:addSubMenu("[HeRo Jarvan - Item Usage]", "Item")
 		HMenu.Item:addParam("UseItem", "Enable Item Usage", SCRIPT_PARAM_ONOFF, true)
 		HMenu.Item:addSubMenu("[Offensive Items]", "AttackItem")
 		HMenu.Item.AttackItem:addParam("UseTiamat", "Use Tiamat/Hydra", SCRIPT_PARAM_ONOFF, true)
@@ -133,9 +133,9 @@ function OnLoad()
 
 --[[Auto]]--
 
-	Menu:addSubMenu("[HeRo Jarvan - Auto]", "Auto")
-		Menu.Auto:addParam("autoPOT", "Auto Potions Usage", SCRIPT_PARAM_ONOFF, true)
- 		Menu.Auto:addParam("autoPOTHealth", "% Health for autoPOT", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
+	HMenu:addSubMenu("[HeRo Jarvan - Auto]", "Auto")
+		HMenu.Auto:addParam("autoPOT", "Auto Potions Usage", SCRIPT_PARAM_ONOFF, true)
+ 		HMenu.Auto:addParam("autoPOTHealth", "% Health for autoPOT", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 	
 --[[Escape]]--
 	
@@ -175,7 +175,7 @@ function OnLoad()
       			VP = VPrediction()
       			HMenu.Prediction:addParam("QVPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
       			HMenu.Prediction:addParam("EVPHC", "E HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
-      			PrintChat(<font color='#F0F8FF'><b>"VPrediction Found!"</b></font>)
+      			PrintChat("<font color='#F0F8FF'><b>VPrediction Found!</b></font>")
     		end
   		elseif HMenu.Prediction.activePred == 2 then
     		if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."DivinePred.luac") then
@@ -183,25 +183,25 @@ function OnLoad()
       			DP = DivinePred()
       			HMenu.Prediction:addParam("QHC", "Q HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
       			HMenu.Prediction:addParam("EHC", "E HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
-      			PrintChat(<font color='#F0F8FF'><b>"Divine Prediction Found!"</b></font>)
+      			PrintChat("<font color='#F0F8FF'><b>Divine Prediction Found!</b></font>")
     		end
   		elseif HMenu.Prediction.activePred == 3 then
     		if FHPrediction.GetVersion() ~= nil then
       			if FHPrediction.GetVersion() >= 0.24 then
         			FHPred = true
-        			PrintChat(<font color='#F0F8FF'><b>"FHPrediction Found!"</b></font>)
+        			PrintChat("<font color='#F0F8FF'><b>FHPrediction Found!</b></font>")
         			HMenu.Prediction:addParam("infoFH", "FHPrediction found!", SCRIPT_PARAM_INFO, "")
       			end
     		else
-      			PrintChat(<font color='#F0F8FF'><b>"FHPrediction don't Loaded!"</b></font>)
+      			PrintChat("<font color='#F0F8FF'><b>FHPrediction don't Loaded!</b></font>")
     		end
-  		elseif GMenu.Prediction.activePred == 4 then
+  		elseif HMenu.Prediction.activePred == 4 then
     		if FileExist(LIB_PATH.."KPrediction.lua") then
       			require "KPrediction"
       			KP = KPrediction()
       			HMenu.Prediction:addParam("QKPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
       			HMenu.Prediction:addParam("EKPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
-      			PrintChat(<font color='#F0F8FF'><b>"KPrediction Found!"</b></font>)
+      			PrintChat("<font color='#F0F8FF'><b>KPrediction Found!</b></font>")
     	end  
   end
 
@@ -210,6 +210,10 @@ function OnLoad()
 	IDPerma = HMenu.Combo:permaShow("ComboMode")
 	HMenu.permaShowEdit(IDPerma, "lText", "[Combo Mode]")
 	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+
+  IDPerma = HMenu.Combo:permaShow("Burst")
+  HMenu.permaShowEdit(IDPerma, "lText", "[Burst Mode]")
+  HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
 	IDPerma = HMenu.Harass:permaShow("HS")
 	HMenu.permaShowEdit(IDPerma, "lText", "[Harass]")
@@ -231,6 +235,8 @@ function OnLoad()
 	HMenu.permaShowEdit(IDPerma, "lText", "[Always save E+Q for Combo mode]")
 	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
 	
+	IDPerma = HMenu.Prediction:permaShow("activePred")
+	HMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
 end
 
 --[[OnTick]]--
@@ -275,6 +281,7 @@ function OnTick()
 	
 	if HMenu.Escape.EnableEscape then
 		EQEscape()
+    CastYoumu()
 	end
 
 	if HMenu.Auto.autoPOT and not REGENTIME then
@@ -286,261 +293,23 @@ function OnTick()
   	end
 
   	if UNDERCC and HMenu.Item.UseItem and HMenu.Item.DefItem.EnableACC then
-    	if Menu.Item.DefItem.UseQSS and QSS then
+    	if HMenu.Item.DefItem.UseQSS and QSS then
       		CastQSS()
     	end
     
-    if Menu.Item.DefItem.UseDervish and DERVISH then
+    if HMenu.Item.DefItem.UseDervish and DERVISH then
       CastDervish()
     end
   	end
 end
 
---[[FindItems]]--
-
-function FindItems()
-  if (Menu.Item.AttackItem.UseTiamat) then
-    GetTiamat()
-  end
-  if (Menu.Item.AttackItem.UseTitanic) then
-    GetTitanic()
-  end
-  if (Menu.Item.AttackItem.UseBOTRK) then
-    GetBOTRK()
-  end
-  if (Menu.Item.AttackItem.UseCutlass) then
-    GetCutlass()
-  end
-  if (Menu.Item.AttackItem.UseYoumu) then
-    GetYoumu()
-  end
-  if (Menu.Item.AttackItem.UseGunblade) then
-    GetGunblade()
-  end
-  if (Menu.Item.DefItem.UseQSS) then
-    GetQSS()
-  end
-  if (Menu.Item.DefItem.UseDervish) then
-    GetDervish()
-  end
-end
-
---[[Get Items]]--
-
-function GetTiamat()
-  local slot = GetItem(ATTACKITEMS[1])
-  if (slot ~= nil) then
-    TIAMAT = true
-    TIAMATSLOT = slot
-  else
-    TIAMAT = false
-  end
-end
-
-function GetTitanic()
-  local slot = GetItem(ATTACKITEMS[2])
-  if (slot ~= nil) then
-    TITANIC = true
-    TITANICSLOT = slot
-  else
-    TITANIC = false
-  end
-end
-
-function GetCutlass()
-  local slot = GetItem(ATTACKITEMS[3])
-  if (slot ~= nil) then
-    CUTLASS = true
-    CUTLASSSLOT = slot
-  else
-    CUTLASS = false
-  end
-end
-
-function GetYoumu()
-  local slot = GetItem(ATTACKITEMS[4])
-  if (slot ~= nil) then
-    YOUMU = true
-    YOUMUSLOT = slot
-  else
-    YOUMU = false
-  end
-end
-
-function GetGunblade()
-  local slot = GetItem(ATTACKITEMS[5])
-  if (slot ~= nil) then
-    GUNBLADE = true
-    GUNBLADESLOT = slot
-  else
-    GUNBLADE = false
-  end
-end
-
-function GetBOTRK()
-  local slot = GetItem(ATTACKITEMS[6])
-  if (slot ~= nil) then
-    BOTRK = true
-    BOTRKSLOT = slot
-  else
-    BOTRK = false
-  end
-end
-
-function GetQSS()
-  local slot = GetItem(ANTICCITEMS[1])
-  if (slot ~= nil) then
-    QSS = true
-    QSSSLOT = slot
-  else
-    QSS = false
-  end
-end
-
-function GetDervish()
-  local slot = GetItem(ANTICCITEMS[2])
-  if (slot ~= nil) then
-    DERVISH = true
-    DERVISHSLOT = slot
-  else
-    DERVISH = false
-  end
-end
-
---[[Cast Items]]--
-
-function CastTiamat()
-  if TIAMAT then
-    if (CanCast(TIAMATSLOT)) then
-      CastSpell(TIAMATSLOT)
-    end
-  end
-end
-
-function CastYoumu()
-  if YOUMU then
-    if (CanCast(YOUMUSLOT)) then
-      CastSpell(YOUMUSLOT)
-    end
-  end
-end
-
-function CastBOTRK(target)
-  if BOTRK then
-    if (CanCast(BOTRKSLOT)) then
-      CastSpell(BOTRKSLOT, target)
-    end
-  end
-end
-
-function CastTITANIC()
-  if TITANIC then
-    if (CanCast(TITANICSLOT)) then
-      CastSpell(TITANICSLOT)
-    end
-  end
-end
-
-function CastCutlass(target)
-  if CUTLASS then
-    if (CanCast(CUTLASSSLOT)) then
-      CastSpell(CUTLASSSLOT, target)
-    end
-  end
-end
-
-function CastGunblade(target)
-  if GUNBLADE then
-    if (CanCast(GUNBLADESLOT)) then
-      CastSpell(GUNBLADESLOT, target)
-    end
-  end
-end
-
-function CastQSS()
-  if QSS then
-    if CanCast(QSSSLOT) then
-      CastSpell(QSSSLOT)
-    end
-  end
-end
-
-function CastDervish()
-  if DERVISH then
-    if CanCast(DERVISHSLOT) then
-      CastSpell(DERVISHSLOT)
-    end
-  end
-end
-
---[[Get Buff(Add)]]--
-
-function Buff_Add(unit, target, buff)
-  for j = 1, #DANGERSPELL do
-    if target then
-      if target.isMe and buff.name == DANGERSPELL[j] then
-        UNDERCC = true
-      end
-    end
-  end
-  for i=1, 5 do
-    if (buff.name == POT[i] and unit.isMe) then
-      REGENTIME = true
-    end
-  end
-end
-
---[[Get Buff(Rem)]]--
-
-function Buff_Rem(unit, buff)
-  for j = 1, #DANGERSPELL do
-    if unit.isMe and buff.name == DANGERSPELL[j] then
-      UNDERCC = false
-    end
-  end
-  for i=1, 5 do
-    if (buff.name == POT[i] and unit.isMe) then
-      REGENTIME = false
-    end
-  end
-end
-
---[[Auto Potion]]--
-
-function AutoPotion()
-  for i=1, 5 do
-    local pot = GetItem(POT[i])
-    if (pot ~= nil) then
-      if (((myHero.health*100)/myHero.maxHealth) <= Menu.Auto.autoPOTHealth and not REGENTIME) then
-        CastSpell(pot)
-      end
-    end
-  end
-end
-
---[[Find Slot]]--
-
-function FindSlotByName(name)
-  if name ~= nil then
-    for i=0, 12 do
-      if string.lower(myHero:GetSpellData(i).name) == string.lower(name) then
-        return i
-      end
-    end
-  end  
-  return nil
-end
-
---[[Get Item]]--
-
-function GetItem(name)
-  local slot = FindSlotByName(name)
-  return slot 
-end
-
 --[[Combo]]--
 
 function JarvanCombo()
+  if HMenu.Combo.Burst then
+    BurstCombo()
+  end
+
 	if HMenu.Combo.ComboEQ then
 		ComboEQ()
 	end
@@ -567,8 +336,10 @@ end
 function BurstCombo()
   if not Eready and not Qready and not Wready and not Rready then return end
   if ValidTarget(ts.target, 830) then
-    if TITANIC ~= nil then CastTITANIC
-      elseif TIAMAT ~= nil then CastTiamat
+    CastTITANIC()
+    CastTiamat()
+    CastYoumu()
+    CastBOTRK()
     CastE(ts.target)
     DelayAction(function() CastQ(ts.target) end, 0.2)
     DelayAction(function() CastR(ts.target) end, 0.4)
@@ -595,7 +366,6 @@ function ComboQ()
 		CastQ(ts.target)
 		end
 	end
-end
 
 --[[ComboE]]--
 
@@ -604,8 +374,7 @@ function ComboE()
 	if ValidTarget(ts.target, 830) then
 		CastE(ts.target)
 		end
-	end
-end
+		end
 
 --[[ComboW]]--
 
@@ -657,7 +426,6 @@ function EQSteal()
 		end
 	end
 end
-end
 
 --[[KillStealQ]]--
 
@@ -669,7 +437,6 @@ function QSteal()
 		end
 	end
 end
-end
 
 --[[KillStealE]]--
 
@@ -680,7 +447,6 @@ function ESteal()
 		CastE(ts.target)
 		end
 	end
-end
 end
 
 --[[KillStealR]]--
@@ -723,7 +489,6 @@ function HarassEQ()
 		DelayAction(function() CastQ(ts.target) end, 0.2)
 		end
 	end
-end
 
 --[[HarassQ]]--
 
@@ -732,7 +497,6 @@ function HarassQ()
 	if ValidTarget(ts.target, 770) then
 		CastQ(ts.target)
 		end
-	end
 end
 
 --[[HarassE]]--
@@ -743,7 +507,6 @@ function HarassE()
 		CastE(ts.target)
 		end
 	end
-end
 
 --[[HarassW]]--
 
@@ -785,7 +548,6 @@ function LCLREQ()
 		end
 	end
 end
-end
 
 --[[LaneClearQ]]--
 
@@ -796,7 +558,6 @@ function LCLRQ()
 			CasrQ(minions)
 		end
 	end
-end
 end
 
 --[[LaneClearE]]--
@@ -816,7 +577,7 @@ function LCLRW()
 	if not Wready then return end
 	for _, minions in pairs(enemyMinions.objects) do
 		if ValidTarget(minions, 525) then
-			if GetDistanceSqr(minions) <= 525 * 525 then
+			if GetDlina(myHero, minions) <= 525 then
 				CastSpell(_W)
 			end
 		end
@@ -854,7 +615,6 @@ function JCLREQ()
 		end
 	end
 end
-end
 
 --[[JungleClearQ]]--
 
@@ -865,7 +625,6 @@ function JCLRQ()
 			CastQ(jminions)
 		end
 	end
-end
 end
 
 --[[JungleClearE]]--
@@ -885,7 +644,7 @@ function JCLRW()
 	if not Wready then return end
 	for _, jminions in pairs(jungleMinions.objects) do
 		if ValidTarget(jminions, 525) then
-			if GetDistanceSqr(jminions) <= 525 * 525 then
+			if GetDlina(myHero, jminions) <= 525 then
 				CastSpell(_W)
 			end
 		end
@@ -1003,7 +762,7 @@ end
 --[[CastQ]]--
 
 function CastQ(unit)
-  if unit == nil then return end
+  if unit == nil and Qready then return end
   if VP ~= nil then
     local CastPosition, HitChance = VP:GetLineCastPosition(unit, VARS.Q.DELAY, VARS.Q.WIDTH, VARS.Q.RANGE, VARS.Q.SPEED, myHero, false)
     if HitChance >= HMenu.Prediction.QVPHC then
@@ -1016,7 +775,7 @@ function CastQ(unit)
       CastSpell(_Q, hitPos.x, hitPos.z)
     end
   end
-  if FHPred and Menu.Prediction.activePred == 3 then
+  if FHPred and HMenu.Prediction.activePred == 3 then
     local CastPosition, hc, info = FHPrediction.GetPrediction("Q", unit)
     if hc > 0 and CastPosition ~= nil then
       CastSpell(_Q, CastPosition.x, CastPosition.z)
@@ -1033,7 +792,7 @@ end
 --[[CastE]]--
 
 function CastE(unit)
-  if unit == nil then return end
+  if unit == nil and Eready then return end
   if VP ~= nil then
     local CastPosition, HitChance = VP:GetLineCastPosition(unit, VARS.E.DELAY, VARS.E.WIDTH, VARS.E.RANGE, VARS.E.SPEED, myHero, true)
     if HitChance >= HMenu.Prediction.EVPHC then
@@ -1063,7 +822,7 @@ end
 --[[CastW]]--
 
 function CastW()
-  if ValidTarget(ts.target, 525) then
+  if Wready and ValidTarget(ts.target, 525) then
     CastSpell(_W)
   end
 end
@@ -1082,6 +841,254 @@ end
 function GetDlina(a, b)
   local Dlina = math.sqrt((b.x-a.x)*(b.x-a.x) + (b.z-a.z)*(b.z-a.z))
   return Dlina
+end
+
+--[[SpellReady]]--
+
+function SpellReady(spell)
+  return myHero:CanUseSpell(spell) == READY
+end
+
+--[[FindItems]]--
+
+function FindItems()
+  if (HMenu.Item.AttackItem.UseTiamat) then
+    GetTiamat()
+  end
+  if (HMenu.Item.AttackItem.UseTitanic) then
+    GetTitanic()
+  end
+  if (HMenu.Item.AttackItem.UseBOTRK) then
+    GetBOTRK()
+  end
+  if (HMenu.Item.AttackItem.UseCutlass) then
+    GetCutlass()
+  end
+  if (HMenu.Item.AttackItem.UseYoumu) then
+    GetYoumu()
+  end
+  if (HMenu.Item.AttackItem.UseGunblade) then
+    GetGunblade()
+  end
+  if (HMenu.Item.DefItem.UseQSS) then
+    GetQSS()
+  end
+  if (HMenu.Item.DefItem.UseDervish) then
+    GetDervish()
+  end
+end
+
+--[[Get Items]]--
+
+function GetTiamat()
+  local slot = GetItem(ATTACKITEMS[1])
+  if (slot ~= nil) then
+    TIAMAT = true
+    TIAMATSLOT = slot
+  else
+    TIAMAT = false
+  end
+end
+
+function GetTitanic()
+  local slot = GetItem(ATTACKITEMS[2])
+  if (slot ~= nil) then
+    TITANIC = true
+    TITANICSLOT = slot
+  else
+    TITANIC = false
+  end
+end
+
+function GetCutlass()
+  local slot = GetItem(ATTACKITEMS[3])
+  if (slot ~= nil) then
+    CUTLASS = true
+    CUTLASSSLOT = slot
+  else
+    CUTLASS = false
+  end
+end
+
+function GetYoumu()
+  local slot = GetItem(ATTACKITEMS[4])
+  if (slot ~= nil) then
+    YOUMU = true
+    YOUMUSLOT = slot
+  else
+    YOUMU = false
+  end
+end
+
+function GetGunblade()
+  local slot = GetItem(ATTACKITEMS[5])
+  if (slot ~= nil) then
+    GUNBLADE = true
+    GUNBLADESLOT = slot
+  else
+    GUNBLADE = false
+  end
+end
+
+function GetBOTRK()
+  local slot = GetItem(ATTACKITEMS[6])
+  if (slot ~= nil) then
+    BOTRK = true
+    BOTRKSLOT = slot
+  else
+    BOTRK = false
+  end
+end
+
+function GetQSS()
+  local slot = GetItem(ANTICCITEMS[1])
+  if (slot ~= nil) then
+    QSS = true
+    QSSSLOT = slot
+  else
+    QSS = false
+  end
+end
+
+function GetDervish()
+  local slot = GetItem(ANTICCITEMS[2])
+  if (slot ~= nil) then
+    DERVISH = true
+    DERVISHSLOT = slot
+  else
+    DERVISH = false
+  end
+end
+
+--[[Cast Items]]--
+
+function CastTiamat()
+  if TIAMAT then
+    if (SpellReady(TIAMATSLOT)) then
+      CastSpell(TIAMATSLOT)
+    end
+  end
+end
+
+function CastYoumu()
+  if YOUMU then
+    if (SpellReady(YOUMUSLOT)) then
+      CastSpell(YOUMUSLOT)
+    end
+  end
+end
+
+function CastBOTRK(target)
+  if BOTRK then
+    if (SpellReady(BOTRKSLOT)) then
+      CastSpell(BOTRKSLOT, target)
+    end
+  end
+end
+
+function CastTITANIC()
+  if TITANIC then
+    if (SpellReady(TITANICSLOT)) then
+      CastSpell(TITANICSLOT)
+    end
+  end
+end
+
+function CastCutlass(target)
+  if CUTLASS then
+    if (SpellReady(CUTLASSSLOT)) then
+      CastSpell(CUTLASSSLOT, target)
+    end
+  end
+end
+
+function CastGunblade(target)
+  if GUNBLADE then
+    if (SpellReady(GUNBLADESLOT)) then
+      CastSpell(GUNBLADESLOT, target)
+    end
+  end
+end
+
+function CastQSS()
+  if QSS then
+    if SpellReady(QSSSLOT) then
+      CastSpell(QSSSLOT)
+    end
+  end
+end
+
+function CastDervish()
+  if DERVISH then
+    if SpellReady(DERVISHSLOT) then
+      CastSpell(DERVISHSLOT)
+    end
+  end
+end
+
+--[[Get Buff(Add)]]--
+
+function Buff_Add(unit, target, buff)
+  for j = 1, #DANGERSPELL do
+    if target then
+      if target.isMe and buff.name == DANGERSPELL[j] then
+        UNDERCC = true
+      end
+    end
+  end
+  for i=1, 5 do
+    if (buff.name == POT[i] and unit.isMe) then
+      REGENTIME = true
+    end
+  end
+end
+
+--[[Get Buff(Rem)]]--
+
+function Buff_Rem(unit, buff)
+  for j = 1, #DANGERSPELL do
+    if unit.isMe and buff.name == DANGERSPELL[j] then
+      UNDERCC = false
+    end
+  end
+  for i=1, 5 do
+    if (buff.name == POT[i] and unit.isMe) then
+      REGENTIME = false
+    end
+  end
+end
+
+--[[Auto Potion]]--
+
+function AutoPotion()
+  for i=1, 5 do
+    local pot = GetItem(POT[i])
+    if (pot ~= nil) then
+      if (((myHero.health*100)/myHero.maxHealth) <= HMenu.Auto.autoPOTHealth and not REGENTIME) then
+        CastSpell(pot)
+      end
+    end
+  end
+end
+
+--[[Find Slot]]--
+
+function FindSlotByName(name)
+  if name ~= nil then
+    for i=0, 12 do
+      if string.lower(myHero:GetSpellData(i).name) == string.lower(name) then
+        return i
+      end
+    end
+  end  
+  return nil
+end
+
+--[[Get Item]]--
+
+function GetItem(name)
+  local slot = FindSlotByName(name)
+  return slot 
 end
 
 --[[End]]--
