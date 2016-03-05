@@ -58,7 +58,17 @@ function OnLoad()
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
 	ultActive = false
 	AddApplyBuffCallback(Buff_Add)
-  AddRemoveBuffCallback(Buff_Rem)
+ 	AddRemoveBuffCallback(Buff_Rem)
+    if _G.Reborn_Loaded ~= nil then
+    SAC = true 
+  elseif _G.MMA_IsLoaded then
+    MMA = true
+  elseif _G.NebelwolfisOrbWalkerInit then
+    WOLFY = true
+  elseif _Pewalk then
+    PEW = true            
+  end
+   igniteslot = FindSlotByName("SummonerDot")
 
 --[[Menu]]--
 
@@ -100,6 +110,7 @@ function OnLoad()
 		Menu.KillSteal:addParam("QSteal", "Use Q", SCRIPT_PARAM_ONOFF, true)
 		Menu.KillSteal:addParam("ESteal", "Use E", SCRIPT_PARAM_ONOFF, true)
 		Menu.KillSteal:addParam("RSteal", "Use R", SCRIPT_PARAM_ONOFF, false)
+		Menu.Killsteal:addParam("UseIgnite", "Ignite KillSteal", SCRIPT_PARAM_ONOFF, true)
 	
 	
 --[[LaneClear]]--
@@ -292,6 +303,12 @@ function OnTick()
 	jungleMinions = minionManager(MINION_JUNGLE, 1100, myHero, MINION_SORT_MAXHEALTH_DEC)
 	if myHero.dead then return end
 	spell_check()
+	GetSmiteSlot()
+	if SMITE then
+    if Menu.Smite.UseSmite then
+      AutoSmite()
+    end
+    end
 	
 	if Menu.Combo.ComboMode then
 		JarvanCombo()
@@ -399,6 +416,24 @@ function BurstCombo()
     if BOTRK then CastBOTRK() end
     CastE(ts.target)
     DelayAction(function() CastQ(ts.target) end, 0.2)
+    if SAC then
+        _G.AutoCarry.Orbwalker:ResetAttackTimer()
+    end
+    if WOLFY then
+       	_G.NebelwolfisOrbWalker:ResetAA()
+    end
+    if PEW then
+       	_Pewalk.AllowAttack(false)
+        _Pewalk.AllowMove(false)
+        myHero:Attack(spell.target)
+        DelayAction(function()
+        _Pewalk.AllowAttack(true)
+        _Pewalk.AllowMove(true)
+        end, 0.2)
+    end
+    if MMA then
+        _G.MMA_ResetAutoAttack()
+    end
     DelayAction(function() CastR(ts.target) end, 0.4)
     if GetDlina(myHero, ts.target) <= 525 then
       CastW()
@@ -476,7 +511,18 @@ end
 --[[KillSteal]]--
 
 function KSteal()
-	if Menu.KillSteal.EQSteal then
+	for i,enemy in pairs(GetEnemyHeroes()) do
+    if not enemy.dead and enemy.visible then
+    if ValidTarget(enemy, 1000) then
+	local igniteDmg = 50 + 20*myHero.level
+
+		if GetDlina(myHero, enemy) <= 600 then
+          if igniteslot ~= nil and Menu.Killsteal.UseIgnite then
+            if igniteDmg >= enemy.health and SpellReady(igniteslot) and not enemy.dead then
+              CastSpell(igniteslot, enemy)
+            end
+          end	
+    if Menu.KillSteal.EQSteal then
 		EQSteal()
 	end
 
