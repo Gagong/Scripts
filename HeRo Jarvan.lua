@@ -15,13 +15,15 @@ if myHero.charName ~= "JarvanIV" then return end
 local version = "1.0"
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
-local autoupdate = true
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local VP, DP, KP = nil
 local ts
 local Menu
 local Qready, Wready, Eready, Rready = false, false, false, false
+local KSmiteDmg = function() return myHero.level * 8 + 20 end
+local SMITE = false
+local SMITELIST = {"SummonerSmite", "s5_SummonerSmitePlayerGanker", "s5_SummonerSmiteDuel"}
 local REGENTIME = false
 local POT = {"ItemCrystalFlask", "REGENTIMEerationPotion", "ItemMiniREGENTIMEPotion", "ItemCrystalFlaskJungle", "ItemDarkCrystalFlask"}
 local ATTACKITEMS = {"ItemTiamatCleave", "ItemTitanicHydraCleave", "BilgewaterCutlass", "YoumusBlade", "HextechGunblade", "ItemSwordOfFeastAndFamine"}
@@ -163,6 +165,20 @@ function OnLoad()
 		Menu.Others:addParam("ChangeShow", "Change PermaShow Color(Green)", SCRIPT_PARAM_ONOFF, true)
 		Menu.Others:addParam("info", "Reload this(2xF9)", SCRIPT_PARAM_INFO, "")
 	
+	if SMITE then
+	Menu:addSubMenu("[HeRo Jarvan - Smite Usage]", "Smite")
+  		Menu.Smite:addParam("UseSmite", "Enable Smite Usage", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("N"))
+		Menu.Smite:addParam("UseSmiteCombo", "Use Smite in Combo", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("M"))
+		Menu.Smite:addParam("StealSmite", "Use Smite on KillSteal", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("K"))
+		Menu.Smite:addParam("SRUBaron", "Smite Baron", SCRIPT_PARAM_ONOFF, true)
+		Menu.Smite:addParam("SRUDragon", "Smite Dragon", SCRIPT_PARAM_ONOFF, true)
+		Menu.Smite:addParam("SRURed", "Smite Red Buff", SCRIPT_PARAM_ONOFF, true)
+		Menu.Smite:addParam("SRUBlue", "Smite Blue Buff", SCRIPT_PARAM_ONOFF, true)
+		Menu.Smite:addParam("SRURazorbeak", "Smite Wraith", SCRIPT_PARAM_ONOFF, false)
+		Menu.Smite:addParam("SRUMurkwolf", "Smite Wolf", SCRIPT_PARAM_ONOFF, false)
+		Menu.Smite:addParam("SRUKrug", "Smite Golem", SCRIPT_PARAM_ONOFF, false)
+		Menu.Smite:addParam("SRUGromp", "Smite Gromp", SCRIPT_PARAM_ONOFF, false)
+	end
 	
 --[[Drawings]]--
 	
@@ -221,9 +237,9 @@ function OnLoad()
 	Menu.permaShowEdit(IDPerma, "lText", "[Combo Mode]")
 	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-  IDPerma = Menu.Combo:permaShow("Burst")
-  Menu.permaShowEdit(IDPerma, "lText", "[Burst Mode]")
-  Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+  	IDPerma = Menu.Combo:permaShow("Burst")
+  	Menu.permaShowEdit(IDPerma, "lText", "[Burst Mode]")
+  	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
 	IDPerma = Menu.Harass:permaShow("HS")
 	Menu.permaShowEdit(IDPerma, "lText", "[Harass]")
@@ -279,6 +295,9 @@ function OnTick()
 	
 	if Menu.Combo.ComboMode then
 		JarvanCombo()
+		if SMITE and Menu.Smite.UseSmiteCombo and GetDlina(myHero, ts.target) <= 560  then
+            CastSmite(ts.target)
+        end
 	end
 	
 	if Menu.Combo.Burst then
@@ -287,6 +306,9 @@ function OnTick()
 	
 	if Menu.KillSteal.Steal then
 		KSteal()
+		if SMITE and Menu.Smite.StealSmite and GetDlina(myHero, ts.target) <= 560 and ts.target.health <= KSmiteDmg then
+            CastSmite(ts.target)
+        end
 	end
 
 	if Menu.Harass.HS then
@@ -1162,6 +1184,53 @@ end
 function GetItem(name)
   local slot = FindSlotByName(name)
   return slot 
+end
+
+--[[GetSmiteSlot]]--
+
+function GetSmiteSlot()
+  for i=1, 3 do
+    if FindSlotByName(SMITELIST[i]) ~= nil then
+      SMITESLOT = FindSlotByName(SMITELIST[i])
+      SMITE = true
+    end
+  end
+end
+
+--[[AutoSmite]]--
+
+function AutoSmite()
+  local SmiteDmg = GetSmiteDamage()
+  for _, minion in pairs(minionManager(MINION_JUNGLE, 500, myHero, MINION_SORT_MAXHEALTH_DEC).objects) do
+    if not minion.dead and minion.visible and ValidTarget(minion, 560) then
+      if Menu.Smite[minion.charName:gsub("_", "")] then
+        if SpellReady(SMITESLOT) and GetDlina(myHero, minion) <= 560 and SmiteDmg >= minion.health then
+          CastSpell(SMITESLOT, minion)
+        end
+      end
+    end
+  end
+end
+
+--[[GetSmiteDamage]]--
+
+function GetSmiteDamage(unit)
+  if SMITE then
+    local SmiteDamage
+    if myHero.level <= 4 then
+      SmiteDamage = 370 + (myHero.level*20)
+    end
+    if myHero.level > 4 and myHero.level <= 9 then
+      SmiteDamage = 330 + (myHero.level*30)
+    end
+    if myHero.level > 9 and myHero.level <= 14 then
+      SmiteDamage = 240 + (myHero.level*40)
+    end
+    if myHero.level > 14 then
+      SmiteDamage = 100 + (myHero.level*50)
+    end
+    return SmiteDamage
+  end
 end
 
 --[[End]]--
