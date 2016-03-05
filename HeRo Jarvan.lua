@@ -17,11 +17,35 @@ local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local VP = nil
+local VP, DP, KP = nil
 local ts
 local HMenu
 local Qready, Wready, Eready, Rready = false, false, false, false
+local REGENTIME = false
+local POT = {"ItemCrystalFlask", "REGENTIMEerationPotion", "ItemMiniREGENTIMEPotion", "ItemCrystalFlaskJungle", "ItemDarkCrystalFlask"}
+local ATTACKITEMS = {"ItemTiamatCleave", "ItemTitanicHydraCleave", "BilgewaterCutlass", "YoumusBlade", "HextechGunblade", "ItemSwordOfFeastAndFamine"}
+local ANTICCITEMS = {"QuicksilverSash", "ItemDervishBlade"}
+local TIAMAT, TITANIC, CUTLASS, YOUMU, GUNBLADE, BOTRK, QSS, DERVISH = false
+local TIAMATSLOT, TITANICSLOT, CUTLASSSLOT, YOUMUSLOT, GUNBLADESLOT, BOTRKSLOT, QSSSLOT, DERVISHSLOT, SMITESLOT
+local UNDERCC = false
+local DANGERSPELL = {"MordekaiserChildrenOfTheGrave", "SkarnerImpale", "LuxLightBindingMis", "Wither", "SonaCrescendo", "DarkBindingMissile", "CurseoftheSadMummy",
+"EnchantedCrystalArrow", "BlindingDart", "LuluWTwo", "AhriSeduce", "CassiopeiaPetrifyingGaze", "Terrify", "HowlingGale", "JaxCounterStrike", "KennenShurikenStorm",
+"LeblancSoulShackle", "LeonaSolarFlare", "LissandraR", "AlZaharNetherGrasp", "MonkeyKingDecoy", "NamiQ", "OrianaDetonateCommand", "Pantheon_LeapBash", "PuncturingTaunt",
+"SejuaniGlacialPrisonStart", "SwainShadowGrasp", "Imbue", "ThreshQ", "UrgotSwap2", "VarusR", "VeigarEventHorizon", "ViR", "InfiniteDuress", "ZyraGraspingRoots",
+"paranoiamisschance", "puncturingtauntarmordebuff", "surpression", "zedulttargetmark", "enchantedcrystalarrow", "nasusw"}
 require 'VPrediction'
+local VARS = {
+  AA = {RANGE = 250},
+  Q = {RANGE = 700, WIDTH = 70, DELAY = 0.5, SPEED = math.huge},
+  W = {RANGE = 525, WIDTH = 525, DELAY = 0.5, SPEED = nil},
+  E = {RANGE = 830, WIDTH = 75, DELAY = 0.5, SPEED = math.huge},
+  R = {RANGE = 650, WIDTH = 325, DELAY = 0.5, SPEED = nil}
+}
+
+JQ = {range = VARS.Q.RANGE, speed = VARS.Q.SPEED, delay = VARS.Q.DELAY, radius = VARS.Q.WIDTH, type = "DelayLine", width = VARS.Q.WIDTH}
+JW = {range = VARS.W.RANGE, speed = VARS.W.SPEED, delay = VARS.W.DELAY, radius = VARS.W.WIDTH, type = "DelayLine", width = VARS.W.WIDTH}
+JE = {range = VARS.E.RANGE, speed = VARS.E.SPEED, delay = VARS.E.DELAY, radius = VARS.E.WIDTH, type = "DelayLine", width = VARS.E.WIDTH, collision = true}
+JR = {range = VARS.R.RANGE, speed = VARS.R.SPEED, delay = VARS.R.DELAY, radius = VARS.R.WIDTH, type = "DelayLine", width = VARS.W.WIDTH}
 
 --[[OnLoad]]--
 
@@ -31,8 +55,11 @@ function OnLoad()
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
 	ultActive = false
 	Variables()
-	
-	VP = VPrediction()
+	AddApplyBuffCallback(Buff_Add)
+  	AddRemoveBuffCallback(Buff_Rem)
+
+--[[Menu]]--
+
 	HMenu = scriptConfig("Hero Jarvan", "Hero Jarvan")
 	
 --[[Combo]]--
@@ -45,7 +72,6 @@ function OnLoad()
 		HMenu.Combo:addParam("ComboW", "Use W in Combo", SCRIPT_PARAM_ONOFF, true)
 		HMenu.Combo:addParam("ComboE", "Use E in Combo", SCRIPT_PARAM_ONOFF, true)
 		HMenu.Combo:addParam("ComboR", "Use R in Combo", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Combo:addParam("UseItemC", "Use Items in Combo", SCRIPT_PARAM_ONOFF, true)
 	
 --[[KillSteal]]--
 	
@@ -64,6 +90,7 @@ function OnLoad()
 		HMenu.Harass:addParam("HarassQ", "Use Q in Harass", SCRIPT_PARAM_ONOFF, true)
 		HMenu.Harass:addParam("HarassE", "Use E in Harass", SCRIPT_PARAM_ONOFF, true)
 		HMenu.Harass:addParam("HarassW", "Use W in Harass", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Harass:addParam("HarassMana", "% Mana for Harass", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 	
 --[[LaneClear]]--
 	
@@ -73,7 +100,7 @@ function OnLoad()
 		HMenu.Clear:addParam("LaneClearQ", "Use Q in LaneClear", SCRIPT_PARAM_ONOFF, true)
 		HMenu.Clear:addParam("LaneClearE", "Use E in LaneClear", SCRIPT_PARAM_ONOFF, true)
 		HMenu.Clear:addParam("LaneClearW", "Use W in LaneClear", SCRIPT_PARAM_ONOFF, true)
-		HMenu.Clear:addParam("UseItemL", "Use Items in LaneClear", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Clear:addParam("ClearMana", "% Mana for LaneClear", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 	
 --[[JungleClear]]--
 	
@@ -83,7 +110,32 @@ function OnLoad()
 		HMenu.JClear:addParam("JungleClearQ", "Use Q in JungleClear", SCRIPT_PARAM_ONOFF, true)
 		HMenu.JClear:addParam("JungleClearE", "Use E in JungleClear", SCRIPT_PARAM_ONOFF, true)
 		HMenu.JClear:addParam("JungleClearW", "Use W in JungleClear", SCRIPT_PARAM_ONOFF, true)
-		HMenu.JClear:addParam("UseItemJ", "Use Items in JungleClear", SCRIPT_PARAM_ONOFF, true)
+		HMenu.JClear:addParam("JClearMana", "% Mana for JungleClear", SCRIPT_PARAM_SLICE, 75, 0, 100, 0)
+
+--[[ItemUsage]]--
+
+	HMenu:addSubMenu("[Item Usage]", "Item")
+		HMenu.Item:addParam("UseItem", "Enable Item Usage", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Item:addSubMenu("[Offensive Items]", "AttackItem")
+		HMenu.Item.AttackItem:addParam("UseTiamat", "Use Tiamat/Hydra", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Item.AttackItem:addParam("UseTitanic", "Use Titanic Hydra", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Item.AttackItem:addParam("UseCutlass", "Use Bilgewater Cutlass", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Item.AttackItem:addParam("UseBOTRK", "Use BOTRK", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Item.AttackItem:addParam("UseYoumu", "Use Youmus Blade", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Item.AttackItem:addParam("UseGunblade", "Use Hextech Gunblade", SCRIPT_PARAM_ONOFF, true)
+
+--[[Anti CC]]--
+
+	HMenu.Item:addSubMenu("[HeRo Jarvan - Anti CC]", "DefItem")
+		HMenu.Item.DefItem:addParam("EnableACC", "Enable AntiCC", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Item.DefItem:addParam("UseQSS", "Use Quicksilver Sash", SCRIPT_PARAM_ONOFF, true)
+		HMenu.Item.DefItem:addParam("UseDervish", "Use Dervish Blade", SCRIPT_PARAM_ONOFF, true)
+
+--[[Auto]]--
+
+	Menu:addSubMenu("[HeRo Jarvan - Auto]", "Auto")
+		Menu.Auto:addParam("autoPOT", "Auto Potions Usage", SCRIPT_PARAM_ONOFF, true)
+ 		Menu.Auto:addParam("autoPOTHealth", "% Health for autoPOT", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 	
 --[[Escape]]--
 	
@@ -112,7 +164,47 @@ function OnLoad()
 	HMenu:addSubMenu("[HeRo Jarvan - Target Selector]", "targetSelector")
 		HMenu.targetSelector:addTS(ts)
 		ts.name = "Focus"
-	
+
+--[[Predictions]]--
+
+	HMenu:addSubMenu("[Prediction]", "Prediction")
+  		HMenu.Prediction:addParam("activePred", "Prediction (require reload)", SCRIPT_PARAM_LIST, 1, {"VPred", "DPred", "FHPred", "KPred"})
+  		if HMenu.Prediction.activePred == 1 then
+    		if FileExist(LIB_PATH .. "VPrediction.lua") then
+      			require "VPrediction"
+      			VP = VPrediction()
+      			HMenu.Prediction:addParam("QVPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
+      			HMenu.Prediction:addParam("EVPHC", "E HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
+      			PrintChat(<font color='#F0F8FF'><b>"VPrediction Found!"</b></font>)
+    		end
+  		elseif HMenu.Prediction.activePred == 2 then
+    		if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."DivinePred.luac") then
+      			require "DivinePred"
+      			DP = DivinePred()
+      			HMenu.Prediction:addParam("QHC", "Q HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
+      			HMenu.Prediction:addParam("EHC", "E HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
+      			PrintChat(<font color='#F0F8FF'><b>"Divine Prediction Found!"</b></font>)
+    		end
+  		elseif HMenu.Prediction.activePred == 3 then
+    		if FHPrediction.GetVersion() ~= nil then
+      			if FHPrediction.GetVersion() >= 0.24 then
+        			FHPred = true
+        			PrintChat(<font color='#F0F8FF'><b>"FHPrediction Found!"</b></font>)
+        			HMenu.Prediction:addParam("infoFH", "FHPrediction found!", SCRIPT_PARAM_INFO, "")
+      			end
+    		else
+      			PrintChat(<font color='#F0F8FF'><b>"FHPrediction don't Loaded!"</b></font>)
+    		end
+  		elseif GMenu.Prediction.activePred == 4 then
+    		if FileExist(LIB_PATH.."KPrediction.lua") then
+      			require "KPrediction"
+      			KP = KPrediction()
+      			HMenu.Prediction:addParam("QKPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
+      			HMenu.Prediction:addParam("EKPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
+      			PrintChat(<font color='#F0F8FF'><b>"KPrediction Found!"</b></font>)
+    	end  
+  end
+
 --[[PermaShow]]--
 	
 	IDPerma = HMenu.Combo:permaShow("ComboMode")
@@ -152,7 +244,6 @@ function OnTick()
 	
 	if HMenu.Combo.ComboMode then
 		JarvanCombo()
-		CastItems()
 	end
 
 	if HMenu.KillSteal.Steal then
@@ -160,23 +251,24 @@ function OnTick()
 	end
 
 	if HMenu.Harass.HS then
+		if ((myHero.mana*100)/myHero.maxMana) <= HMenu.Harass.HarassMana then return end
 		Harass()
 	end
 
 	if HMenu.Clear.LaneClear then
+		if ((myHero.mana*100)/myHero.maxMana) <= HMenu.Clear.ClearMana then return end
 		enemyMinions:update()
 		LCLR()
-		CastItemsFarm()
 	end
 
 	if HMenu.JClear.JungleClear then
+		if ((myHero.mana*100)/myHero.maxMana) <= HMenu.JClear.JClearMana then return end
 		jungleMinions:update()
 		JCLR()
-		CastItemsJFarm()
 	end
 	
 	if UltActive then
-		if ValidTarget(ts.target, 650) == 0 then
+		if CountEnemyHeroInRange(650) == 0 then
 			CastSpell(_R)
 		end
 	end
@@ -184,6 +276,266 @@ function OnTick()
 	if HMenu.Escape.EnableEscape then
 		EQEscape()
 	end
+
+	if HMenu.Auto.autoPOT and not REGENTIME then
+   		AutoPotion()
+  	end 
+
+  	if HMenu.Item.UseItem then
+    	FindItems()
+  	end
+
+  	if UNDERCC and HMenu.Item.UseItem and HMenu.Item.DefItem.EnableACC then
+    	if Menu.Item.DefItem.UseQSS and QSS then
+      		CastQSS()
+    	end
+    
+    if Menu.Item.DefItem.UseDervish and DERVISH then
+      CastDervish()
+    end
+  	end
+end
+
+--[[FindItems]]--
+
+function FindItems()
+  if (Menu.Item.AttackItem.UseTiamat) then
+    GetTiamat()
+  end
+  if (Menu.Item.AttackItem.UseTitanic) then
+    GetTitanic()
+  end
+  if (Menu.Item.AttackItem.UseBOTRK) then
+    GetBOTRK()
+  end
+  if (Menu.Item.AttackItem.UseCutlass) then
+    GetCutlass()
+  end
+  if (Menu.Item.AttackItem.UseYoumu) then
+    GetYoumu()
+  end
+  if (Menu.Item.AttackItem.UseGunblade) then
+    GetGunblade()
+  end
+  if (Menu.Item.DefItem.UseQSS) then
+    GetQSS()
+  end
+  if (Menu.Item.DefItem.UseDervish) then
+    GetDervish()
+  end
+end
+
+--[[Get Items]]--
+
+function GetTiamat()
+  local slot = GetItem(ATTACKITEMS[1])
+  if (slot ~= nil) then
+    TIAMAT = true
+    TIAMATSLOT = slot
+  else
+    TIAMAT = false
+  end
+end
+
+function GetTitanic()
+  local slot = GetItem(ATTACKITEMS[2])
+  if (slot ~= nil) then
+    TITANIC = true
+    TITANICSLOT = slot
+  else
+    TITANIC = false
+  end
+end
+
+function GetCutlass()
+  local slot = GetItem(ATTACKITEMS[3])
+  if (slot ~= nil) then
+    CUTLASS = true
+    CUTLASSSLOT = slot
+  else
+    CUTLASS = false
+  end
+end
+
+function GetYoumu()
+  local slot = GetItem(ATTACKITEMS[4])
+  if (slot ~= nil) then
+    YOUMU = true
+    YOUMUSLOT = slot
+  else
+    YOUMU = false
+  end
+end
+
+function GetGunblade()
+  local slot = GetItem(ATTACKITEMS[5])
+  if (slot ~= nil) then
+    GUNBLADE = true
+    GUNBLADESLOT = slot
+  else
+    GUNBLADE = false
+  end
+end
+
+function GetBOTRK()
+  local slot = GetItem(ATTACKITEMS[6])
+  if (slot ~= nil) then
+    BOTRK = true
+    BOTRKSLOT = slot
+  else
+    BOTRK = false
+  end
+end
+
+function GetQSS()
+  local slot = GetItem(ANTICCITEMS[1])
+  if (slot ~= nil) then
+    QSS = true
+    QSSSLOT = slot
+  else
+    QSS = false
+  end
+end
+
+function GetDervish()
+  local slot = GetItem(ANTICCITEMS[2])
+  if (slot ~= nil) then
+    DERVISH = true
+    DERVISHSLOT = slot
+  else
+    DERVISH = false
+  end
+end
+
+--[[Cast Items]]--
+
+function CastTiamat()
+  if TIAMAT then
+    if (CanCast(TIAMATSLOT)) then
+      CastSpell(TIAMATSLOT)
+    end
+  end
+end
+
+function CastYoumu()
+  if YOUMU then
+    if (CanCast(YOUMUSLOT)) then
+      CastSpell(YOUMUSLOT)
+    end
+  end
+end
+
+function CastBOTRK(target)
+  if BOTRK then
+    if (CanCast(BOTRKSLOT)) then
+      CastSpell(BOTRKSLOT, target)
+    end
+  end
+end
+
+function CastTITANIC()
+  if TITANIC then
+    if (CanCast(TITANICSLOT)) then
+      CastSpell(TITANICSLOT)
+    end
+  end
+end
+
+function CastCutlass(target)
+  if CUTLASS then
+    if (CanCast(CUTLASSSLOT)) then
+      CastSpell(CUTLASSSLOT, target)
+    end
+  end
+end
+
+function CastGunblade(target)
+  if GUNBLADE then
+    if (CanCast(GUNBLADESLOT)) then
+      CastSpell(GUNBLADESLOT, target)
+    end
+  end
+end
+
+function CastQSS()
+  if QSS then
+    if CanCast(QSSSLOT) then
+      CastSpell(QSSSLOT)
+    end
+  end
+end
+
+function CastDervish()
+  if DERVISH then
+    if CanCast(DERVISHSLOT) then
+      CastSpell(DERVISHSLOT)
+    end
+  end
+end
+
+--[[Get Buff(Add)]]--
+
+function Buff_Add(unit, target, buff)
+  for j = 1, #DANGERSPELL do
+    if target then
+      if target.isMe and buff.name == DANGERSPELL[j] then
+        UNDERCC = true
+      end
+    end
+  end
+  for i=1, 5 do
+    if (buff.name == POT[i] and unit.isMe) then
+      REGENTIME = true
+    end
+  end
+end
+
+--[[Get Buff(Rem)]]--
+
+function Buff_Rem(unit, buff)
+  for j = 1, #DANGERSPELL do
+    if unit.isMe and buff.name == DANGERSPELL[j] then
+      UNDERCC = false
+    end
+  end
+  for i=1, 5 do
+    if (buff.name == POT[i] and unit.isMe) then
+      REGENTIME = false
+    end
+  end
+end
+
+--[[Auto Potion]]--
+
+function AutoPotion()
+  for i=1, 5 do
+    local pot = GetItem(POT[i])
+    if (pot ~= nil) then
+      if (((myHero.health*100)/myHero.maxHealth) <= Menu.Auto.autoPOTHealth and not REGENTIME) then
+        CastSpell(pot)
+      end
+    end
+  end
+end
+
+--[[Find Slot]]--
+
+function FindSlotByName(name)
+  if name ~= nil then
+    for i=0, 12 do
+      if string.lower(myHero:GetSpellData(i).name) == string.lower(name) then
+        return i
+      end
+    end
+  end  
+  return nil
+end
+
+--[[Get Item]]--
+
+function GetItem(name)
+  local slot = FindSlotByName(name)
+  return slot 
 end
 
 --[[Combo]]--
@@ -212,14 +564,26 @@ end
 
 --[[ComboEQ]]--
 
+function BurstCombo()
+  if not Eready and not Qready and not Wready and not Rready then return end
+  if ValidTarget(ts.target, 830) then
+    if TITANIC ~= nil then CastTITANIC
+      elseif TIAMAT ~= nil then CastTiamat
+    CastE(ts.target)
+    DelayAction(function() CastQ(ts.target) end, 0.2)
+    DelayAction(function() CastR(ts.target) end, 0.4)
+    if GetDlina(myHero, ts.target) <= 525 then
+      CastW()
+    end
+  end
+end
+
+
 function ComboEQ()
 	if not Eready and not Qready then return end
-	if ValidTarget(ts.target, 770) then
-		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(ts.target, 0.5, 180, 870, 1000, myHero, false)
-		if HitChance >= 2 then
-			CastSpell(_E, CastPosition.x, CastPosition.z)
-			DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.35)
-		end
+	if ValidTarget(ts.target, 830) then
+		CastE(ts.target)
+		DelayAction(function() CastQ(ts.target) end, 0.2)
 	end
 end
 
@@ -228,9 +592,7 @@ end
 function ComboQ()
 	if HMenu.Combo.ComboSaveEQ or not Qready then return end
 	if ValidTarget(ts.target, 770) then
-		local CastPosition, HitChance, Position = VP:GetLineCastPosition(ts.target, 0.5, 180, 770, 1000, myHero, false)
-		if HitChance >= 2 then
-			CastSpell(_Q, CastPosition.x, CastPosition.z)
+		CastQ(ts.target)
 		end
 	end
 end
@@ -240,9 +602,7 @@ end
 function ComboE()
 	if HMenu.Combo.ComboSaveEQ or not Eready then return end
 	if ValidTarget(ts.target, 830) then
-		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(ts.target, 0.5, 70, 870, 1000, myHero, false)
-		if HitChance >= 2 then
-			CastSpell(_E, CastPosition.x, CastPosition.z)
+		CastE(ts.target)
 		end
 	end
 end
@@ -260,7 +620,6 @@ end
 
 function ComboR()
 if HMenu.Combo.ComboR and blCheck(ts.target) then
-	if not Rready then return end
 	if ValidTarget(ts.target, 650) then
 	CastSpell(_R, ts.target)
 	end
@@ -282,8 +641,8 @@ function KSteal()
 		ESteal()
 	end
 
-	if HMenu.KillSteal.ESteal then
-		ESteal()
+	if HMenu.KillSteal.RSteal then
+		RSteal()
 	end
 end
 
@@ -291,14 +650,13 @@ end
 
 function EQSteal()
 	if not Eready and not Qready then return end
-	if ValidTarget(ts.target, 770) then
+	if ValidTarget(ts.target, 830) then
 		if ts.target.health < getDmg("Q", ts.target, myHero) + getDmg("E", ts.target, myHero) then
-		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(ts.target, 0.5, 180, 870, 1000, myHero, false)
-		if HitChance >= 2 then
-			CastSpell(_E, CastPosition.x, CastPosition.z)
-			DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.35)
+		CastE(ts.target)
+		DelayAction(function() CastQ(ts.target) end, 0.2)
 		end
 	end
+end
 end
 
 --[[KillStealQ]]--
@@ -307,11 +665,10 @@ function QSteal()
 	if not Qready then return end
 	if ValidTarget(ts.target, 770) then
 		if ts.target.health < getDmg("Q", ts.target, myHero) then
-		local CastPosition, HitChance, Position = VP:GetLineCastPosition(ts.target, 0.5, 180, 770, 1000, myHero, false)
-		if HitChance >= 2 then
-			CastSpell(_Q, CastPosition.x, CastPosition.z)
+		CastQ(ts.target)
 		end
 	end
+end
 end
 
 --[[KillStealE]]--
@@ -320,17 +677,15 @@ function ESteal()
 	if not Eready then return end
 	if ValidTarget(ts.target, 830) then
 		if ts.target.health < getDmg("E", ts.target, myHero) then
-		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(ts.target, 0.5, 70, 870, 1000, myHero, false)
-		if HitChance >= 2 then
-			CastSpell(_E, CastPosition.x, CastPosition.z)
+		CastE(ts.target)
 		end
 	end
+end
 end
 
 --[[KillStealR]]--
 
 function RSteal()
-	if HMenu.Combo.ComboR and blCheck(ts.target) then
 		if not Rready then return end
 		if ValidTarget(ts.target, 650) then
 			if ts.target.health < getDmg("R", ts.target, myHero) then
@@ -338,7 +693,6 @@ function RSteal()
 		end
 	end
 end
-
 
 --[[Harass]]--
 
@@ -365,10 +719,8 @@ end
 function HarassEQ()
 	if not Eready and not Qready then return end
 	if ValidTarget(ts.target, 770) then
-		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(ts.target, 0.5, 180, 870, 1000, myHero, false)
-		if HitChance >= 2 then
-			CastSpell(_E, CastPosition.x, CastPosition.z)
-			DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.35)
+		CastE(ts.target)
+		DelayAction(function() CastQ(ts.target) end, 0.2)
 		end
 	end
 end
@@ -378,9 +730,7 @@ end
 function HarassQ()
 	if HMenu.Combo.ComboSaveEQ or not Qready then return end
 	if ValidTarget(ts.target, 770) then
-		local CastPosition, HitChance, Position = VP:GetLineCastPosition(ts.target, 0.5, 180, 770, 1000, myHero, false)
-		if HitChance >= 2 then
-			CastSpell(_Q, CastPosition.x, CastPosition.z)
+		CastQ(ts.target)
 		end
 	end
 end
@@ -390,9 +740,7 @@ end
 function HarassE()
 	if HMenu.Combo.ComboSaveEQ or not Eready then return end
 	if ValidTarget(ts.target, 830) then
-		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(ts.target, 0.5, 70, 870, 1000, myHero, false)
-		if HitChance >= 2 then
-			CastSpell(_E, CastPosition.x, CastPosition.z)
+		CastE(ts.target)
 		end
 	end
 end
@@ -431,11 +779,9 @@ end
 function LCLREQ()
 	if not Eready and not Qready then return end
 	for _, minions in pairs(enemyMinions.objects) do
-	local CastPosition, HitChance, Position = VP:GetCircularCastPosition(minions, 0.5, 180, 870, 1000, myHero, false)
-		if HitChance >= 2 then
-		if ValidTarget(minions, 770) then
-			CastSpell(_E, minions)
-			DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.35)
+		if ValidTarget(minions, 830) then
+			  CastE(minions)
+        DelayAction(function() CastQ(minions) end, 0.2)
 		end
 	end
 end
@@ -446,10 +792,8 @@ end
 function LCLRQ()
 	if HMenu.Combo.ComboSaveEQ or not Qready then return end
 	for _, minions in pairs(enemyMinions.objects) do
-	local CastPosition, HitChance, Position = VP:GetCircularCastPosition(minions, 0.5, 180, 870, 1000, myHero, false)
-		if HitChance >= 2 then
 		if ValidTarget(minions, 770) then
-			CastSpell(_Q, CastPosition.x, CastPosition.z)
+			CasrQ(minions)
 		end
 	end
 end
@@ -461,7 +805,7 @@ function LCLRE()
 	if HMenu.Combo.ComboSaveEQ or not Qready then return end
 	for _, minions in pairs(enemyMinions.objects) do
 		if ValidTarget(minions, 830) then
-			CastSpell(_E, minions)
+			CastE(minions)
 		end
 	end
 end
@@ -472,7 +816,9 @@ function LCLRW()
 	if not Wready then return end
 	for _, minions in pairs(enemyMinions.objects) do
 		if ValidTarget(minions, 525) then
-			CastSpell(_W)
+			if GetDistanceSqr(minions) <= 525 * 525 then
+				CastSpell(_W)
+			end
 		end
 	end
 end
@@ -502,11 +848,9 @@ end
 function JCLREQ()
 	if not Eready and not Qready then return end
 	for _, jminions in pairs(jungleMinions.objects) do
-	local CastPosition, HitChance, Position = VP:GetCircularCastPosition(jminions, 0.5, 180, 870, 1000, myHero, false)
-		if HitChance >= 2 then
-		if ValidTarget(jminions, 770) then
-			CastSpell(_E, jminions)
-			DelayAction(function() CastSpell(_Q, CastPosition.x, CastPosition.z) end, 0.35)
+		if ValidTarget(jminions, 830) then
+			   CastE(jminions)
+    DelayAction(function() CastQ(jminions) end, 0.2)
 		end
 	end
 end
@@ -517,10 +861,8 @@ end
 function JCLRQ()
 	if HMenu.Combo.ComboSaveEQ or not Qready then return end
 	for _, jminions in pairs(jungleMinions.objects) do
-	local CastPosition, HitChance, Position = VP:GetCircularCastPosition(jminions, 0.5, 180, 870, 1000, myHero, false)
-		if HitChance >= 2 then
 		if ValidTarget(jminions, 770) then
-			CastSpell(_Q, CastPosition.x, CastPosition.z)
+			CastQ(jminions)
 		end
 	end
 end
@@ -532,7 +874,7 @@ function JCLRE()
 	if HMenu.Combo.ComboSaveEQ or not Qready then return end
 	for _, jminions in pairs(jungleMinions.objects) do
 		if ValidTarget(jminions, 830) then
-			CastSpell(_E, jminions)
+			CastE(jminions)
 		end
 	end
 end
@@ -543,7 +885,9 @@ function JCLRW()
 	if not Wready then return end
 	for _, jminions in pairs(jungleMinions.objects) do
 		if ValidTarget(jminions, 525) then
-			CastSpell(_W)
+			if GetDistanceSqr(jminions) <= 525 * 525 then
+				CastSpell(_W)
+			end
 		end
 	end
 end
@@ -606,17 +950,6 @@ function Update()
 	end)
 end
 
-
---[[Variables]]--
-
-function Variables()
-	AARange = 250
-	Q = {Range = 700, Wigth = 70, Speed = math.huge, Delay = 0.5}
-	W = {Range = 525, Wigth = 525, Speed = nil, Delay = 0.5}
-	E = {Range = 830, Wigth = 75, Speed = math.huge, Delay = 0.5}
-	R = {Range = 650, Wigth = 325, Speed = nil, Delay = 0.5}
-end
-
 --[[SpellCheck]]--
 
 function spell_check()
@@ -628,7 +961,7 @@ end
 
 --[[BlockList]]--
 
-function blCheck(ts.target)
+function blCheck(target)
 	if ts.target ~= nil and HMenu.ultb[target.charName] then
 		return true
 	else
@@ -642,7 +975,7 @@ function OnCreateObj(obj)
 	if obj == nil then return end
 		if obj.name:lower():find("jarvancataclysm_sound") then
 			ultActive = true
-			DelayAction(function() ultActive = true end, 3.5)
+			DelayAction(function() ultActive = false end, 3.5)
 		end
 	end
 
@@ -652,7 +985,6 @@ function OnDeleteteObj(obj)
 	if obj == nil then return end
 		if obj.name:lower():find("jarvancataclysm_sound") then
 			ultActive = false
-			DelayAction(function() ultActive = false end, 3.5)
 		end
 	end
 
@@ -668,166 +1000,88 @@ function EQEscape()
 	end
 end
 
---[[Items Found]]--
+--[[CastQ]]--
 
-___GetInventorySlotItem = rawget(_G, "GetInventorySlotItem")
- 	_G.GetInventorySlotItem = GetSlotItem
-  	_G.ITEM_1 = 06
-  	_G.ITEM_2 = 07
-  	_G.ITEM_3 = 08
-  	_G.ITEM_4 = 09
-  	_G.ITEM_5 = 10
-  	_G.ITEM_6 = 11
- 	_G.ITEM_7 = 12
-ItemNames = {
-		    [3144]        = "BilgewaterCutlass",
-		    [3748]		  =	"TitanicHydra",
-			[3153]        = "ItemSwordOfFeastAndFamine",
-			[3405]        = "TrinketSweeperLvl1",
-			[3166]        = "TrinketTotemLvl1",
-		  	[3361]        = "TrinketTotemLvl3",
-		  	[3362]        = "TrinketTotemLvl4",
-		  	[2003]        = "RegenerationPotion",
-		  	[3146]        = "HextechGunblade",
-		  	[3187]        = "HextechSweeper",
-		  	[3364]        = "TrinketSweeperLvl3",
-		  	[3074]        = "ItemTiamatCleave",
-		  	[3077]        = "ItemTiamatCleave",
-		  	[3340]        = "TrinketTotemLvl1",
-		 	[3090]        = "ZhonyasHourglass",
-		  	[3142]        = "YoumusBlade",
-			[3157]        = "ZhonyasHourglass",
-		 	[3350]        = "TrinketTotemLvl2",
-		 	[3140]        = "QuicksilverSash",
-		  	[3139]        = "ItemMercurial",
-		  	[3153]		  = "Blade Of The Ruined King"
-			}
-
---[[GetSlotItem]]--
-
-function GetSlotItem(id, unit)
-	unit = unit or myHero
-  	if (not ItemNames[id]) then
-  		return ___GetInventorySlotItem(id, unit)
-  	end
-  	local name  = ItemNames[id]
-  	for slot = ITEM_1, ITEM_7 do
-  		local item = unit:GetSpellData(slot).name
-  		if ((#item > 0) and (item:lower() == name:lower())) then
-  			return slot
-  		end
-  	end
+function CastQ(unit)
+  if unit == nil then return end
+  if VP ~= nil then
+    local CastPosition, HitChance = VP:GetLineCastPosition(unit, VARS.Q.DELAY, VARS.Q.WIDTH, VARS.Q.RANGE, VARS.Q.SPEED, myHero, false)
+    if HitChance >= HMenu.Prediction.QVPHC then
+      CastSpell(_Q, CastPosition.x, CastPosition.z)
+    end
+  end
+  if DP ~= nil then
+    local state,hitPos,perc = DP:predict(nil,unit,myHero,SkillShot.TYPE.LINE,VARS.Q.SPEED,VARS.Q.RANGE,VARS.Q.WIDTH,VARS.Q.DELAY*1000,0,{Minions = false,Champions = false})
+    if perc >= HMenu.Prediction.QHC then
+      CastSpell(_Q, hitPos.x, hitPos.z)
+    end
+  end
+  if FHPred and Menu.Prediction.activePred == 3 then
+    local CastPosition, hc, info = FHPrediction.GetPrediction("Q", unit)
+    if hc > 0 and CastPosition ~= nil then
+      CastSpell(_Q, CastPosition.x, CastPosition.z)
+    end
+  end
+  if KP ~= nil then
+    local CastPosition, hc = KP:GetPrediction(JQ, unit, myHero)
+    if hc >= HMenu.Prediction.QKPHC then
+      CastSpell(_Q, CastPosition.x, CastPosition.z)
+    end
+  end
 end
 
---[[CastItems]]--
+--[[CastE]]--
 
-function CastItems()
-  	if ts.target ~= nil then
-  		if HMenu.Combo.UseItemC then
-  				local slot = GetInventorySlotItem(3153)		--[["Blade Of The Ruined King"]]--
-  				if ts.target ~= nil and ValidTarget(ts.target) and not ts.target.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY and GetDistance(ts.target) <= 550 then
-  					CastSpell(slot, ts.target)
-  				end
-  			end
-
-  			if HMenu.Combo.UseItemC then
-  				local slot = GetInventorySlotItem(3144)		--[["BilgewaterCutlass"]]--
-  				if ts.target ~= nil and ValidTarget(ts.target) and not ts.target.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY and GetDistance(ts.target) <= 550 then
-  					CastSpell(slot, ts.target)
-  				end
-  			end
-
-  			if HMenu.Combo.UseItemC then
-  				local slot = GetInventorySlotItem(3074)		--[["Ravenous Hydra"]]--
-  				if ts.target ~= nil and ValidTarget(ts.target) and not ts.target.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY and GetDistance(ts.target) <= 200 then
-  					CastSpell(slot)
-  				end
-  			end
-
-  			if HMenu.Combo.UseItemC then
-  				local slot = GetInventorySlotItem(3748)		--[["Titanic Hydra"]]--
-  				if ts.target ~= nil and ValidTarget(ts.target) and not ts.target.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY then
-  					CastSpell(slot)
-  				end
-  			end
-
-  			if HMenu.Combo.UseItemC then
-  				local slot = GetInventorySlotItem(3333)		--[["Tiamat"]]--
-  				if ts.target ~= nil and ValidTarget(ts.target) and not ts.target.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY then
-  					CastSpell(slot)
-  				end
-  			end
-
-  			if HMenu.Combo.UseItemC then
-  				local slot = GetInventorySlotItem(3142)		--[["Youmuu's Ghostblade"]]--
-  				if ts.target ~= nil and ValidTarget(ts.target) and not ts.target.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY then
-  					CastSpell(slot)
-  				end
-  			end
-  		end
-  	end
+function CastE(unit)
+  if unit == nil then return end
+  if VP ~= nil then
+    local CastPosition, HitChance = VP:GetLineCastPosition(unit, VARS.E.DELAY, VARS.E.WIDTH, VARS.E.RANGE, VARS.E.SPEED, myHero, true)
+    if HitChance >= HMenu.Prediction.EVPHC then
+      CastSpell(_E, CastPosition.x, CastPosition.z)
+    end
+  end
+  if DP ~= nil then
+    local state,hitPos,perc = DP:predict(nil,unit,myHero,SkillShot.TYPE.CIRCLE,VARS.E.SPEED,VARS.E.RANGE,VARS.E.WIDTH,VARS.E.DELAY*1000,0,{Minions = false,Champions = false})
+    if perc >= HMenu.Prediction.EHC then
+      CastSpell(_E, hitPos.x, hitPos.z)
+    end
+  end
+  if FHPred and HMenu.Prediction.activePred == 3 then
+    local CastPosition, hc, info = FHPrediction.GetPrediction("E", unit)
+    if hc > 0 and CastPosition ~= nil then
+      CastSpell(_E, CastPosition.x, CastPosition.z)
+    end
+  end
+  if KP ~= nil then
+    local CastPosition, hc = KP:GetPrediction(JE, unit, myHero)
+    if hc >= HMenu.Prediction.EKPHC then
+      CastSpell(_E, CastPosition.x, CastPosition.z)
+    end
+  end
 end
 
---[[CastItemsFarm]]--
+--[[CastW]]--
 
-function CastItemsFarm()
-	if HMenu.Clear.UseItemL then
-		for _, minions in pairs(enemyMinions.objects) do
-			local slot = GetInventorySlotItem(3333)		--[["Tiamat"]]--
-			if minions ~= nil and ValidTarget(minions) and not minions.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY then
-  				CastSpell(slot)
-  			end
-  		end
-	end
-
-	if HMenu.Clear.UseItemL then
-		for _, minions in pairs(enemyMinions.objects) do
-			local slot = GetInventorySlotItem(3074)		--[["Ravenous Hydra"]]--
-			if minions ~= nil and ValidTarget(minions) and not minions.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY then
-  				CastSpell(slot)
-  			end
-  		end
-	end
-
-	if HMenu.Clear.UseItemL then
-		for _, minions in pairs(enemyMinions.objects) do
-			local slot = GetInventorySlotItem(3748)		--[["Titanic Hydra"]]--
-			if minions ~= nil and ValidTarget(minions) and not minions.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY then
-  				CastSpell(slot)
-  			end
-  		end
-	end
+function CastW()
+  if ValidTarget(ts.target, 525) then
+    CastSpell(_W)
+  end
 end
 
---[[CastItemsJFarm]]--
+--[[CastR]]--
 
-function CastItemsJFarm()
-	if HMenu.JClear.UseItemJ then
-		for _, jminions in pairs(enemyMinions.objects) do
-			local slot = GetInventorySlotItem(3333)		--[["Tiamat"]]--
-			if jminions ~= nil and ValidTarget(jminions) and not jminions.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY then
-  				CastSpell(slot)
-  			end
-  		end
-	end
+function CastR(unit)
+  if unit == nil then return end
+    if ValidTarget(unit, 650) and blCheck(unit) then
+      CastSpell(_R, unit)
+    end
+end
 
-	if HMenu.JClear.UseItemJ then
-		for _, jminions in pairs(enemyMinions.objects) do
-			local slot = GetInventorySlotItem(3074)		--[["Ravenous Hydra"]]--
-			if jminions ~= nil and ValidTarget(jminions) and not jminions.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY then
-  				CastSpell(slot)
-  			end
-  		end
-	end
+--[[GetDlina]]--
 
-	if HMenu.JClear.UseItemJ then
-		for _, jminions in pairs(enemyMinions.objects) do
-			local slot = GetInventorySlotItem(3748)		--[["Titanic Hydra"]]--
-			if jminions ~= nil and ValidTarget(jminions) and not jminions.dead and slot ~= nil and myHero:CanUseSpell(slot) == READY then
-  				CastSpell(slot)
-  			end
-  		end
-	end
+function GetDlina(a, b)
+  local Dlina = math.sqrt((b.x-a.x)*(b.x-a.x) + (b.z-a.z)*(b.z-a.z))
+  return Dlina
 end
 
 --[[End]]--
