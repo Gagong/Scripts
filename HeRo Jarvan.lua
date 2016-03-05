@@ -12,7 +12,7 @@
 
 if myHero.charName ~= "JarvanIV" then return end
 
-local version = "1.0"
+local version = "1.01"
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
 local SCRIPT_NAME = "HeRo Jarvan"
@@ -58,8 +58,8 @@ function OnLoad()
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
 	ultActive = false
 	AddApplyBuffCallback(Buff_Add)
- 	AddRemoveBuffCallback(Buff_Rem)
-    if _G.Reborn_Loaded ~= nil then
+  AddRemoveBuffCallback(Buff_Rem)
+	  if _G.Reborn_Loaded ~= nil then
     SAC = true 
   elseif _G.MMA_IsLoaded then
     MMA = true
@@ -68,7 +68,6 @@ function OnLoad()
   elseif _Pewalk then
     PEW = true            
   end
-   igniteslot = FindSlotByName("SummonerDot")
 
 --[[Menu]]--
 
@@ -110,7 +109,6 @@ function OnLoad()
 		Menu.KillSteal:addParam("QSteal", "Use Q", SCRIPT_PARAM_ONOFF, true)
 		Menu.KillSteal:addParam("ESteal", "Use E", SCRIPT_PARAM_ONOFF, true)
 		Menu.KillSteal:addParam("RSteal", "Use R", SCRIPT_PARAM_ONOFF, false)
-		Menu.Killsteal:addParam("UseIgnite", "Ignite KillSteal", SCRIPT_PARAM_ONOFF, true)
 	
 	
 --[[LaneClear]]--
@@ -168,7 +166,7 @@ function OnLoad()
 
 	Menu:addSubMenu("[HeRo Jarvan - Auto]", "Auto")
 		Menu.Auto:addParam("autoPOT", "Auto Potions Usage", SCRIPT_PARAM_ONOFF, true)
- 		Menu.Auto:addParam("autoPOTHealth", "% Health for Auto Potions", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
+ 		Menu.Auto:addParam("autoPOTHealth", "% Health for autoPOT", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 		
 --[[Others]]--
 
@@ -303,22 +301,12 @@ function OnTick()
 	jungleMinions = minionManager(MINION_JUNGLE, 1100, myHero, MINION_SORT_MAXHEALTH_DEC)
 	if myHero.dead then return end
 	spell_check()
-	GetSmiteSlot()
-	if SMITE then
-    if Menu.Smite.UseSmite then
-      AutoSmite()
-    end
-    end
 	
 	if Menu.Combo.ComboMode then
 		JarvanCombo()
 		if SMITE and Menu.Smite.UseSmiteCombo and GetDlina(myHero, ts.target) <= 560  then
             CastSmite(ts.target)
         end
-    if TITANIC then CastTITANIC() end
-    if TIAMAT then CastTiamat() end
-    if YOUMU then CastYoumu() end
-    if BOTRK then CastBOTRK(ts.target) end
 	end
 	
 	if Menu.Combo.Burst then
@@ -327,33 +315,23 @@ function OnTick()
 	
 	if Menu.KillSteal.Steal then
 		KSteal()
-    if TITANIC then CastTITANIC() end
-    if TIAMAT then CastTiamat() end
-    if YOUMU then CastYoumu() end
-    if BOTRK then CastBOTRK(ts.target) end
 		if SMITE and Menu.Smite.StealSmite and GetDlina(myHero, ts.target) <= 560 and ts.target.health <= KSmiteDmg then
             CastSmite(ts.target)
         end
 	end
 
 	if Menu.Harass.HS then
-		    if TITANIC then CastTITANIC() end
-    if TIAMAT then CastTiamat() end
 		if ((myHero.mana*100)/myHero.maxMana) <= Menu.Harass.HarassMana then return end
 		Harass()
 	end
 
 	if Menu.Clear.LaneClear then
-		    if TITANIC then CastTITANIC() end
-    if TIAMAT then CastTiamat() end
 		if ((myHero.mana*100)/myHero.maxMana) <= Menu.Clear.ClearMana then return end
 		enemyMinions:update()
 		LCLR()
 	end
 
 	if Menu.JClear.JungleClear then
-		    if TITANIC then CastTITANIC() end
-    if TIAMAT then CastTiamat() end
 		if ((myHero.mana*100)/myHero.maxMana) <= Menu.JClear.JClearMana then return end
 		jungleMinions:update()
 		JCLR()
@@ -366,7 +344,6 @@ function OnTick()
 	end
 	
 	if Menu.Escape.EnableEscape then
-		 if YOUMU then CastYoumu() end
 		EQEscape()
     CastYoumu()
 	end
@@ -428,27 +405,27 @@ function BurstCombo()
     if TITANIC then CastTITANIC() end
     if TIAMAT then CastTiamat() end
     if YOUMU then CastYoumu() end
-    if BOTRK then CastBOTRK(ts.target) end
+    if BOTRK then CastBOTRK() end
     CastE(ts.target)
     DelayAction(function() CastQ(ts.target) end, 0.2)
-    if SAC then
-        _G.AutoCarry.Orbwalker:ResetAttackTimer()
-    end
-    if WOLFY then
-       	_G.NebelwolfisOrbWalker:ResetAA()
-    end
-    if PEW then
-       	_Pewalk.AllowAttack(false)
-        _Pewalk.AllowMove(false)
-        myHero:Attack(spell.target)
-        DelayAction(function()
-        _Pewalk.AllowAttack(true)
-        _Pewalk.AllowMove(true)
-        end, 0.2)
-    end
-    if MMA then
-        _G.MMA_ResetAutoAttack()
-    end
+		  if SAC then
+_G.AutoCarry.Orbwalker:ResetAttackTimer()
+end
+if WOLFY then
+_G.NebelwolfisOrbWalker:ResetAA()
+end
+if PEW then
+_Pewalk.AllowAttack(false)
+_Pewalk.AllowMove(false)
+myHero:Attack(spell.target)
+DelayAction(function()
+_Pewalk.AllowAttack(true)
+_Pewalk.AllowMove(true)
+end, 0.2)
+end
+if MMA then
+_G.MMA_ResetAutoAttack()
+end
     DelayAction(function() CastR(ts.target) end, 0.4)
     if GetDlina(myHero, ts.target) <= 525 then
       CastW()
@@ -526,18 +503,7 @@ end
 --[[KillSteal]]--
 
 function KSteal()
-	for i,enemy in pairs(GetEnemyHeroes()) do
-    if not enemy.dead and enemy.visible then
-    if ValidTarget(enemy, 1000) then
-	local igniteDmg = 50 + 20*myHero.level
-
-		if GetDlina(myHero, enemy) <= 600 then
-          if igniteslot ~= nil and Menu.Killsteal.UseIgnite then
-            if igniteDmg >= enemy.health and SpellReady(igniteslot) and not enemy.dead then
-              CastSpell(igniteslot, enemy)
-            end
-          end	
-    if Menu.KillSteal.EQSteal then
+	if Menu.KillSteal.EQSteal then
 		EQSteal()
 	end
 
