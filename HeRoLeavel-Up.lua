@@ -34,7 +34,7 @@
 ---assert() ScriptStatus("XiDFjfqj2dRfEv5v")
 ---ScriptStatus---
 
-local LocalVersion = "2.8"
+local LocalVersion = "2.9"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -241,21 +241,21 @@ function LevelUp()
 end
 
 _G.LevelSpell = function(id)
-  if (string.find(GetGameVersion(), 'Releases/6.4') ~= nil) then
+  if (string.find(GetGameVersion(), 'Releases/6.5') ~= nil)
   local offsets = { 
-  [1] = 0x9C,
-  [2] = 0x7C,
-  [3] = 0xA5,
-  [4] = 0xC4,
+  [_Q] = 0x56,
+  [_W] = 0x17,
+  [_E] = 0x42,
+  [_R] = 0x6D,
   }
-  local p = CLoLPacket(0x0016)
-  p.vTable = 0xE4C8D4
+  local p = CLoLPacket(0x007A)
+  p.vTable = 0xF7F22C
   p:EncodeF(myHero.networkID)
-  p:Encode4(0x99)
-  p:Encode1(0x83)
-  p:Encode4(0x20)
+  p:Encode4(0x03)
+  p:Encode4(0x1C)
+  p:Encode4(0x07)
+  p:Encode1(0x75)
   p:Encode1(offsets[id])
-  p:Encode4(0xEB)
   SendPacket(p)
 end
 end
