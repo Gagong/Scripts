@@ -34,7 +34,7 @@
 ---assert() ScriptStatus("XiDFjfqj2dRfEv5v")
 ---ScriptStatus---
 
-local LocalVersion = "2.9"
+local LocalVersion = "2.91"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -243,10 +243,10 @@ end
 _G.LevelSpell = function(id)
   if (string.find(GetGameVersion(), 'Releases/6.5') ~= nil)
   local offsets = { 
-  [_Q] = 0x56,
-  [_W] = 0x17,
-  [_E] = 0x42,
-  [_R] = 0x6D,
+  [1] = 0x56,
+  [2] = 0x17,
+  [3] = 0x42,
+  [4] = 0x6D,
   }
   local p = CLoLPacket(0x007A)
   p.vTable = 0xF7F22C
