@@ -34,7 +34,7 @@
 ---assert() ScriptStatus("XiDFjfqj2dRfEv5v")
 ---ScriptStatus---
 
-local LocalVersion = "2.91"
+local LocalVersion = "2.911"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -242,14 +242,14 @@ end
 
 _G.LevelSpell = function(id)
   if (string.find(GetGameVersion(), 'Releases/6.5') ~= nil)
-  local offsets = { 
+local offsets = { 
   [1] = 0x56,
   [2] = 0x17,
   [3] = 0x42,
   [4] = 0x6D,
   }
   local p = CLoLPacket(0x007A)
-  p.vTable = 0xF7F22C
+  p.vTable = 0xEF9B8C
   p:EncodeF(myHero.networkID)
   p:Encode4(0x03)
   p:Encode4(0x1C)
