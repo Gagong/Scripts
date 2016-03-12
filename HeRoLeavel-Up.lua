@@ -34,7 +34,7 @@
 ---assert() ScriptStatus("XiDFjfqj2dRfEv5v")
 ---ScriptStatus---
 
-local LocalVersion = "2.911"
+local LocalVersion = "2.9112"
 local autoupdate = true 
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
@@ -241,7 +241,7 @@ function LevelUp()
 end
 
 _G.LevelSpell = function(id)
-  if (string.find(GetGameVersion(), 'Releases/6.5') ~= nil)
+  if (string.find(GetGameVersion(), 'Releases/6.5') ~= nil) then
 local offsets = { 
   [1] = 0x56,
   [2] = 0x17,
