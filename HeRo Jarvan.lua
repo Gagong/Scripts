@@ -13,7 +13,7 @@
 
 if myHero.charName ~= "JarvanIV" then return end
 
-local version = "1.1"
+local version = "1.111"
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
 local SCRIPT_NAME = "HeRo Jarvan"
@@ -251,7 +251,7 @@ function OnLoad()
       			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>KPrediction Found!</b></font>")
     	end  ]]--
     	Menu.addSubMenu:("Author - HeRoBaNd", "n1")
-    	Menu.addSubMenu:("Version - ..ToUpdate.Version..", "n2")
+    	Menu.addSubMenu:("Version - ..version..", "n2")
   end
 
 --[[PermaShow]]--
