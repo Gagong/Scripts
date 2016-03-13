@@ -59,16 +59,16 @@ JR = {range = VARS.R.RANGE, speed = VARS.R.SPEED, delay = VARS.R.DELAY, radius =
 function OnLoad()
 --Credits SxTeam
  local ToUpdate = {}
-    ToUpdate.Version = 1.11
+    ToUpdate.Version = 1.111
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.lua"
     ToUpdate.SavePath = LIB_PATH.."/HeRo Jarvan_Test.lua"
-    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan] </b></font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
-    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan] </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
-    ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Jarvan] </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
-    ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Jarvan] </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
+    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
+    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
+    ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
+    ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
 --Credits SxTeam	
 	ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 900, DAMAGE_PHYSICAL)
@@ -180,9 +180,11 @@ function OnLoad()
 	Menu:addSubMenu("[HeRo Jarvan - Others]", "Others")
 		Menu.Others:addParam("ChangeShow", "Change PermaShow Color(Green)", SCRIPT_PARAM_ONOFF, true)
 		Menu.Others:addParam("info", "Reload this(2xF9)", SCRIPT_PARAM_INFO, "")
-	
+		
+--[[Skin Changer]]--
+
 	if VIP_USER then 
-		Menu:addSubMenu("Skinchanger", "skin")
+		Menu:addSubMenu("[HeRo Jarvan - SkinChanger]", "skin")
 	end
 
 --[[Smite]]--
@@ -248,6 +250,8 @@ function OnLoad()
       			Menu.Prediction:addParam("EKPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
       			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>KPrediction Found!</b></font>")
     	end  ]]--
+    	Menu.addSubMenu:("Author - HeRoBaNd", "n1")
+    	Menu.addSubMenu:("Version - ..ToUpdate.Version..", "n2")
   end
 
 --[[PermaShow]]--
