@@ -30,10 +30,6 @@
 ---2.7 - 6.4 Updated---
 ---2.8 - 6.4 HF---
 
----ScriptStatus---
----assert() ScriptStatus("XiDFjfqj2dRfEv5v")
----ScriptStatus---
-
 local LocalVersion = "3.0"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
