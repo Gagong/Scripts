@@ -35,9 +35,6 @@
 ---ScriptStatus---
 
 local LocalVersion = "3.0"
-local autoupdate = true 
-local serveradress = "raw.githubusercontent.com"
-local scriptadress = "/HeRoBaNd/Scripts/master"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 
@@ -216,9 +213,9 @@ PrintChat("<font color='#F0F8FF'><b>" ..GetGameVersion().. "</b></font>")
     HLUMainMenu:addParam('Level13', 'Level 1-3:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
     HLUMainMenu:addParam('Level418', 'Level 4-18:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
 	HLUMainMenu:addParam('GameVer', GetGameVersion(), SCRIPT_PARAM_INFO, "")
-    Menu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
-    Menu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
-    Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
+    HLUMainMenu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
+    HLUMainMenu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
+    HLUMainMenu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
 
 	
 	HLUMainMenu.Enable = false
