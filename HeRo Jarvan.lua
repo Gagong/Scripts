@@ -14,8 +14,6 @@
 if myHero.charName ~= "JarvanIV" then return end
 
 local version = "1.2"
-local serveradress = "raw.githubusercontent.com"
-local scriptadress = "/HeRoBaNd/Scripts/master"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
@@ -648,36 +646,6 @@ function OnDraw()
 			DrawCircle(myHero.x, myHero.y, myHero.z, 650, ARGB(255, 0, 0, 80))
 		end
 	end
-end
-
---[[FindUpdates]]--
-
-function FindUpdates()
-	if not autoupdate then return end
-		local ServerVersionDATA = GetWebResult(serveradress , scriptadress.."/HeRo Jarvan.version")
-			if ServerVersionDATA then
-				local ServerVersion = tonumber(ServerVersionDATA)
-					if ServerVersion then
-						if ServerVersion > tonumber(LocalVersion) then
-							PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font>".."<font color='#00BFFF'><b>Updating, don't press F9.</b></font>")
-								Update()
-									else
-								PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font>".."<font color='#00BFFF'><b>You have the latest version.</b></font>")
-							end
-						else
-					PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font>".."<font color='#00BFFF'><b>An error occured, while updating, please reload.</b></font>")
-				end
-			else
-		PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font>".."<font color='#00BFFF'><b>Could not connect to update Server.</b></font>")
-	end
-end
-
---[[Update]]--
-
-function Update()
-	DownloadFile("http://"..serveradress..scriptadress.."/HeRo Jarvan.lua",SCRIPT_PATH.."HeRo Jarvan.lua", function ()
-	PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font>".."<font color='#00BFFF'><b>Updated, press 2xF9.</b></font>")
-	end)
 end
 
 --[[SpellCheck]]--
