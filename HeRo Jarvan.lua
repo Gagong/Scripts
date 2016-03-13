@@ -13,7 +13,7 @@
 
 if myHero.charName ~= "JarvanIV" then return end
 
-local version = "1.111"
+local version = "1.2"
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
 local SCRIPT_NAME = "HeRo Jarvan"
@@ -59,7 +59,7 @@ JR = {range = VARS.R.RANGE, speed = VARS.R.SPEED, delay = VARS.R.DELAY, radius =
 function OnLoad()
 --Credits SxTeam
  local ToUpdate = {}
-    ToUpdate.Version = 1.111
+    ToUpdate.Version = 1.2
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
