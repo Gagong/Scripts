@@ -12,8 +12,7 @@
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-
-local version = "1.2"
+local version = "1.3"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
@@ -57,11 +56,11 @@ JR = {range = VARS.R.RANGE, speed = VARS.R.SPEED, delay = VARS.R.DELAY, radius =
 function OnLoad()
 --Credits SxTeam
  local ToUpdate = {}
-    ToUpdate.Version = 1.2
+    ToUpdate.Version = 1.3
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
-    ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo Jarvan.version"
-    ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo Jarvan.lua"
+    ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
+    ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.lua"
     ToUpdate.SavePath = LIB_PATH.."/HeRo Jarvan_Test.lua"
     ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
@@ -186,7 +185,6 @@ function OnLoad()
 	end
 
 --[[Smite]]--
-
 	Menu:addSubMenu("[HeRo Jarvan - Smite Usage]", "Smite")
   		Menu.Smite:addParam("UseSmite", "Enable Smite Usage", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("N"))
 		Menu.Smite:addParam("UseSmiteCombo", "Use Smite in Combo", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("M"))
@@ -248,8 +246,10 @@ function OnLoad()
       			Menu.Prediction:addParam("EKPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
       			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>KPrediction Found!</b></font>")
     	end  ]]--
-    	Menu.addSubMenu:("Author - HeRoBaNd", "n1")
-    	Menu.addSubMenu:("Version - ..version..", "n2")
+	Menu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
+  Menu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
+  Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
+
   end
 
 --[[PermaShow]]--
