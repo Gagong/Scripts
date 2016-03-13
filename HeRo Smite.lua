@@ -20,10 +20,6 @@
 ---1.9 - Fixed KillSteal---
 ---2.0 - Reliased KillSteal---
 
----ScriptStatus---
----assert() ScriptStatus("bNcYC6SsMjdS12ov")
----ScriptStatus---
-
 local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local serveradress = "raw.githubusercontent.com"
