@@ -219,7 +219,7 @@ function OnLoad()
       			VP = VPrediction()
       			Menu.Prediction:addParam("QVPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
       			Menu.Prediction:addParam("EVPHC", "E HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
-      			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>VPrediction Found!</b></font>")
+      			DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>VPrediction Found!</b></font>") end, 4.1)
     		end
   		--[[elseif Menu.Prediction.activePred == 2 then
     		if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."DivinePred.luac") then
