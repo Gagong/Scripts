@@ -170,7 +170,7 @@ function OnLoad()
 
 	Menu:addSubMenu("[HeRo Jarvan - Auto]", "Auto")
 		Menu.Auto:addParam("autoPOT", "Auto Potions Usage", SCRIPT_PARAM_ONOFF, true)
- 		Menu.Auto:addParam("autoPOTHealth", "% Health for autoPOT", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
+ 		Menu.Auto:addParam("autoPOTHealth", "% Health for Auto Potions", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 		
 --[[Others]]--
 
@@ -185,6 +185,7 @@ function OnLoad()
 	end
 
 --[[Smite]]--
+
 	Menu:addSubMenu("[HeRo Jarvan - Smite Usage]", "Smite")
   		Menu.Smite:addParam("UseSmite", "Enable Smite Usage", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("N"))
 		Menu.Smite:addParam("UseSmiteCombo", "Use Smite in Combo", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("M"))
