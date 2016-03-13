@@ -63,7 +63,7 @@ function OnLoad()
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.lua"
     ToUpdate.SavePath = LIB_PATH.."/HeRo Jarvan_Test.lua"
-    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
+    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
     ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
     ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
