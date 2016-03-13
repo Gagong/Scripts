@@ -14,9 +14,9 @@
 if myHero.charName ~= "JarvanIV" then return end
 
 local version = "1.1"
+
 local serveradress = "raw.githubusercontent.com"
 local scriptadress = "/HeRoBaNd/Scripts/master"
-local autoupdate = true
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
@@ -365,8 +365,6 @@ function OnTick()
   	end
 end
 
---[[Cast ItemsC]]--
-
 function CastItemsC()
 	for _, minions in pairs(enemyMinions.objects) do
 		if minions ~= nil and minions.visible then
@@ -375,8 +373,6 @@ function CastItemsC()
 		end
 	end
 end
-
---[[Cast ItemsCJ]]--
 
 function CastItemsCJ()
 	for _, jminions in pairs(jungleMinions.objects) do
@@ -387,7 +383,6 @@ function CastItemsCJ()
 	end
 end
 
---[[Cast ItemsF]]--
 
 function CastItemsF()
 	if ts.target ~= nil and ts.target.visible then
@@ -428,8 +423,6 @@ function JarvanCombo()
   end
 end
 
---[[UseW]]--
-
 function UseW()
 	if Wready and Menu.Combo.ComboW then
 		if ValidTarget(ts.target, 525) or CountEnemyHeroInRange(525) >= 1 then
@@ -437,8 +430,6 @@ function UseW()
 		end
 	end
 end
-	
---[[UseR]]--	
 	
 function UseR()
 	if Rready and Menu.Combo.ComboR and blCheck(ts.target) then
@@ -560,6 +551,8 @@ end
 function LCLR()
 	LCLRQ()
 end
+
+--[[LaneClear]]--
 
 function LCLRQ()
 	for _, minions in pairs(enemyMinions.objects) do
@@ -710,11 +703,6 @@ function EQEscape()
 			CastSpell(_E, mousePos.x, mousePos.z)
 			DelayAction(function() CastSpell(_Q, mousePos.x, mousePos.z) end, 0.35)
 			myHero:MoveTo(mousePos.x, mousePos.z)
-	end
-	if Wready and Menu.Escape.WEscape then
-		if ValidTarget(ts.target, 525) or CountEnemyHeroInRange(525) >= 1 then
-			CastSpell(_W)
-		end
 	end
 end
 
@@ -1021,8 +1009,6 @@ function GetItem(name)
   return slot 
 end
 
---[[Check Fountain]]--
-
 function CheckFountain()
   if not GetGame().map.index == 15 then return end
   if myHero.team == 100 then
@@ -1042,8 +1028,6 @@ function CheckFountain()
   end
 end
 
---[[Get Smite Slot]]--
-
 function GetSmiteSlot()
   for i=1, 3 do
     if FindSlotByName(SMITELIST[i]) ~= nil then
@@ -1058,16 +1042,12 @@ function GetSmiteSlot()
   end
 end
 
---[[Get Attack Smite Damage]]--
-
 function GetAttackSmiteDamage(unit)
   if SMITE and ATTACKSMITE then
     SmiteDmg = 20 + 8*myHero.level
     return SmiteDmg
   end
 end
-
---[[Get Smite Damage]]--
 
 function GetSmiteDamage(unit)
   if SMITE then
@@ -1087,8 +1067,6 @@ function GetSmiteDamage(unit)
     return SmiteDamage
   end
 end
-
---[[AutoSmite]]--
 
 function AutoSmite()
   local SmiteDmg = GetSmiteDamage()
