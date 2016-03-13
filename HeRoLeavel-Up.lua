@@ -30,7 +30,7 @@
 ---2.7 - 6.4 Updated---
 ---2.8 - 6.4 HF---
 
-local LocalVersion = "3.0"
+local version = "3.0"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 
