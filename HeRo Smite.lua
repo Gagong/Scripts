@@ -24,7 +24,7 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local version = "2.1"
+local version = "2.11"
 local SMITE, ATTACKSMITE = false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
 
@@ -47,7 +47,7 @@ end
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 2.1
+    ToUpdate.Version = 2.11
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
@@ -833,7 +833,7 @@ function GetSmiteSlot()
     if FindSlotByName(SMITELIST[i]) ~= nil then
       SMITESLOT = FindSlotByName(SMITELIST[i])
       SMITE = true
-      if i == 2 or i == 3 then
+      if i == 2 then
         ATTACKSMITE = true
       else
         ATTACKSMITE = false
