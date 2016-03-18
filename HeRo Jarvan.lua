@@ -9,10 +9,12 @@
 ---Changelog---
 ---1.0 - Closed Beta---
 ---1.1 - Open Beta---
+---1.2 - 1.5 - New Auto-Updater, SkinChanger, BugFixed---
+---1.6 - Fix KS Smite Error---
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-local version = "1.5"
+local version = "1.6"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
@@ -60,7 +62,7 @@ TrackerLoad("fMqjdNreSdWuDCgq")
 function OnLoad()
 --Credits SxTeam
  local ToUpdate = {}
-    ToUpdate.Version = 1.5
+    ToUpdate.Version = 1.6
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
@@ -73,7 +75,7 @@ function OnLoad()
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
 --Credits SxTeam	
 	ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 900, DAMAGE_PHYSICAL)
-	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font><font color='#00BFFF'><b>Loaded(Next Big Update - 20.03.2016).</b></font>") end, 4.0)
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
 	ultActive = false
 	AddApplyBuffCallback(Buff_Add)
   AddRemoveBuffCallback(Buff_Rem)
@@ -445,7 +447,7 @@ function JarvanCombo()
 			CastE(ts.target)
 		end
 	end
-	if SMITE and ATTACKSMITE and Menu.Smite.UseSmiteCombo and GetDlina(myHero, ts.target) <= 560 then
+	if SMITE and ATTACKSMITE3 and Menu.Smite.UseSmiteCombo and GetDlina(myHero, ts.target) <= 560 then
     CastSmite(ts.target)
   end
 end
@@ -493,7 +495,7 @@ function KSteal()
 			end
 		end
 		if GetDlina(myHero, enemy) <= 560 then
-      if SMITE and ATTACKSMITE and Menu.Killsteal.UseSmiteKS then
+      if SMITE and ATTACKSMITE and Menu.Smite.StealSmite then
         local SmiteDmg = GetAttackSmiteDamage()
         if SmiteDmg >= enemy.health and SpellReady(SMITESLOT) and not enemy.dead then
           CastSmite(enemy)
@@ -1030,10 +1032,15 @@ function GetSmiteSlot()
     if FindSlotByName(SMITELIST[i]) ~= nil then
       SMITESLOT = FindSlotByName(SMITELIST[i])
       SMITE = true
-      if i == 2 or i == 3 then
+      if i == 2 then
         ATTACKSMITE = true
       else
         ATTACKSMITE = false
+      end
+      if i == 3 then
+      	ATTACKSMITE3 = true
+      else
+      	ATTACKSMITE3 = false
       end
     end
   end
