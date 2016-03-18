@@ -24,7 +24,7 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local version = "2.111"
+local version = "2.1111"
 local SMITE, ATTACKSMITE = false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
 
@@ -47,7 +47,7 @@ end
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 2.111
+    ToUpdate.Version = 2.1111
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
@@ -846,6 +846,12 @@ function GetAttackSmiteDamage(unit)
   if SMITE and ATTACKSMITE then
     SmiteDmg = 20 + 8*myHero.level
     return SmiteDmg
+  end
+end
+
+function CastSmite(target)
+  if SpellReady(SMITESLOT) then
+    CastSpell(SMITESLOT, target)
   end
 end
 
