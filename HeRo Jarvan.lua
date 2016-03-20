@@ -11,10 +11,11 @@
 ---1.1 - Open Beta---
 ---1.2 - 1.5 - New Auto-Updater, SkinChanger, BugFixed---
 ---1.6 - Fix KS Smite Error---
+---1.7 - Big Update---
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-local version = "1.7"
+local version = "1.71"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
@@ -24,6 +25,7 @@ local VP, DP, SP = nil
 local FHPred = false
 local ts
 local Menu
+local selectedCombo = 1
 local Qready, Wready, Eready, Rready = false, false, false, false
 local REGENTIME = false
 local SMITE, ATTACKSMITE = false
@@ -41,7 +43,7 @@ local DANGERSPELL = {"MordekaiserChildrenOfTheGrave", "SkarnerImpale", "LuxLight
 "paranoiamisschance", "puncturingtauntarmordebuff", "surpression", "zedulttargetmark", "enchantedcrystalarrow", "nasusw"}
 local VARS = {
   AA = {RANGE = 250},
-  Q = {RANGE = 700, WIDTH = 70, DELAY = 0.1, SPEED = math.huge},
+  Q = {RANGE = 770, WIDTH = 70, DELAY = 0.1, SPEED = math.huge},
   W = {RANGE = 525, WIDTH = 525, DELAY = 0.1, SPEED = nil},
   E = {RANGE = 830, WIDTH = 75, DELAY = 0.1, SPEED = math.huge},
   R = {RANGE = 650, WIDTH = 325, DELAY = 0.1, SPEED = nil}
@@ -78,7 +80,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam
  local ToUpdate = {}
-    ToUpdate.Version = 1.7
+    ToUpdate.Version = 1.71
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
@@ -470,19 +472,20 @@ function JarvanCombo()
 			CastE(ts.target)
 			DelayAction(function() CastQ(ts.target) end, 0.3)
 		end
-	elseif Menu.Combo.Cmode == 2 and Qready and Menu.Combo.ComboQ then
-		if ValidTarget(ts.target, 800) then
-			CastQ(ts.target)
-		end
-	elseif Menu.Combo.Cmode == 2 and Eready and Menu.Combo.ComboE then
-		if ValidTarget(ts.target, 900) then
+	elseif Menu.Combo.Cmode == 2 and Menu.Combo.ComboE then
+		if ValidTarget(ts.target, 800) and Eready then
 			CastE(ts.target)
+			if Menu.Combo.ComboE then
+				if ValidTarget(ts.target, 900) and Qready then
+					CastQ(ts.target)
+				end
+			end
 		end
-	elseif Menu.Combo.Cmode == 3 and Qready and not Eready and Menu.Combo.ComboQ then
+	elseif Menu.Combo.Cmode == 3 and Qready and Menu.Combo.ComboQ then
 		if ValidTarget(ts.target, 800) then
 			CastQ(ts.target)
 		end
-	elseif Menu.Combo.Cmode == 4 and not Qready and Eready and Menu.Combo.ComboE then
+	elseif Menu.Combo.Cmode == 4 and not Qready and Menu.Combo.ComboE then
 		if ValidTarget(ts.target, 900) then
 			CastE(ts.target)
 		end
@@ -604,19 +607,20 @@ function HarassEorQ()
 			CastE(ts.target)
 			DelayAction(function() CastQ(ts.target) end, 0.3)
 		end
-	elseif Menu.Harass.Hmode == 2 and Qready and Menu.Harass.HarassQ then
-		if ValidTarget(ts.target, 800) then
-			CastQ(ts.target)
-		end
-	elseif Menu.Harass.Hmode == 2 and Eready and Menu.Harass.HarassE then
-		if ValidTarget(ts.target, 900) then
+	elseif Menu.Harass.Hmode == 2 and Menu.Harass.HarassE then
+		if ValidTarget(ts.target, 800) and Eready then
 			CastE(ts.target)
+			if Menu.Harass.HarassQ then
+				if ValidTarget(ts.target, 900) and Qready then
+					CastQ(ts.target)
+				end
+			end
 		end
-	elseif Menu.Harass.Hmode == 3 and Qready and not Qready and Menu.Harass.HarassQ then
+	elseif Menu.Harass.Hmode == 3 and Qready and Menu.Harass.HarassQ then
 		if ValidTarget(ts.target, 800) then
 			CastQ(ts.target)
 		end
-	elseif Menu.Harass.Hmode == 4 and Eready and not Eready and Menu.Harass.HarassE then
+	elseif Menu.Harass.Hmode == 4 and Eready and Menu.Harass.HarassE then
 		if ValidTarget(ts.target, 900) then
 			CastE(ts.target)
 		end
