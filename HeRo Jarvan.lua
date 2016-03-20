@@ -14,13 +14,14 @@
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-local version = "1.6"
+local version = "1.7"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
 local lowBase = {["x"] = 406, ["z"] = 424}
 local upBase = {["x"] = 14322, ["z"] = 14394}
-local VP, DP, KP = nil
+local VP, DP, SP = nil
+local FHPred = false
 local ts
 local Menu
 local Qready, Wready, Eready, Rready = false, false, false, false
@@ -57,12 +58,27 @@ assert(load(Base64Decode("G0x1YVIAAQQEBAgAGZMNChoKAAAAAAAAAAAAAQQfAAAAAwAAAEQAAA
 TrackerLoad("fMqjdNreSdWuDCgq")
 -- BoL Tools Tracker --
 
+Sequences = {
+	[0]		=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	[1]		=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, 
+	[2]		=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}, 
+	[3]		=	{2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}, 
+	[4]		=	{2, 3, 1, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1}, 
+	[5]		=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, 
+	[6]		=	{3, 2, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
+	["JarvanIV"]	=	{3, 1, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}
+}
+
+Skills = {"Q", "W", "E", "R"}
+
+LastLevel = 0;
+
 --[[OnLoad]]--
 
 function OnLoad()
 --Credits SxTeam
  local ToUpdate = {}
-    ToUpdate.Version = 1.6
+    ToUpdate.Version = 1.7
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
@@ -78,7 +94,7 @@ function OnLoad()
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan] </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
 	ultActive = false
 	AddApplyBuffCallback(Buff_Add)
-  AddRemoveBuffCallback(Buff_Rem)
+  	AddRemoveBuffCallback(Buff_Rem)
 
 --[[Menu]]--
 
@@ -94,19 +110,20 @@ function OnLoad()
 	
 	Menu:addSubMenu("[HeRo Jarvan - Combo]", "Combo")
 		Menu.Combo:addParam("ComboMode", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32)
-    Menu.Combo:addParam("Burst", "All In/Burst Combo (Toggle)", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("S"))
-		Menu.Combo:addParam("ComboEQ", "Use Q+E in Combo", SCRIPT_PARAM_ONOFF, true)
-		Menu.Combo:addParam("ComboSaveEQ", "Always save E+Q for Combo mode", SCRIPT_PARAM_ONOFF, false)
-		Menu.Combo:addParam("ComboQ", "Use Q in Combo(WithOut KnockUp)", SCRIPT_PARAM_ONOFF, false)
+		Menu.Combo:addParam("ChangeCombo", "Change Combo Mode Key", SCRIPT_PARAM_INFO, "Key - T")
+		Menu.Combo:addParam("Cmode", "Combo Q and E Mode", SCRIPT_PARAM_LIST, 1, {"E+Q", "Q or E", "Q Only", "E Only"})
+    	--Menu.Combo:addParam("Burst", "All In/Burst Combo (Toggle)", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("S"))
+		Menu.Combo:addParam("ComboQ", "Use Q in Combo", SCRIPT_PARAM_ONOFF, true)
 		Menu.Combo:addParam("ComboW", "Use W in Combo", SCRIPT_PARAM_ONOFF, true)
-		Menu.Combo:addParam("ComboE", "Use E in Combo(WithOut KnockUp)", SCRIPT_PARAM_ONOFF, false)
-		Menu.Combo:addParam("ComboR", "Use R in Combo", SCRIPT_PARAM_ONOFF, true)
+		Menu.Combo:addParam("ComboE", "Use E in Combo", SCRIPT_PARAM_ONOFF, true)
+		Menu.Combo:addParam("ComboR", "Use R in Combo", SCRIPT_PARAM_ONOFF, false)
 	
 --[[Harass]]--
 	
 	Menu:addSubMenu("[HeRo Jarvan - Harass]", "Harass")
 		Menu.Harass:addParam("HS", "Harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C"))
-		Menu.Harass:addParam("HarassEQ", "Use E+Q Combo in Harass", SCRIPT_PARAM_ONOFF, true)
+		Menu.Harass:addParam("ChangeHarass", "Change Harass Mode Key", SCRIPT_PARAM_INFO, "Key - Y")
+		Menu.Harass:addParam("Hmode", "Harass Q and E Mode", SCRIPT_PARAM_LIST, 1, {"E+Q", "Q or E", "Q Only", "E Only"})		
 		Menu.Harass:addParam("HarassQ", "Use Q in Harass", SCRIPT_PARAM_ONOFF, true)
 		Menu.Harass:addParam("HarassE", "Use E in Harass", SCRIPT_PARAM_ONOFF, true)
 		Menu.Harass:addParam("HarassMana", "% Mana for Harass", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
@@ -125,7 +142,7 @@ function OnLoad()
 --[[LaneClear]]--
 	
 	Menu:addSubMenu("[HeRo Jarvan - LaneClear]", "Clear")
-		Menu.Clear:addParam("LaneClear", "LaneClear with spells", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
+		Menu.Clear:addParam("LaneClear", "LaneClear", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
 		Menu.Clear:addParam("LaneClearQ", "Use Q in LaneClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.Clear:addParam("LaneClearE", "Use E in LaneClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.Clear:addParam("LaneClearW", "Use W in LaneClear", SCRIPT_PARAM_ONOFF, true)
@@ -134,7 +151,7 @@ function OnLoad()
 --[[JungleClear]]--
 	
 	Menu:addSubMenu("[HeRo Jarvan - JungleClear]", "JClear")
-		Menu.JClear:addParam("JungleClear", "Jungleclear with spells", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
+		Menu.JClear:addParam("JungleClear", "Jungleclear", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
 		Menu.JClear:addParam("JungleClearQ", "Use Q in JungleClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.JClear:addParam("JungleClearE", "Use E in JungleClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.JClear:addParam("JungleClearW", "Use W in JungleClear", SCRIPT_PARAM_ONOFF, true)
@@ -181,29 +198,38 @@ function OnLoad()
 --[[Others]]--
 
 	Menu:addSubMenu("[HeRo Jarvan - Others]", "Others")
-		Menu.Others:addParam("ChangeShow", "Change PermaShow Color(Green)", SCRIPT_PARAM_ONOFF, true)
-		Menu.Others:addParam("info", "Reload this(2xF9)", SCRIPT_PARAM_INFO, "")
+		Menu.Others:addSubMenu("[Change PermaShow]", "Snow")
+		Menu.Others.Snow:addParam("ChangeShow", "Change PermaShow Color(Green)", SCRIPT_PARAM_ONOFF, true)
+		Menu.Others.Snow:addParam("info", "Reload this(2xF9)", SCRIPT_PARAM_INFO, "")
 		
---[[Skin Changer]]--
-
-	if VIP_USER then 
-		Menu:addSubMenu("[HeRo Jarvan - SkinChanger]", "skin")
-	end
-
---[[Smite]]--
-
-	Menu:addSubMenu("[HeRo Jarvan - Smite Usage]", "Smite")
-  		Menu.Smite:addParam("UseSmite", "Enable Smite Usage", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("N"))
-		Menu.Smite:addParam("UseSmiteCombo", "Use Smite in Combo", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("M"))
-		Menu.Smite:addParam("StealSmite", "Use Smite on KillSteal", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("K"))
-		Menu.Smite:addParam("SRUBaron", "Smite Baron", SCRIPT_PARAM_ONOFF, true)
-		Menu.Smite:addParam("SRUDragon", "Smite Dragon", SCRIPT_PARAM_ONOFF, true)
-		Menu.Smite:addParam("SRURed", "Smite Red Buff", SCRIPT_PARAM_ONOFF, true)
-		Menu.Smite:addParam("SRUBlue", "Smite Blue Buff", SCRIPT_PARAM_ONOFF, true)
-		Menu.Smite:addParam("SRURazorbeak", "Smite Wraith", SCRIPT_PARAM_ONOFF, false)
-		Menu.Smite:addParam("SRUMurkwolf", "Smite Wolf", SCRIPT_PARAM_ONOFF, false)
-		Menu.Smite:addParam("SRUKrug", "Smite Golem", SCRIPT_PARAM_ONOFF, false)
-		Menu.Smite:addParam("SRUGromp", "Smite Gromp", SCRIPT_PARAM_ONOFF, false)
+		if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.5') ~= nil) then
+			Menu.Others:addSubMenu("[Auto level - Up]", "LVLUP")
+				Menu.Others.LVLUP:addParam("Enable", "Enable LVL-UP", SCRIPT_PARAM_ONOFF, false)
+				Menu.Others.LVLUP:addParam("Mod", "Mode:", SCRIPT_PARAM_LIST, 1, {"Auto", "Manual"})
+    			Menu.Others.LVLUP:addParam("Level13", "Level 1-3:", SCRIPT_PARAM_LIST, 1, {"Q-W-E",  "Q-E-W",  "W-Q-E",  "W-E-Q",  "E-Q-W",  "E-W-Q"})
+   				Menu.Others.LVLUP:addParam("Level418", "Level 4-18:", SCRIPT_PARAM_LIST, 1, {"Q-W-E",  "Q-E-W",  "W-Q-E",  "W-E-Q",  "E-Q-W",  "E-W-Q"})
+		end
+			if VIP_USER then
+				Menu.Others:addSubMenu("[SkinChanger]", "skin")
+			end
+			smiteslot = FindSlotByName("SummonerSmite")
+			if smiteslot ~= nil then
+		Menu.Others:addSubMenu("[Smite Usage]", "Smite")
+			Menu.Others.Smite:addParam("UseSmite", "Enable Smite Usage", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("N"))
+			Menu.Others.Smite:addParam("UseSmiteCombo", "Use Smite in Combo", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("M"))
+			Menu.Others.Smite:addParam("StealSmite", "Use Smite on KillSteal", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("K"))
+			Menu.Others.Smite:addParam('Info123', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
+			Menu.Others.Smite:addParam("info1234", "[Smite List]", SCRIPT_PARAM_INFO, "")
+			Menu.Others.Smite:addParam('Info12345', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
+			Menu.Others.Smite:addParam("SRUBaron", "Smite Baron", SCRIPT_PARAM_ONOFF, true)
+			Menu.Others.Smite:addParam("SRUDragon", "Smite Dragon", SCRIPT_PARAM_ONOFF, true)
+			Menu.Others.Smite:addParam("SRURed", "Smite Red Buff", SCRIPT_PARAM_ONOFF, true)
+			Menu.Others.Smite:addParam("SRUBlue", "Smite Blue Buff", SCRIPT_PARAM_ONOFF, true)
+			Menu.Others.Smite:addParam("SRURazorbeak", "Smite Wraith", SCRIPT_PARAM_ONOFF, false)
+			Menu.Others.Smite:addParam("SRUMurkwolf", "Smite Wolf", SCRIPT_PARAM_ONOFF, false)
+			Menu.Others.Smite:addParam("SRUKrug", "Smite Golem", SCRIPT_PARAM_ONOFF, false)
+			Menu.Others.Smite:addParam("SRUGromp", "Smite Gromp", SCRIPT_PARAM_ONOFF, false)
+		end
 	
 --[[Drawings]]--
 	
@@ -214,11 +240,12 @@ function OnLoad()
 		Menu.Drawings:addParam("DrawW", "Draw W Range", SCRIPT_PARAM_ONOFF, true)
 		Menu.Drawings:addParam("DrawE", "Draw E Range", SCRIPT_PARAM_ONOFF, true)
 		Menu.Drawings:addParam("DrawR", "Draw R Range", SCRIPT_PARAM_ONOFF, true)
+		Menu.Drawings:addParam("drawHP", "Draw HP Bar Damage", SCRIPT_PARAM_ONOFF, true)
 
 --[[Predictions]]--
 
 	Menu:addSubMenu("[HeRo Jarvan - Prediction]", "Prediction")
-  		Menu.Prediction:addParam("activePred", "Prediction (require reload)", SCRIPT_PARAM_LIST, 1, {"VPred", "DPred(Soon)", "FHPred(Soon)", "KPred(Soon)"})
+  		Menu.Prediction:addParam("activePred", "Prediction (require reload)", SCRIPT_PARAM_LIST, 1, {"VPred", "DPred", "FHPred", "SPred"})
   		if Menu.Prediction.activePred == 1 then
     		if FileExist(LIB_PATH .. "VPrediction.lua") then
       			require "VPrediction"
@@ -227,51 +254,58 @@ function OnLoad()
       			Menu.Prediction:addParam("EVPHC", "E HitChance", SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
       			DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>VPrediction Found!</b></font>") end, 4.1)
     		end
-  		--[[elseif Menu.Prediction.activePred == 2 then
+  		elseif Menu.Prediction.activePred == 2 then
     		if VIP_USER and FileExist(LIB_PATH.."DivinePred.lua") and FileExist(LIB_PATH.."DivinePred.luac") then
       			require "DivinePred"
       			DP = DivinePred()
       			Menu.Prediction:addParam("QHC", "Q HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
       			Menu.Prediction:addParam("EHC", "E HitChance %", SCRIPT_PARAM_SLICE, 75, 50, 100, 0)
-      			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>Divine Prediction Found!</b></font>")
+      			DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>Divine Prediction Found!</b></font>") end, 4.1)
     		end
   		elseif Menu.Prediction.activePred == 3 then
     		if FHPrediction.GetVersion() ~= nil then
       			if FHPrediction.GetVersion() >= 0.24 then
         			FHPred = true
-        			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>FHPrediction Found!</b></font>")
+        			DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>FHPrediction Found!</b></font>") end, 4.1)
         			Menu.Prediction:addParam("infoFH", "FHPrediction found!", SCRIPT_PARAM_INFO, "")
       			end
     		else
-      			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>FHPrediction don't Loaded!</b></font>")
+      			DelayAction(function()PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>FHPrediction don't Loaded!</b></font>") end, 4.1)
     		end
   		elseif Menu.Prediction.activePred == 4 then
-    		if FileExist(LIB_PATH.."KPrediction.lua") then
-      			require "KPrediction"
-      			KP = KPrediction()
-      			Menu.Prediction:addParam("QKPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
-      			Menu.Prediction:addParam("EKPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 1, 2, 1)
-      			PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>KPrediction Found!</b></font>")
-    	end  ]]--
+    		if FileExist(LIB_PATH.."SPrediction.lua") then
+      			require "SPrediction"
+      			SP = SPrediction()
+      			Menu.Prediction:addParam("QSPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 1.5, 0, 3, 0)
+      			Menu.Prediction:addParam("ESPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 0, 3, 0)
+      			DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>SPrediction Found!</b></font>") end, 4.1)	
+    	end
 	Menu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
-  Menu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
-  Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
-
+  	Menu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
+  	Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
   end
 
 --[[PermaShow]]--
 
-	if Menu.Others.ChangeShow then
+	if Menu.Others.Snow.ChangeShow then
 	IDPerma = Menu.Combo:permaShow("ComboMode")
+	Menu.permaShowEdit(IDPerma, "lText", "[Combo]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+
+	IDPerma = Menu.Combo:permaShow("Cmode")
 	Menu.permaShowEdit(IDPerma, "lText", "[Combo Mode]")
 	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-  IDPerma = Menu.Combo:permaShow("Burst")
-  Menu.permaShowEdit(IDPerma, "lText", "[Burst Mode]")
-  Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+  	--IDPerma = Menu.Combo:permaShow("Burst")
+  	--Menu.permaShowEdit(IDPerma, "lText", "[Burst Mode]")
+  	--Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
 	IDPerma = Menu.Harass:permaShow("HS")
 	Menu.permaShowEdit(IDPerma, "lText", "[Harass]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+
+	IDPerma = Menu.Harass:permaShow("Hmode")
+	Menu.permaShowEdit(IDPerma, "lText", "[Harass Mode]")
 	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 	
 	IDPerma = Menu.Clear:permaShow("LaneClear")
@@ -285,10 +319,6 @@ function OnLoad()
 	IDPerma = Menu.Escape:permaShow("EnableEscape")
 	Menu.permaShowEdit(IDPerma, "lText", "[Escape]")
 	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
-
-	IDPerma = Menu.Combo:permaShow("ComboSaveEQ")
-	Menu.permaShowEdit(IDPerma, "lText", "[Always save E+Q for Combo mode]")
-	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
 	
 	IDPerma = Menu.Prediction:permaShow("activePred")
 	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
@@ -296,18 +326,20 @@ function OnLoad()
 	else
 	
 	Menu.Combo:permaShow("ComboMode")
+
+	Menu.Combo:permaShow("Cmode")
 	
-	Menu.Combo:permaShow("Burst")
+	--Menu.Combo:permaShow("Burst")
 	
 	Menu.Harass:permaShow("HS")
+
+	Menu.Harass:permaShow("Hmode")
 	
 	Menu.Clear:permaShow("LaneClear")
 	
 	Menu.JClear:permaShow("JungleClear")
 	
 	Menu.Escape:permaShow("EnableEscape")
-	
-	Menu.Combo:permaShow("ComboSaveEQ")
 	
 	Menu.Prediction:permaShow("activePred")
 	end
@@ -323,9 +355,17 @@ function OnTick()
 	if myHero.dead then return end
 	spell_check()
 	GetSmiteSlot()
+	ChangeComboMode()
+	ChangeHarassMode()
 
-  if SMITE then
-    if Menu.Smite.UseSmite then
+	if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.5') ~= nil) then
+		if (LastLevel < myHero.level) then
+			LevelUp()
+		end
+	end
+
+  	if SMITE then
+    if Menu.Others.Smite.UseSmite then
       AutoSmite()
     end
 	end
@@ -334,7 +374,7 @@ function OnTick()
 		JarvanCombo()
 		CastItemsF()
 		if Menu.Combo.ComboR then
-			DelayAction(function() UseR() end, 0.55)
+			DelayAction(function() UseR() end, 0.6)
 		end
 		UseW()
 	end
@@ -425,29 +465,29 @@ end
 --[[Combo]]--
 
 function JarvanCombo()
-	if Qready and Eready and Menu.Combo.ComboEQ then
+	if Menu.Combo.Cmode == 1 and Qready and Eready and Menu.Combo.ComboQ and Menu.Combo.ComboE then
 		if ValidTarget(ts.target, 900) then
 			CastE(ts.target)
 			DelayAction(function() CastQ(ts.target) end, 0.3)
 		end
-	elseif Qready and not Eready and not Menu.Combo.ComboSaveEQ then
+	elseif Menu.Combo.Cmode == 2 and Qready and Menu.Combo.ComboQ then
 		if ValidTarget(ts.target, 800) then
 			CastQ(ts.target)
 		end
-	elseif not Qready and Eready and not Menu.Combo.ComboSaveEQ then
+	elseif Menu.Combo.Cmode == 2 and Eready and Menu.Combo.ComboE then
 		if ValidTarget(ts.target, 900) then
 			CastE(ts.target)
 		end
-	elseif Qready and not Eready and Menu.Combo.ComboQ then
+	elseif Menu.Combo.Cmode == 3 and Qready and not Eready and Menu.Combo.ComboQ then
 		if ValidTarget(ts.target, 800) then
 			CastQ(ts.target)
 		end
-	elseif not Qready and Eready and Menu.Combo.ComboE then
+	elseif Menu.Combo.Cmode == 4 and not Qready and Eready and Menu.Combo.ComboE then
 		if ValidTarget(ts.target, 900) then
 			CastE(ts.target)
 		end
 	end
-	if SMITE and ATTACKSMITE3 and Menu.Smite.UseSmiteCombo and GetDlina(myHero, ts.target) <= 560 then
+	if SMITE and ATTACKSMITE3 and Menu.Others.Smite.UseSmiteCombo and GetDlina(myHero, ts.target) <= 560 then
     CastSmite(ts.target)
   end
 end
@@ -495,7 +535,7 @@ function KSteal()
 			end
 		end
 		if GetDlina(myHero, enemy) <= 560 then
-      if SMITE and ATTACKSMITE and Menu.Smite.StealSmite then
+      if SMITE and ATTACKSMITE and Menu.Others.Smite.StealSmite then
         local SmiteDmg = GetAttackSmiteDamage()
         if SmiteDmg >= enemy.health and SpellReady(SMITESLOT) and not enemy.dead then
           CastSmite(enemy)
@@ -559,16 +599,24 @@ function Harass()
 end
 
 function HarassEorQ()
-	if Qready and Eready and Menu.Harass.HarassEQ then
+	if Menu.Harass.Hmode == 1 and Qready and Eready then
 		if ValidTarget(ts.target, 900) then
 			CastE(ts.target)
 			DelayAction(function() CastQ(ts.target) end, 0.3)
 		end
-	elseif Qready and not Eready and Menu.Harass.HarassQ and Menu.Harass.HarassEQ then
+	elseif Menu.Harass.Hmode == 2 and Qready and Menu.Harass.HarassQ then
 		if ValidTarget(ts.target, 800) then
 			CastQ(ts.target)
 		end
-	elseif not Qready and Eready and Menu.Harass.HarassE and Menu.Harass.HarassEQ then
+	elseif Menu.Harass.Hmode == 2 and Eready and Menu.Harass.HarassE then
+		if ValidTarget(ts.target, 900) then
+			CastE(ts.target)
+		end
+	elseif Menu.Harass.Hmode == 3 and Qready and not Qready and Menu.Harass.HarassQ then
+		if ValidTarget(ts.target, 800) then
+			CastQ(ts.target)
+		end
+	elseif Menu.Harass.Hmode == 4 and Eready and not Eready and Menu.Harass.HarassE then
 		if ValidTarget(ts.target, 900) then
 			CastE(ts.target)
 		end
@@ -632,6 +680,10 @@ end
 function OnDraw()
 	if myHero.dead then return end
 	if Menu.Drawings.AllDraw then
+
+		if Menu.Drawings.drawHP then
+      		DrawHPbar()
+    	end
 	
 		if Menu.Drawings.DrawQ and Qready then
 			DrawCircle(myHero.x, myHero.y, myHero.z, 700, ARGB(255, 0, 0, 80))
@@ -713,6 +765,24 @@ function CastQ(unit)
     	local CastPosition, HitChance = VP:GetLineCastPosition(unit, 0.5, VARS.Q.WIDTH, VARS.Q.RANGE, VARS.Q.SPEED, myHero, false)
     	if HitChance >= Menu.Prediction.QVPHC then
       	CastSpell(_Q, CastPosition.x, CastPosition.z)
+    	end
+  	end
+  	if DP ~= nil then
+    	local state,hitPos,perc = DP:predict(nil,unit,myHero,SkillShot.TYPE.LINE,VARS.Q.SPEED,VARS.Q.RANGE,VARS.Q.WIDTH,0.5*1000,0,{Minions = false,Champions = false})
+    	if perc >= Menu.Prediction.QHC then
+      		CastSpell(_Q, hitPos.x, hitPos.z)
+    	end
+  	end
+  	if FHPred and Menu.Prediction.activePred == 3 then
+    	local CastPosition, hc, info = FHPrediction.GetPrediction("Q", unit)
+    	if hc > 0 and CastPosition ~= nil then
+      		CastSpell(_Q, CastPosition.x, CastPosition.z)
+    	end
+  	end
+  	if SP ~= nil then
+    	local CastPosition, Chance, PredPos = SP:Predict(unit, VARS.Q.RANGE, VARS.Q.SPEED, VARS.Q.DELAY, VARS.Q.WIDTH, false, myHero)
+    	if Chance >= Menu.Prediction.QSPHC then
+      	CastSpell(_Q, CastPosition.x, CastPosition.z)
     end
   end
 end
@@ -724,6 +794,24 @@ function CastE(unit)
   	if VP ~= nil then
     	local CastPosition, HitChance = VP:GetLineCastPosition(unit, 0.5, VARS.E.WIDTH, 830, VARS.E.SPEED, myHero, false)
     	if HitChance >= Menu.Prediction.EVPHC then
+      		CastSpell(_E, CastPosition.x, CastPosition.z)
+    	end
+  	end
+  	 if DP ~= nil then
+    	local state,hitPos,perc = DP:predict(nil,unit,myHero,SkillShot.TYPE.CIRCLE,VARS.E.SPEED,VARS.E.RANGE,VARS.E.WIDTH,0.5*1000,0,{Minions = false,Champions = false})
+    	if perc >= Menu.Prediction.EHC then
+      		CastSpell(_E, hitPos.x, hitPos.z)
+    	end
+  	end
+  	if FHPred and Menu.Prediction.activePred == 3 then
+    	local CastPosition, hc, info = FHPrediction.GetPrediction("E", unit)
+    	if hc > 0 and CastPosition ~= nil then
+      		CastSpell(_E, CastPosition.x, CastPosition.z)
+    	end
+  	end
+  	if SP ~= nil then
+    	local CastPosition, Chance, PredPos = SP:Predict(unit, VARS.Q.RANGE, VARS.Q.SPEED, VARS.Q.DELAY, VARS.Q.WIDTH, false, myHero)
+    	if Chance >= Menu.Prediction.ESPHC then
       	CastSpell(_E, CastPosition.x, CastPosition.z)
     end
   end
@@ -1076,7 +1164,7 @@ function AutoSmite()
   local SmiteDmg = GetSmiteDamage()
   for _, jminions in pairs(jungleMinions.objects) do
     if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
-      if Menu.Smite[jminions.charName:gsub("_", "")] then
+      if Menu.Others.Smite[jminions.charName:gsub("_", "")] then
         if SpellReady(SMITESLOT) and GetDlina(myHero, jminions) <= 560 and SmiteDmg >= jminions.health then
           CastSpell(SMITESLOT, jminions)
         end
@@ -1085,28 +1173,246 @@ function AutoSmite()
   end
 end
 
+local selectedCombo = 1
+local selectedHarass = 1
+function OnWndMsg(msg, key)
+    if msg == KEY_UP and key == GetKey("T") then
+        selectedCombo = selectedCombo >= 4 and 1 or (selectedCombo + 1)
+        print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>New Combo mode: </b></font> "..PrintComboMode(msgg))
+    end
+    if msg == KEY_UP and key == GetKey("Y") then
+    	selectedHarass = selectedHarass >=4 and 1 or (selectedHarass + 1)
+    	print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>New Harass mode: </b></font> "..PrintHarassMode(msgg))
+    end
+end
+
+function ChangeComboMode()
+	if selectedCombo == 1 then Menu.Combo.Cmode = 1
+		elseif selectedCombo == 2 then Menu.Combo.Cmode = 2
+		elseif selectedCombo == 3 then Menu.Combo.Cmode = 3
+		elseif selectedCombo == 4 then Menu.Combo.Cmode = 4
+	end
+end
+
+function ChangeHarassMode()
+	if selectedHarass == 1 then Menu.Harass.Hmode = 1
+		elseif selectedHarass == 2 then Menu.Harass.Hmode = 2
+		elseif selectedHarass == 3 then Menu.Harass.Hmode = 3
+		elseif selectedHarass == 4 then Menu.Harass.Hmode = 4
+	end
+end
+
+function PrintComboMode(msgg)
+	if Menu.Combo.Cmode == 1 then msgg = 'Q + E'
+		elseif Menu.Combo.Cmode == 2 then msgg = 'Q or E'
+		elseif Menu.Combo.Cmode == 3 then msgg = 'Q Only'
+		elseif Menu.Combo.Cmode == 4 then msgg = 'E Only'
+	end
+	return msgg
+end
+
+function PrintHarassMode(msgg)
+	if Menu.Harass.Hmode == 1 then msgg = 'Q + E'
+		elseif Menu.Harass.Hmode == 2 then msgg = 'Q or E'
+		elseif Menu.Harass.Hmode == 3 then msgg = 'Q Only'
+		elseif Menu.Harass.Hmode == 4 then msgg = 'E Only'
+	end
+	return msgg
+end
+
 -- Credits PvPSuite
 function SkinLoad()
-    Menu.skin:addParam('changeSkin', 'Change Skin', SCRIPT_PARAM_ONOFF, false);
-    Menu.skin:setCallback('changeSkin', function(nV)
+    Menu.Others.skin:addParam('changeSkin', 'Change Skin', SCRIPT_PARAM_ONOFF, false);
+    Menu.Others.skin:setCallback('changeSkin', function(nV)
         if (nV) then
-            SetSkin(myHero, Menu.skin.skinID)
+            SetSkin(myHero, Menu.Others.skin.skinID)
         else
             SetSkin(myHero, -1)
         end
     end)
-    Menu.skin:addParam('skinID', 'Skin', SCRIPT_PARAM_LIST, 1, {"Commando", "Dragonslayer", "Darkforge", "Victorious", "Warring Kingdoms", "Fnatic", "Classic"})
-    Menu.skin:setCallback('skinID', function(nV)
-        if (Menu.skin.changeSkin) then
+    Menu.Others.skin:addParam('skinID', 'Skin', SCRIPT_PARAM_LIST, 1, {"Commando", "Dragonslayer", "Darkforge", "Victorious", "Warring Kingdoms", "Fnatic", "Classic"})
+    Menu.Others.skin:setCallback('skinID', function(nV)
+        if (Menu.Others.skin.changeSkin) then
             SetSkin(myHero, nV)
         end
     end)
     
-    if (Menu.skin.changeSkin) then
-        SetSkin(myHero, Menu.skin.skinID)
+    if (Menu.Others.skin.changeSkin) then
+        SetSkin(myHero, Menu.Others.skin.skinID)
     end
 end
 -- Credits PvPSuite
+
+function DrawLineA(x1, y1, x2, y2, color)
+  DrawLine(x1, y1, x2, y2, 1, color)
+end
+
+function LevelUp()
+	if Menu.Others.LVLUP.Enable then
+		if Menu.Others.LVLUP.Mod == 1 then
+			Sequence = Sequences[myHero.charName]
+		elseif myHero.level < 4 then
+			Sequence = Sequences[Menu.Others.LVLUP.Level13]
+		else
+			Sequence = Sequences[Menu.Others.LVLUP.Level418]
+		end
+			
+		LevelSpell(Sequence[myHero.level])
+		
+		if myHero.level < 18 then
+			PrintChat("<font color='#00BFFF'>This Level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level]].."</font><font color='#00BFFF'><font color='#FF0000'> ===></font> Next level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level + 1]].. "</font><font color='#EE82EE'>. </font>")
+		end		
+		LastLevel = myHero.level
+	else
+	end
+end
+
+if VIP_USER then
+_G.LevelSpell = function(id)
+  if (string.find(GetGameVersion(), 'Releases/6.5') ~= nil) then
+local offsets = { 
+  [1] = 0x56,
+  [2] = 0x17,
+  [3] = 0x42,
+  [4] = 0x6D,
+  }
+  local p = CLoLPacket(0x007A)
+  p.vTable = 0xEF9B8C
+  p:EncodeF(myHero.networkID)
+  p:Encode4(0x03)
+  p:Encode4(0x1C)
+  p:Encode4(0x07)
+  p:Encode1(0x75)
+  p:Encode1(offsets[id])
+  SendPacket(p)
+end
+end
+end
+
+function GetQDamage(unit)
+  
+  local Qlvl = myHero:GetSpellData(_Q).level
+  if Qlvl < 1 then return 0 end
+  local QDmg = {70, 115, 160, 205, 250}
+  local QDmgMod = 1.2
+  local DmgRaw = QDmg[Qlvl] + myHero.totalDamage * QDmgMod
+  local Dmg = myHero:CalcDamage(unit, DmgRaw)
+  return Dmg
+end
+
+function GetEDamage(unit)
+  
+  local Elvl = myHero:GetSpellData(_E).level
+  if Elvl < 1 then return 0 end
+  local EDmg = {60, 105, 150, 195, 240}
+  local EDmgMod = 0.8
+  local DmgRaw = EDmg[Elvl] + (myHero.ap * EDmgMod)
+  local Dmg = myHero:CalcDamage(unit, DmgRaw)
+  return Dmg
+end
+
+function GetRDamage(unit)
+  
+  local Rlvl = myHero:GetSpellData(_R).level
+  if Rlvl < 1 then return 0 end
+  local RDmg = {200, 325, 450}
+  local RDmgMod = 1.5
+  local DmgRaw = RDmg[Rlvl] + (myHero.totalDamage * RDmgMod)
+  local Dmg = myHero:CalcDamage(unit, DmgRaw)
+  return Dmg
+end
+
+
+function DrawLineHPBar(damage, text, unit, enemyteam)
+  if unit.dead or not unit.visible then return end
+  local p = WorldToScreen(D3DXVECTOR3(unit.x, unit.y, unit.z))
+  if not OnScreen(p.x, p.y) then return end
+  local thedmg = 0
+  local line = 2
+  local linePosA  = {x = 0, y = 0 }
+  local linePosB  = {x = 0, y = 0 }
+  local TextPos   = {x = 0, y = 0 }
+
+  if damage >= unit.health then
+    thedmg = unit.health - 1
+    text = "KILLABLE!"
+  else
+    thedmg = damage
+    text = "Possible Damage"
+  end
+
+  thedmg = math.round(thedmg)
+
+  local StartPos, EndPos = GetHPBarPos(unit)
+  local Real_X = StartPos.x + 24
+  local Offs_X = (Real_X + ((unit.health - thedmg) / unit.maxHealth) * (EndPos.x - StartPos.x - 2))
+  if Offs_X < Real_X then Offs_X = Real_X end 
+  local mytrans = 350 - math.round(255*((unit.health-thedmg)/unit.maxHealth))
+  if mytrans >= 255 then mytrans=254 end
+  local my_bluepart = math.round(400*((unit.health-thedmg)/unit.maxHealth))
+  if my_bluepart >= 255 then my_bluepart=254 end
+
+  if enemyteam then
+    linePosA.x = Offs_X-150
+    linePosA.y = (StartPos.y-(30+(line*15)))    
+    linePosB.x = Offs_X-150
+    linePosB.y = (StartPos.y-10)
+    TextPos.x = Offs_X-148
+    TextPos.y = (StartPos.y-(30+(line*15)))
+  else
+    linePosA.x = Offs_X-125
+    linePosA.y = (StartPos.y-(30+(line*15)))    
+    linePosB.x = Offs_X-125
+    linePosB.y = (StartPos.y-15)
+
+    TextPos.x = Offs_X-122
+    TextPos.y = (StartPos.y-(30+(line*15)))
+  end
+
+  DrawLine(linePosA.x, linePosA.y, linePosB.x, linePosB.y , 2, ARGB(mytrans, 255, my_bluepart, 0))
+  DrawText(tostring(thedmg).." "..tostring(text), 15, TextPos.x, TextPos.y , ARGB(mytrans, 255, my_bluepart, 0))
+end
+
+function DrawHPbar()
+  for i, HPbarEnemyChamp in pairs(GetEnemyHeroes()) do
+    if not HPbarEnemyChamp.dead and HPbarEnemyChamp.visible then
+      local dmg = myHero:CalcDamage(HPbarEnemyChamp, myHero.totalDamage)
+      if myHero:CanUseSpell(_Q) == READY and not HPbarEnemyChamp.dead then
+        dmg = dmg + GetQDamage(HPbarEnemyChamp)
+      end
+      if myHero:CanUseSpell(_E) == READY and not HPbarEnemyChamp.dead then
+        dmg = dmg + GetEDamage(HPbarEnemyChamp)
+      end
+      if myHero:CanUseSpell(_R) == READY and not HPbarEnemyChamp.dead then
+      	dmg = dmg + GetRDamage(HPbarEnemyChamp)
+      end
+      if igniteslot ~= nil then
+        if SpellReady(igniteslot) then
+          dmg = dmg + (50 + 20*myHero.level)
+        end
+      end
+      DrawLineHPBar(dmg, "", HPbarEnemyChamp, HPbarEnemyChamp.team)
+    end
+  end
+end
+
+function GetHPBarPos(enemy)
+  enemy.barData = {PercentageOffset = {x = -0.05, y = 0}}
+  local barPos = GetUnitHPBarPos(enemy)
+  local barPosOffset = GetUnitHPBarOffset(enemy)
+  local barOffset = { x = enemy.barData.PercentageOffset.x, y = enemy.barData.PercentageOffset.y }
+  local barPosPercentageOffset = { x = enemy.barData.PercentageOffset.x, y = enemy.barData.PercentageOffset.y }
+  local BarPosOffsetX = -50
+  local BarPosOffsetY = 46
+  local CorrectionY = 39
+  local StartHpPos = 31 
+  barPos.x = math.floor(barPos.x + (barPosOffset.x - 0.5 + barPosPercentageOffset.x) * BarPosOffsetX + StartHpPos)
+  barPos.y = math.floor(barPos.y + (barPosOffset.y - 0.5 + barPosPercentageOffset.y) * BarPosOffsetY + CorrectionY)
+  local StartPos = Vector(barPos.x , barPos.y, 0)
+  local EndPos = Vector(barPos.x + 108 , barPos.y , 0)    
+  return Vector(StartPos.x, StartPos.y, 0), Vector(EndPos.x, EndPos.y, 0)
+end
+
 --Credits SxTeam
 class "ScriptUpdate"
 function ScriptUpdate:__init(LocalVersion,UseHttps, Host, VersionPath, ScriptPath, SavePath, CallbackUpdate, CallbackNoUpdate, CallbackNewVersion,CallbackError)
