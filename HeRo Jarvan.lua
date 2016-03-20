@@ -14,7 +14,7 @@
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-local version = "1.711"
+local version = "1.712"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
@@ -40,7 +40,7 @@ local DANGERSPELL = {"MordekaiserChildrenOfTheGrave", "SkarnerImpale", "LuxLight
 "SejuaniGlacialPrisonStart", "SwainShadowGrasp", "Imbue", "ThreshQ", "UrgotSwap2", "VarusR", "VeigarEventHorizon", "ViR", "InfiniteDuress", "ZyraGraspingRoots",
 "paranoiamisschance", "puncturingtauntarmordebuff", "surpression", "zedulttargetmark", "enchantedcrystalarrow", "nasusw"}
 local VARS = {
-  AA = {RANGE = 260},
+  AA = {RANGE = 265},
   Q = {RANGE = 770, WIDTH = 70, DELAY = 0.1, SPEED = math.huge},
   W = {RANGE = 525, WIDTH = 525, DELAY = 0.1, SPEED = nil},
   E = {RANGE = 830, WIDTH = 75, DELAY = 0.1, SPEED = math.huge},
@@ -78,7 +78,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam
  local ToUpdate = {}
-    ToUpdate.Version = 1.711
+    ToUpdate.Version = 1.712
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
@@ -242,6 +242,10 @@ function OnLoad()
 		Menu.Drawings:addParam("DrawR", "Draw R Range", SCRIPT_PARAM_ONOFF, true)
 		Menu.Drawings:addParam("drawHP", "Draw HP Bar Damage", SCRIPT_PARAM_ONOFF, true)
 
+		Menu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
+  		Menu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
+  		Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
+
 --[[Predictions]]--
 
 	Menu:addSubMenu("[HeRo Jarvan - Prediction]", "Prediction")
@@ -279,10 +283,7 @@ function OnLoad()
       			Menu.Prediction:addParam("QSPHC", "Q HitChance", SCRIPT_PARAM_SLICE, 1.5, 0, 3, 0)
       			Menu.Prediction:addParam("ESPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 0, 3, 0)
       			DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>SPrediction Found!</b></font>") end, 4.1)	
-    	end
-	Menu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
-  	Menu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
-  	Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
+    		end
   end
 
 --[[PermaShow]]--
@@ -355,8 +356,8 @@ function OnTick()
 	if myHero.dead then return end
 	spell_check()
 	GetSmiteSlot()
-	ChangeComboMode()
-	ChangeHarassMode()
+	--ChangeComboMode()
+	--ChangeHarassMode()
 
 	if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.5') ~= nil) then
 		if (LastLevel < myHero.level) then
@@ -471,10 +472,10 @@ function JarvanCombo()
 			DelayAction(function() CastQ(ts.target) end, 0.3)
 		end
 	elseif Menu.Combo.Cmode == 2 and Menu.Combo.ComboE then
-		if ValidTarget(ts.target, 800) and Eready then
+		if ValidTarget(ts.target, 800) then
 			CastE(ts.target)
 			if Menu.Combo.ComboE then
-				if ValidTarget(ts.target, 900) and Qready then
+				if ValidTarget(ts.target, 900) then
 					CastQ(ts.target)
 				end
 			end
@@ -594,22 +595,16 @@ end
 --[[Harass]]--
 
 function Harass()
-	if Menu.Harass.HarassEQ then
-		HarassEorQ()
-	end
-end
-
-function HarassEorQ()
 	if Menu.Harass.Hmode == 1 and Qready and Eready then
 		if ValidTarget(ts.target, 900) then
 			CastE(ts.target)
 			DelayAction(function() CastQ(ts.target) end, 0.3)
 		end
 	elseif Menu.Harass.Hmode == 2 and Menu.Harass.HarassE then
-		if ValidTarget(ts.target, 800) and Eready then
+		if ValidTarget(ts.target, 900) then
 			CastE(ts.target)
 			if Menu.Harass.HarassQ then
-				if ValidTarget(ts.target, 900) and Qready then
+				if ValidTarget(ts.target, 900) then
 					CastQ(ts.target)
 				end
 			end
