@@ -11,11 +11,10 @@
 ---1.1 - Open Beta---
 ---1.2 - 1.5 - New Auto-Updater, SkinChanger, BugFixed---
 ---1.6 - Fix KS Smite Error---
----1.7 - Big Update---
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-local version = "1.71"
+local version = "1.711"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
@@ -25,7 +24,6 @@ local VP, DP, SP = nil
 local FHPred = false
 local ts
 local Menu
-local selectedCombo = 1
 local Qready, Wready, Eready, Rready = false, false, false, false
 local REGENTIME = false
 local SMITE, ATTACKSMITE = false
@@ -80,7 +78,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam
  local ToUpdate = {}
-    ToUpdate.Version = 1.71
+    ToUpdate.Version = 1.711
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
@@ -690,24 +688,24 @@ function OnDraw()
     	end
 	
 		if Menu.Drawings.DrawQ and Qready then
-			DrawCircle(myHero.x, myHero.y, myHero.z, 700, ARGB(255, 0, 0, 80))
+			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.Q.RANGE, ARGB(255, 0, 0, 80))
 		end	
 
 		if Menu.Drawings.DrawW and Wready then
-			DrawCircle(myHero.x, myHero.y, myHero.z, 525, ARGB(255, 0, 0, 80))
+			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.W.RANGE, ARGB(255, 0, 0, 80))
 		end
 
 		if Menu.Drawings.DrawE and Eready then
-			DrawCircle(myHero.x, myHero.y, myHero.z, 830, ARGB(255, 0, 0, 80))
+			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.E.RANGE, ARGB(255, 0, 0, 80))
 		end
 
 		if Menu.Drawings.DrawAA then
-			DrawCircle(myHero.x, myHero.y, myHero.z, 250, ARGB(255, 0, 0, 80))
+			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.AA.RANGE, ARGB(255, 0, 0, 80))
 		end
 	
 		if Menu.Drawings.DrawR and Rready then
-			DrawCircle(myHero.x, myHero.y, myHero.z, 650, ARGB(255, 0, 0, 80))
-		end
+			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.R.RANGE, ARGB(255, 0, 0, 80))
+		end 
 	end
 end
 
