@@ -40,7 +40,7 @@ local DANGERSPELL = {"MordekaiserChildrenOfTheGrave", "SkarnerImpale", "LuxLight
 "SejuaniGlacialPrisonStart", "SwainShadowGrasp", "Imbue", "ThreshQ", "UrgotSwap2", "VarusR", "VeigarEventHorizon", "ViR", "InfiniteDuress", "ZyraGraspingRoots",
 "paranoiamisschance", "puncturingtauntarmordebuff", "surpression", "zedulttargetmark", "enchantedcrystalarrow", "nasusw"}
 local VARS = {
-  AA = {RANGE = 250},
+  AA = {RANGE = 260},
   Q = {RANGE = 770, WIDTH = 70, DELAY = 0.1, SPEED = math.huge},
   W = {RANGE = 525, WIDTH = 525, DELAY = 0.1, SPEED = nil},
   E = {RANGE = 830, WIDTH = 75, DELAY = 0.1, SPEED = math.huge},
