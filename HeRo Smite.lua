@@ -24,7 +24,7 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local version = "2.1112"
+local version = "2.11122"
 local SMITE, ATTACKSMITE = false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
 local SMITEFOCUS = {"SRU_Blue1.1.1", "SRU_Blue7.1.1", "SRU_Murkwolf2.1.1", "SRU_Murkwolf8.1.1", "SRU_Gromp13.1.1", "SRU_Gromp14.1.1", "Sru_Crab16.1.1", 
@@ -50,7 +50,7 @@ end
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 2.1112
+    ToUpdate.Version = 2.11122
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Smite.version"
@@ -79,6 +79,7 @@ function MenuInit()
     Menu:addSubMenu("Draw", "Draw")
 		Menu.Draw:addParam("drawSmite", "Draw Smite Range " , SCRIPT_PARAM_ONOFF, true)
 		Menu.Draw:addParam("drawSmitetext", "Draw Smite Process Text", SCRIPT_PARAM_ONOFF, true)
+		Menu.Draw:addParam("drawSmitetarget", "Draw Smite Target", SCRIPT_PARAM_ONOFF, true)
 		
 	Menu:addSubMenu("Smite Monsters:", "smite")
 		if GetGame().map.shortName == "twistedTreeline" then
@@ -861,12 +862,17 @@ end
 
 function OnDraw()
 	if myHero.dead then return end
-    if Menu.Draw.drawSmite and SpellReady(SMITESLOT) then
-      	DrawCircle(myHero.x, myHero.y, myHero.z, 560, ARGB(255, 100, 100, 80))
-    end
-    if Menu.Draw.drawSmitetext then
-        DrawSmiteable()
-    end
+	if SpellReady(SMITESLOT) then 
+	    if Menu.Draw.drawSmite then
+	      	DrawCircle(myHero.x, myHero.y, myHero.z, 560, ARGB(255, 100, 100, 80))
+	    end
+	    if Menu.Draw.drawSmitetext then
+	        DrawSmiteable()
+	    end
+	    if Menu.Draw.drawSmitetarget then
+	    	DrawSmiteTarget()
+	    end
+	end
 end
 
 function DrawSmiteable()
@@ -877,8 +883,23 @@ function DrawSmiteable()
         		if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
         			local posMinion = WorldToScreen(D3DXVECTOR3(jminions.x, jminions.y, jminions.z))
         			local SmiteProcess = math.round(jminions.health - SmiteDmg)
-        			if SpellReady(SMITESLOT) and GetDlina(myHero, jminions) <= 560 then
+        			if SpellReady(SMITESLOT) and GetDlina(myHero, jminions) <= 560 and Menu.smite[jminions.charName:gsub("_", "")] then
             			DrawText("Smite Process - "..SmiteProcess, 20, posMinion.x, posMinion.y, ARGB(255,255,0,0))
+          			end
+        		end
+      		end
+    	end
+  	end
+end
+
+function DrawSmiteTarget()
+  	for _, jminions in pairs(jungleMinions.objects) do
+    	for k = 1, #SMITEFOCUS do
+      		if jminions.name == SMITEFOCUS[k] then
+        		if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
+        			local posMinion = WorldToScreen(D3DXVECTOR3(jminions.x, jminions.y, jminions.z))
+        			if SpellReady(SMITESLOT) and GetDlina(myHero, jminions) <= 560 and Menu.smite[jminions.charName:gsub("_", "")] then
+            			DrawCircle(jminions.x, jminions.y,jminions.z, 150, ARGB(255, 100, 100, 80))
           			end
         		end
       		end
