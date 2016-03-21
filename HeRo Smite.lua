@@ -24,9 +24,12 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local version = "2.1111"
+local version = "2.1112"
 local SMITE, ATTACKSMITE = false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
+local SMITEFOCUS = {"SRU_Blue1.1.1", "SRU_Blue7.1.1", "SRU_Murkwolf2.1.1", "SRU_Murkwolf8.1.1", "SRU_Gromp13.1.1", "SRU_Gromp14.1.1", "Sru_Crab16.1.1", 
+"Sru_Crab15.1.1", "SRU_Red10.1.1", "SRU_Red4.1.1", "SRU_Krug11.1.2", "SRU_Krug5.1.2", "SRU_Razorbeak9.1.1", "SRU_Razorbeak3.1.1", "SRU_Dragon6.1.1", 
+"SRU_Baron12.1.1", "TT_NWraith1.1.1", "TT_NGolem2.1.1", "TT_NWolf3.1.1", "TT_NWraith4.1.1", "TT_NGolem5.1.1", "TT_NWolf6.1.1", "TT_Spiderboss8.1.1"}
 
 
 -- BoL Tools Tracker --
@@ -47,61 +50,62 @@ end
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 2.1111
+    ToUpdate.Version = 2.1112
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
-    ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
-    ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.lua"
+    ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Smite.version"
+    ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Smite.lua"
     ToUpdate.SavePath = LIB_PATH.."/HeRo Smite_Test.lua"
-    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
-    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
-    ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
-    ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
+    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
+    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
+    ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
+    ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
 --Credits SxTeam    
 	jungleMinions = minionManager(MINION_JUNGLE, RangeSmite, myHero, MINION_SORT_MAXHEALTH_DEC)
-	HSMenuInit()
+	MenuInit()
 end
 
-function HSMenuInit()
-	HSMenu = scriptConfig("HeRo Smite", "HSSmite")
+function MenuInit()
+	Menu = scriptConfig("HeRo Smite", "HeRo Smite")
 	
-	HSMenu:addParam('Info', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
+	Menu:addParam('Info', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
-	HSMenu:addParam("StealSmite", "Use Smite on KillSteal", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("K"))
-	HSMenu:addParam("SmiteActive", "Smite Active", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("H"))
-	HSMenu:addParam("UseSpells", "Use Spells", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("N"))
+	Menu:addParam("StealSmite", "Use Smite on KillSteal", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("K"))
+	Menu:addParam("SmiteActive", "Smite Active", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("H"))
+	Menu:addParam("UseSpells", "Use Spells", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("N"))
 	
 
-    HSMenu:addSubMenu("Draw", "Draw")
-		HSMenu.Draw:addParam("drawSmite", "Draw Smite Range " , SCRIPT_PARAM_ONOFF, true)
+    Menu:addSubMenu("Draw", "Draw")
+		Menu.Draw:addParam("drawSmite", "Draw Smite Range " , SCRIPT_PARAM_ONOFF, true)
+		Menu.Draw:addParam("drawSmitetext", "Draw Smite Process Text", SCRIPT_PARAM_ONOFF, true)
 		
-	HSMenu:addSubMenu("Smite Monsters:", "smite")
+	Menu:addSubMenu("Smite Monsters:", "smite")
 		if GetGame().map.shortName == "twistedTreeline" then
-			HSMenu.smite:addParam("TTNWraith", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, true)
-			HSMenu.smite:addParam("TTNGolem", "Use Smite on: Golem", SCRIPT_PARAM_ONOFF, true)
-			HSMenu.smite:addParam("TTNWolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, true)
-			HSMenu.smite:addParam("TTSpiderboss", "Use Smite on: SpiderBoss", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("TTNWraith", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("TTNGolem", "Use Smite on: Golem", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("TTNWolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("TTSpiderboss", "Use Smite on: SpiderBoss", SCRIPT_PARAM_ONOFF, true)
 		else
-			HSMenu.smite:addParam("SRUDragon", "Use Smite on: Dragon", SCRIPT_PARAM_ONOFF, true)
-			HSMenu.smite:addParam("SRUBaron", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
-			HSMenu.smite:addParam("SRURazorbeak", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, false)
-			HSMenu.smite:addParam("SRUMurkwolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, false)
-			HSMenu.smite:addParam("SRUKrug", "Use Smite on: Krug", SCRIPT_PARAM_ONOFF, false)
-			HSMenu.smite:addParam("SRUGromp", "Use Smite on: Gromp", SCRIPT_PARAM_ONOFF, false)
-			HSMenu.smite:addParam("SRURed", "Use Smite on: Red Buff", SCRIPT_PARAM_ONOFF, true)
-			HSMenu.smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("SRUDragon", "Use Smite on: Dragon", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("SRUBaron", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("SRURazorbeak", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, false)
+			Menu.smite:addParam("SRUMurkwolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, false)
+			Menu.smite:addParam("SRUKrug", "Use Smite on: Krug", SCRIPT_PARAM_ONOFF, false)
+			Menu.smite:addParam("SRUGromp", "Use Smite on: Gromp", SCRIPT_PARAM_ONOFF, false)
+			Menu.smite:addParam("SRURed", "Use Smite on: Red Buff", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
 		end
-	HSMenu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
-  	HSMenu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
-  	HSMenu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
+	Menu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
+  	Menu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
+  	Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
 		
-	IDPerma = HSMenu:permaShow("SmiteActive")
-	HSMenu.permaShowEdit(IDPerma, "lText", "[HeRo Smite Active]")
-	HSMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
-	IDPerma = HSMenu:permaShow("UseSpells")
-	HSMenu.permaShowEdit(IDPerma, "lText", "[HeRo Smite - Use Spells]")
-	HSMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+	IDPerma = Menu:permaShow("SmiteActive")
+	Menu.permaShowEdit(IDPerma, "lText", "[HeRo Smite Active]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+	IDPerma = Menu:permaShow("UseSpells")
+	Menu.permaShowEdit(IDPerma, "lText", "[HeRo Smite - Use Spells]")
+	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 end
 
 function GetSmiteDamage()
@@ -791,7 +795,7 @@ function KillStealSmite()
     	if not enemy.dead and enemy.visible then
       		if ValidTarget(enemy, 1000) then
 				if GetDlina(myHero, enemy) <= 560 then
-      				if SMITE and ATTACKSMITE and HSMenu.StealSmite then
+      				if SMITE and ATTACKSMITE and Menu.StealSmite then
         				local SmiteDmg = GetAttackSmiteDamage()
         				if SmiteDmg >= enemy.health and SpellReady(SMITESLOT) and not enemy.dead then
           					CastSmite(enemy)
@@ -855,12 +859,39 @@ function CastSmite(target)
   end
 end
 
+function OnDraw()
+	if myHero.dead then return end
+    if Menu.Draw.drawSmite and SpellReady(SMITESLOT) then
+      	DrawCircle(myHero.x, myHero.y, myHero.z, 560, ARGB(255, 100, 100, 80))
+    end
+    if Menu.Draw.drawSmitetext then
+        DrawSmiteable()
+    end
+end
+
+function DrawSmiteable()
+  	local SmiteDmg = GetSmiteDamage()
+  	for _, jminions in pairs(jungleMinions.objects) do
+    	for j = 1, #SMITEFOCUS do
+      		if jminions.name == SMITEFOCUS[j] then
+        		if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
+        			local posMinion = WorldToScreen(D3DXVECTOR3(jminions.x, jminions.y, jminions.z))
+        			local SmiteProcess = math.round(jminions.health - SmiteDmg)
+        			if SpellReady(SMITESLOT) and GetDlina(myHero, jminions) <= 560 then
+            			DrawText("Smite Process - "..SmiteProcess, 20, posMinion.x, posMinion.y, ARGB(255,255,0,0))
+          			end
+        		end
+      		end
+    	end
+  	end
+end
+
 function CheckJungle()
-	if HSMenu.SmiteActive then
+	if Menu.SmiteActive then
 	for i, jungle in pairs(jungleMinions.objects) do
 	if jungle ~= nil then
-		if HSMenu.smite[jungle.charName:gsub("_", "")] then
-			if myHero.charName == "Aatrox" or myHero.charName == "Akali" or myHero.charName == "Amumu" or myHero.charName == "Chogath" or myHero.charName == "Diana" or myHero.charName == "Evlynn" or myHero.charName == "Fiora" or myHero.charName == "Fizz" or myHero.charName == "Gragas" or myHero.charName == "Hecarim" or myHero.charName == "Nunu" or myHero.charName == "Illaoi" or myHero.charName == "Irelia" or myHero.charName == "JarvanIV" or myHero.charName == "Jax" or myHero.charName == "Karthus" or myHero.charName == "Kayle" or myHero.charName == "Kindred" or myHero.charName == "LeeSin" or myHero.charName == "Malphite" or myHero.charName == "Maokai" or myHero.charName == "MasterYi" or myHero.charName == "Mordekaiser" or myHero.charName == "Nautilus" or myHero.charName == "Nocturne" or myHero.charName == "Olaf" or myHero.charName == "Pantheon" or myHero.charName == "Poppy" or myHero.charName == "Quinn" or myHero.charName == "Sejuani" or myHero.charName == "Shaco" or myHero.charName == "Shyvana" or myHero.charName == "TahmKench" or myHero.charName == "Trundle" or myHero.charName == "Vi" or myHero.charName == "Volibear" or myHero.charName == "Warwick" or myHero.charName == "MonkeyKing" or myHero.charName == "XinZhao" or myHero.charName == "Zac" and HSMenu.UseSpells then
+		if Menu.smite[jungle.charName:gsub("_", "")] then
+			if myHero.charName == "Aatrox" or myHero.charName == "Akali" or myHero.charName == "Amumu" or myHero.charName == "Chogath" or myHero.charName == "Diana" or myHero.charName == "Evlynn" or myHero.charName == "Fiora" or myHero.charName == "Fizz" or myHero.charName == "Gragas" or myHero.charName == "Hecarim" or myHero.charName == "Nunu" or myHero.charName == "Illaoi" or myHero.charName == "Irelia" or myHero.charName == "JarvanIV" or myHero.charName == "Jax" or myHero.charName == "Karthus" or myHero.charName == "Kayle" or myHero.charName == "Kindred" or myHero.charName == "LeeSin" or myHero.charName == "Malphite" or myHero.charName == "Maokai" or myHero.charName == "MasterYi" or myHero.charName == "Mordekaiser" or myHero.charName == "Nautilus" or myHero.charName == "Nocturne" or myHero.charName == "Olaf" or myHero.charName == "Pantheon" or myHero.charName == "Poppy" or myHero.charName == "Quinn" or myHero.charName == "Sejuani" or myHero.charName == "Shaco" or myHero.charName == "Shyvana" or myHero.charName == "TahmKench" or myHero.charName == "Trundle" or myHero.charName == "Vi" or myHero.charName == "Volibear" or myHero.charName == "Warwick" or myHero.charName == "MonkeyKing" or myHero.charName == "XinZhao" or myHero.charName == "Zac" and Menu.UseSpells then
 				SpellMonster(jungle)
 			else
 				SmiteMonster(jungle)
