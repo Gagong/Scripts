@@ -30,7 +30,7 @@
 ---2.7 - 6.4 Updated---
 ---2.8 - 6.4 HF---
 
-local version = "3.1"
+local version = "3.2"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 
@@ -185,12 +185,12 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 3.1
+    ToUpdate.Version = 3.2
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.lua"
-    ToUpdate.SavePath = LIB_PATH.."/HeRoLeavel-Up_Test.lua"
+    ToUpdate.SavePath = SCRIPT_PATH.."/HeRoLeavel-Up_Test.lua"
     ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
     ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
