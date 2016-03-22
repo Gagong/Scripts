@@ -24,7 +24,7 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local version = "2.11122"
+local version = "2.113"
 local SMITE, ATTACKSMITE = false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
 local SMITEFOCUS = {"SRU_Blue1.1.1", "SRU_Blue7.1.1", "SRU_Murkwolf2.1.1", "SRU_Murkwolf8.1.1", "SRU_Gromp13.1.1", "SRU_Gromp14.1.1", "Sru_Crab16.1.1", 
@@ -50,7 +50,7 @@ end
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 2.11122
+    ToUpdate.Version = 2.113
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Smite.version"
@@ -791,23 +791,6 @@ function OnTick()
 	KillStealSmite()
 end
 
-function KillStealSmite()
-	for i,enemy in pairs(GetEnemyHeroes()) do
-    	if not enemy.dead and enemy.visible then
-      		if ValidTarget(enemy, 1000) then
-				if GetDlina(myHero, enemy) <= 560 then
-      				if SMITE and ATTACKSMITE and Menu.StealSmite then
-        				local SmiteDmg = GetAttackSmiteDamage()
-        				if SmiteDmg >= enemy.health and SpellReady(SMITESLOT) and not enemy.dead then
-          					CastSmite(enemy)
-        				end
-      				end
-    			end
-			end
-		end
-	end
-end
-
 function GetDlina(a, b)
   local Dlina = math.sqrt((b.x-a.x)*(b.x-a.x) + (b.z-a.z)*(b.z-a.z))
   return Dlina
@@ -859,6 +842,24 @@ function CastSmite(target)
     CastSpell(SMITESLOT, target)
   end
 end
+
+function KillStealSmite()
+	for i,enemy in pairs(GetEnemyHeroes()) do
+    	if not enemy.dead and enemy.visible then
+      		if ValidTarget(enemy, 1000) then
+				if GetDlina(myHero, enemy) <= 560 then
+      				if SMITE and ATTACKSMITE and Menu.StealSmite then
+        				local SmiteDmg = GetAttackSmiteDamage()
+        				if SmiteDmg >= enemy.health and SpellReady(SMITESLOT) and not enemy.dead then
+          					CastSmite(enemy)
+        				end
+      				end
+    			end
+			end
+		end
+	end
+end
+
 
 function OnDraw()
 	if myHero.dead then return end
