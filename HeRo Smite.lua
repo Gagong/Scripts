@@ -98,7 +98,7 @@ function MenuInit()
 			Menu.smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
 		end
 	Menu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
-  	Menu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
+  	Menu:addParam("info2", ""..SCRIPT_NAME.." [Version - "..version.."]", SCRIPT_PARAM_INFO, "")
   	Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
 		
 	IDPerma = Menu:permaShow("SmiteActive")
