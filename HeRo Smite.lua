@@ -24,7 +24,7 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local version = "2.113"
+local version = "2.1131"
 local SMITE, ATTACKSMITE = false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
 local SMITEFOCUS = {"SRU_Blue1.1.1", "SRU_Blue7.1.1", "SRU_Murkwolf2.1.1", "SRU_Murkwolf8.1.1", "SRU_Gromp13.1.1", "SRU_Gromp14.1.1", "Sru_Crab16.1.1", 
@@ -50,12 +50,12 @@ end
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 2.113
+    ToUpdate.Version = 2.1131
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Smite.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Smite.lua"
-    ToUpdate.SavePath = LIB_PATH.."/HeRo Smite_Test.lua"
+    ToUpdate.SavePath = SCRIPT_PATH.."/HeRo Smite_Test.lua"
     ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
     ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
