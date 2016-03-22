@@ -14,7 +14,7 @@
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-local version = "1.8"
+local version = "1.81"
 local SCRIPT_NAME = "HeRo Jarvan VI"
 local SCRIPT_PATCH = '6.5'
 local SCRIPT_AUTHOR = "HeRoBaNd"
@@ -79,12 +79,12 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam
  local ToUpdate = {}
-    ToUpdate.Version = 1.8
+    ToUpdate.Version = 1.81
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.lua"
-    ToUpdate.SavePath = LIB_PATH.."/HeRo Jarvan_Test.lua"
+    ToUpdate.SavePath = SCRIPT_PATH.."/HeRo Jarvan_Test.lua"
     ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
     ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
