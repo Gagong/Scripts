@@ -208,7 +208,7 @@ function OnLoad()
 		Menu.Others.Snow:addParam("ChangeShow", "Change PermaShow Color(Green)", SCRIPT_PARAM_ONOFF, true)
 		Menu.Others.Snow:addParam("info", "Reload this(2xF9)", SCRIPT_PARAM_INFO, "")
 		
-		if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.5') ~= nil) then
+		if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
 			Menu.Others:addSubMenu("[Auto level - Up]", "LVLUP")
 				Menu.Others.LVLUP:addParam("Enable", "Enable LVL-UP", SCRIPT_PARAM_ONOFF, false)
 				Menu.Others.LVLUP:addParam("Mod", "Mode:", SCRIPT_PARAM_LIST, 1, {"Auto", "Manual"})
