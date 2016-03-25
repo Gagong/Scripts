@@ -30,7 +30,7 @@
 ---2.7 - 6.4 Updated---
 ---2.8 - 6.4 HF---
 
-local version = "3.2"
+local version = "3.3"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 
@@ -185,7 +185,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 3.2
+    ToUpdate.Version = 3.3
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
@@ -257,24 +257,26 @@ function LevelUp()
 
 end
 
-_G.LevelSpell = function(id)
-  if (string.find(GetGameVersion(), 'Releases/6.5') ~= nil) then
-local offsets = { 
-  [1] = 0x56,
-  [2] = 0x17,
-  [3] = 0x42,
-  [4] = 0x6D,
-  }
-  local p = CLoLPacket(0x007A)
-  p.vTable = 0xEF9B8C
-  p:EncodeF(myHero.networkID)
-  p:Encode4(0x03)
-  p:Encode4(0x1C)
-  p:Encode4(0x07)
-  p:Encode1(0x75)
-  p:Encode1(offsets[id])
-  SendPacket(p)
-end
+if VIP_USER then
+	_G.LevelSpell = function(id)
+  	if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
+		local offsets = { 
+    			[1] = 0xF8,
+    			[2] = 0x4F,
+    			[3] = 0x14,
+    			[4] = 0x9E,
+  		}
+  		local p = CLoLPacket(0xA9)
+  		p.vTable = 0xF3981C
+		  p:EncodeF(myHero.networkID)
+		  p:Encode4(0x19)
+		  p:Encode4(0x44)
+		  p:Encode1(0xEC)
+		  p:Encode1(offsets[id])
+		  p:Encode4(0xF7)
+		  SendPacket(p)
+		end
+	end
 end
 
 --Credits SxTeam
