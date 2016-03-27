@@ -172,8 +172,8 @@ SequencesName = {
     ["Yasuo"]           =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}'
 }
 
---[[CustomSequences = {
-    ['Fizz'] = {
+MySeq = {
+    --[[['Fizz'] = {
         ['AP'] = 
         ['AD/AS'] = 
     }
@@ -204,12 +204,12 @@ SequencesName = {
     ['Morgana'] = {
         ['Support'] = 
         ['Mid'] = 
-    }
+    }]]--
     ['Rengar'] = {
         ['AP Rengar'] = {1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
         ['AD Rengar'] = {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}
     } 
-    ['Riven'] = {
+    --[[['Riven'] = {
         ['Q-Riven'] = 
         ['E-Riven'] = 
     } 
@@ -224,8 +224,8 @@ SequencesName = {
     ['Udyr'] = {
         ['Fenix'] = 
         ['Tiger'] = 
-    }  
-}]]--
+    }  ]]--
+}
 
 Sequences = {
 	[0]					=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -484,27 +484,20 @@ function OnLoad()
     Menu:addParam("ChangeShow", 'Change PermaShow Color (Reload)', SCRIPT_PARAM_ONOFF, false)
     Menu:addParam("info2", ""..SCRIPT_NAME.." [Version - "..version.."]", SCRIPT_PARAM_INFO, "")
     Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
-
-	Menu.Enable = false
+    
+    if myHero.charName == CustomChar then
+	   Menu.Enable = false
+        Menu.AlwaysON = false
+    else
+        Menu.Enable = false
+    end
 
     if Menu.ChangeShow then
-    	if Menu.AlwaysON then
-            IDPerma = Menu:permaShow("AlwaysON")
-            Menu.permaShowEdit(IDPerma, "lText", "[HeRoLeavel-Up Active]")
-            Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
-        end
-        if Menu.Enable then
-            IDPerma = Menu:permaShow("Enable")
-            Menu.permaShowEdit(IDPerma, "lText", "[HeRoLeavel-Up Active]")
-            Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00) 
-        end
+        IDPerma = Menu:permaShow("AlwaysON")
+        Menu.permaShowEdit(IDPerma, "lText", "[HeRoLeavel-Up Active]")
+        Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
     else
-        if Menu.Enable then
-            Menu:permaShow('Enable')
-        end
-        if Menu.AlwaysON then
-            Menu:permaShow('AlwaysON')
-        end
+        Menu:permaShow('AlwaysON')
     end
                
     IDPerma = Menu:permaShow("Mode")
@@ -513,19 +506,20 @@ function OnLoad()
 
     DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>") end, 5)
     if Menu.Mode == 1 then
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[myHero.charName]) end, 5.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[myHero.charName]..'.') end, 5.5)
     elseif myHero.level < 4 then
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level13]) end, 5.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level13]..'.') end, 5.5)
     else
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level418]) end, 5.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level418]..'.') end, 5.5)
     end
     DelayAction(function() PrintChat("<font color='#FF0000'><b>[Spell Name]: </b></font><font color='#F0F8FF'><b>1 = Q, 2 = W, 3 = E, 4 = R.</b></font>") end, 6)
 end
 
 function OnTick()
-	--if (LastLevel < myHero.level) then
-		--LevelUp()
-	--end
+	if (LastLevel < myHero.level) then
+		LevelUp()
+	end
+    print(Sequence)
 end
 
 function LevelUp()
@@ -537,7 +531,7 @@ function LevelUp()
 		elseif Menu.Mode == 2 and myHero.level > 3 then
 			Sequence = Sequences[Menu.Level418]
 		elseif myHero.charName == CustomChar.charName and Menu.Mode == 3 then
-            Sequence = CustomSequences[myHero.charName[Menu.CustomSec]]
+            Sequence = MySeq[myHero.charName[Menu.CustomSec]]
         end
 	
 		LevelSpell(Sequence[myHero.level])
