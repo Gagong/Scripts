@@ -8,36 +8,213 @@
 \_| |_/\___\_| \_\___/\_____/\___|\__,_| \_/ \___|_|       \___/| .__/ 
                                                                 | |    
                                                                 |_|  
---]]																																
----Changelog---
----1.0 - Reliased For Bol---
----1.1 - Fix Punctuation errors---
----1.2 - Fix Color Bug---
----1.3 - Added on ScriptStatus---
----1.4 - Add New Taric and Yorick logic---
----1.5 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
----1.6 - Fixed Rek'Sai spam error---
----1.7 - 6.1 Updated---
----1.8 - BugSplat Fixed---
----1.9 - Fixed random lvlup of some Champion---
----2.0 - Fixed some ColorBug---
----2.1 - 6.2 Updated---
----2.2 - Jhin added---
----2.3 - 6.2 PreHF---
----2.4 - 6.3 Updated---
----2.5 - Fixed---
----2.6 - Find Patch added---
----2.7 - 6.4 Updated---
----2.8 - 6.4 HF---
+]]--																																
 
-local version = "3.3"
+local version = "3.4"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
+--------------------------------------------------------------
+local FizzCustomGG = {'AP', 'AD/AS'}
+local JinxCustomGG = {'Q - OP', 'W - OP'}
+local GnarCustomGG = {'Q - OP', 'W - OP'}
+local KarmaCustomGG = {'Mid', 'Support'}
+local LeblancCustomGG = {'Q - OP', 'W - OP'}
+local LuluCustomGG = {'Support', 'Mid'}
+local LuxCustomGG = {'Support', 'Mid'}
+local MorganaCustomGG = {'Support', 'Mid'}
+local RengarCustomGG = {'AP Rengar', 'AD Rengar'}
+local RivenCustomGG = {'Q-Riven', 'E-Riven'}
+local ShacoCustomGG = {'AD', 'AP'}
+local TwistedCustomGG = {'Mid', 'ADC'}
+local UdyrCustomGG = {'Fenix', 'Tiger'}
+--------------------------------------------------------------
+local MySeqFName = {'AP', 'AD/AS'}
+local MySeqJName = {'Q - OP', 'W - OP'}
+local MySeqGName = {'Q - OP', 'W - OP'}
+local MySeqKName = {'Mid', 'Support'}
+local MySeqLeName = {'Q - OP', 'W - OP'}
+local MySeqLuName = {'Support', 'Mid'}
+local MySeqLxName = {'Support', 'Mid'}
+local MySeqMName = {'Support', 'Mid'}
+local MySeqRName = {'AP Rengar', 'AD Rengar'}
+local MySeqRiName = {'Q - Riven', 'E - Riven'}
+local MySeqSName = {'AD', 'AP'}
+local MySeqTName = {'Mid', 'ADC'}
+local MySeqUName = {'Fenix', 'Tiger'}
+--------------------------------------------------------------
+local CustomChar = {'Fizz', 'Jinx', 'Gnar', 'Karma', 'Leblanc', 'Lulu', 'Lux', 'Morgana', 'Rengar', 'Riven', 'Shaco', 'TwistedFate', 'Udyr'}
 
 -- BoL Tools Tracker --
 assert(load(Base64Decode("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"), nil, "bt", _ENV))()
 TrackerLoad("XiDFjfqj2dRfEv5v")
 -- BoL Tools Tracker --
+
+SequencesName = {
+    [0]                 =   '{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}',
+    [1]                 =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}', 
+    [2]                 =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}', 
+    [3]                 =   '{2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}', 
+    [4]                 =   '{2, 3, 1, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1}', 
+    [5]                 =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}', 
+    [6]                 =   '{3, 2, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}',
+    ["Aatrox"]          =   '{2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
+    ["AurelionSol"]     =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Ahri"]            =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 2, 2}',
+    ["Akali"]           =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Alistar"]         =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Amumu"]           =   '{2, 3, 1, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Anivia"]          =   '{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Annie"]           =   '{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Ashe"]            =   '{1, 2, 1, 2, 3, 4, 1, 1, 2, 1, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Azir"]            =   '{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Bard"]            =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Blitzcrank"]      =   '{1, 3, 2, 3, 2, 4, 3, 2, 3, 2, 4, 3, 2, 1, 1, 4, 1, 1}',
+    ["Brand"]           =   '{2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
+    ["Braum"]           =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Caitlyn"]         =   '{2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Cassiopeia"]      =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Chogath"]         =   '{3, 1, 2, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1}',
+    ["Corki"]           =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2}',
+    ["Darius"]          =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Diana"]           =   '{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["DrMundo"]         =   '{2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 3, 2, 2, 2, 2}',
+    ["Draven"]          =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Ekko"]            =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Elise"]           =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Evelynn"]         =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Ezreal"]          =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["FiddleSticks"]    =   '{2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
+    ["Fiora"]           =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Fizz"]            =   '{3, 1, 2, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}',
+    ["Galio"]           =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 3, 2, 2, 4, 3, 3}',
+    ["Gnar"]            =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Gangplank"]       =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Garen"]           =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Gragas"]          =   '{2, 3, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}',
+    ["Graves"]          =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Hecarim"]         =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Heimerdinger"]    =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Illaoi"]          =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Irelia"]          =   '{1, 3, 2, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1}',
+    ["Janna"]           =   '{3, 2, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}',
+    ["JarvanIV"]        =   '{3, 1, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Jax"]             =   '{3, 2, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
+    ["Jayce"]           =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Jinx"]            =   '{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
+    ["Jhin"]            =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Kalista"]         =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Karma"]           =   '{1, 3, 2, 1, 1, 4, 1, 3, 3, 1, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Karthus"]         =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Kassadin"]        =   '{1, 2, 3, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Katarina"]        =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Kayle"]           =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Kennen"]          =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Khazix"]          =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Kindred"]         =   '{2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["KogMaw"]          =   '{2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
+    ["Leblanc"]         =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3}',
+    ["LeeSin"]          =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Leona"]           =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Lissandra"]       =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Lucian"]          =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Lulu"]            =   '{3, 2, 1, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Lux"]             =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Malphite"]        =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Malzahar"]        =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}',
+    ["Maokai"]          =   '{3, 1, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["MasterYi"]        =   '{3, 1, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["MissFortune"]     =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["MonkeyKing"]      =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Mordekaiser"]     =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Morgana"]         =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Nami"]            =   '{1, 2, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1}',
+    ["Nasus"]           =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3}',
+    ["Nautilus"]        =   '{2, 3, 1, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1}',
+    ["Nidalee"]         =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Nocturne"]        =   '{2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Nunu"]            =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Olaf"]            =   '{1, 3, 2, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}',
+    ["Orianna"]         =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Pantheon"]        =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2}',
+    ["Poppy"]           =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Quinn"]           =   '{3, 1, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Rammus"]          =   '{2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
+    ["RekSai"]          =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Renekton"]        =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Rengar"]          =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Riven"]           =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Rumble"]          =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Ryze"]            =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Sejuani"]         =   '{2, 1, 3, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Shaco"]           =   '{2, 3, 1, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Shen"]            =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Shyvana"]         =   '{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Singed"]          =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Sion"]            =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Sivir"]           =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Skarner"]         =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Sona"]            =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Soraka"]          =   '{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
+    ["Swain"]           =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Syndra"]          =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["TahmKench"]       =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Talon"]           =   '{2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
+    ["Taric"]           =   '{3, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Teemo"]           =   '{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Thresh"]          =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Tristana"]        =   '{3, 2, 1, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Trundle"]         =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Tryndamere"]      =   '{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["TwistedFate"]     =   '{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Twitch"]          =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 1, 2, 2}',
+    ["Udyr"]            =   '{1, 3, 2, 1, 1, 4, 1, 4, 1, 3, 3, 3, 3, 2, 4, 4, 4, 4}',
+    ["Urgot"]           =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Varus"]           =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Vayne"]           =   '{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Veigar"]          =   '{1, 2, 3, 3, 1, 4, 1, 2, 1, 2, 4, 2, 2, 2, 3, 4, 3, 3}',
+    ["Velkoz"]          =   '{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Vi"]              =   '{2, 3, 1, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Viktor"]          =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
+    ["Vladimir"]        =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Volibear"]        =   '{2, 3, 1, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1}',
+    ["Warwick"]         =   '{2, 1, 3, 2, 1, 4, 2, 1, 2, 1, 4, 2, 1, 3, 3, 4, 3, 3}',
+    ["Xerath"]          =   '{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["XinZhao"]         =   '{2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Yorick"]          =   '{3, 2, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}',
+    ["Zac"]             =   '{2, 1, 3, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 3, 3, 4, 3, 3}',
+    ["Zed"]             =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Ziggs"]           =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Zilean"]          =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Zyra"]            =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Yasuo"]           =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}'
+}
+
+MySeqF = {{3, 2, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}, {2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
+
+MySeqJ = {{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, {1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
+
+MySeqG = {{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, {1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
+
+MySeqK = {{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, {1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}} 
+
+MySeqLe = {{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, {1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
+
+MySeqLu = {{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, {1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}}
+
+MySeqLx = {{2, 1, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1}, {3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}}
+
+MySeqM = {{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, {2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
+
+MySeqR = {{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}, {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}} 
+
+MySeqRi = {{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}, {1, 2, 3, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}}
+
+MySeqS = {{2, 3, 1, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, {2, 3, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}}
+
+MySeqT = {{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, {3, 2, 3, 2, 3, 4, 3, 3, 2, 2, 4, 2, 1, 1, 1, 4, 1, 1}}
+
+MySeqU = {{4, 1, 3, 2, 4, 4, 4, 3, 4, 3, 3, 3, 2, 2, 2, 2, 1, 1}, {1, 3, 2, 1, 1, 4, 1, 4, 1, 3, 3, 3, 3, 2, 4, 4, 4, 4}}
+
 
 Sequences = {
 	[0]					=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -48,6 +225,7 @@ Sequences = {
 	[5]					=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, 
 	[6]					=	{3, 2, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
     ["Aatrox"]			=	{2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
+    ["AurelionSol"]     =   {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Ahri"]		    =	{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 2, 2},
     ["Akali"]		  	=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Alistar"]			=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
@@ -56,24 +234,24 @@ Sequences = {
     ["Annie"]		  	=	{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Ashe"]		  	=	{1, 2, 1, 2, 3, 4, 1, 1, 2, 1, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Azir"]		  	=	{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Bard"]        = {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Blitzcrank"]  =	{1, 3, 2, 3, 2, 4, 3, 2, 3, 2, 4, 3, 2, 1, 1, 4, 1, 1},
+    ["Bard"]            =   {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
+    ["Blitzcrank"]      =	{1, 3, 2, 3, 2, 4, 3, 2, 3, 2, 4, 3, 2, 1, 1, 4, 1, 1},
     ["Brand"]		  	=	{2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
     ["Braum"]		  	=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Caitlyn"]			=	{2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
-    ["Cassiopeia"] 	=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
+    ["Cassiopeia"] 	    =	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Chogath"]			=	{3, 1, 2, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1},
     ["Corki"]		  	=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2},
     ["Darius"]			=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Diana"]	     	=	{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["DrMundo"]			=	{2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 3, 2, 2, 2, 2},
     ["Draven"]			=	{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Ekko"]        = {1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["Ekko"]            =   {1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Elise"]		  	=	{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Evelynn"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Ezreal"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
-    ["FiddleSticks"]= {2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
-    ["Fiora"]			  =	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["FiddleSticks"]    =   {2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
+    ["Fiora"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Fizz"]		   	=	{3, 1, 2, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
     ["Galio"]		  	=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 3, 2, 2, 4, 3, 3},
     ["Gnar"]		  	=	{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
@@ -82,15 +260,15 @@ Sequences = {
     ["Gragas"]	 		=	{2, 3, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
     ["Graves"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Hecarim"]			=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Heimerdinger"]= {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Illaoi"]      = {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
+    ["Heimerdinger"]    =   {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
+    ["Illaoi"]          =   {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Irelia"]			=	{1, 3, 2, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1},
-    ["Janna"]			  =	{3, 2, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
+    ["Janna"]			=	{3, 2, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
     ["JarvanIV"]		=	{3, 1, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Jax"]		     	=	{3, 2, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
     ["Jayce"]		  	=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Jinx"]		  	=	{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
-    ["Jhin"]        = {1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["Jhin"]            =   {1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Kalista"]			=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Karma"]		  	=	{1, 3, 2, 1, 1, 4, 1, 3, 3, 1, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Karthus"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
@@ -99,7 +277,7 @@ Sequences = {
     ["Kayle"]		  	=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Kennen"]			=	{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Khazix"]			=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Kindred"]     = {2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["Kindred"]         =   {2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["KogMaw"]			=	{2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
     ["Leblanc"]			=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3},
     ["LeeSin"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
@@ -112,17 +290,17 @@ Sequences = {
     ["Malzahar"]		=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
     ["Maokai"]			=	{3, 1, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["MasterYi"]		=	{3, 1, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
-    ["MissFortune"] =	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["MonkeyKing"]  =	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
-    ["Mordekaiser"] =	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
+    ["MissFortune"]     =	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
+    ["MonkeyKing"]      =	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
+    ["Mordekaiser"]     =	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Morgana"]			=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Nami"]		  	=	{1, 2, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1},
-    ["Nasus"]			  =	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3},
+    ["Nasus"]			=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 3, 2, 3, 4, 3, 3},
     ["Nautilus"]		=	{2, 3, 1, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1},
     ["Nidalee"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Nocturne"]		=	{2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Nunu"]		  	=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
-    ["Olaf"]			  =	{1, 3, 2, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
+    ["Olaf"]			=	{1, 3, 2, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
     ["Orianna"]			=	{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Pantheon"]		=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2},
     ["Poppy"]		  	=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
@@ -135,7 +313,7 @@ Sequences = {
     ["Rumble"]			=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Ryze"]		  	=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Sejuani"]	 		=	{2, 1, 3, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
-    ["Shaco"]			  =	{2, 3, 1, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
+    ["Shaco"]			=	{2, 3, 1, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Shen"]		  	=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Shyvana"]			=	{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Singed"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
@@ -146,15 +324,15 @@ Sequences = {
     ["Soraka"]			=	{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
     ["Swain"]		  	=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Syndra"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
-    ["TahmKench"]		= {1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["TahmKench"]		=   {1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Talon"]		  	=	{2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
     ["Taric"]		  	=	{3, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Teemo"]		  	=	{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Thresh"]			=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Tristana"]		=	{3, 2, 1, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Trundle"]			=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Tryndamere"]  =	{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
-    ["TwistedFate"] =	{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
+    ["Tryndamere"]      =	{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
+    ["TwistedFate"]     =	{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Twitch"]			=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 1, 2, 2},
     ["Udyr"]		  	=	{1, 3, 2, 1, 1, 4, 1, 4, 1, 3, 3, 3, 3, 2, 4, 4, 4, 4},
     ["Urgot"]		  	=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
@@ -162,7 +340,7 @@ Sequences = {
     ["Vayne"]		  	=	{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["Veigar"]			=	{1, 2, 3, 3, 1, 4, 1, 2, 1, 2, 4, 2, 2, 2, 3, 4, 3, 3},
     ["Velkoz"]			=	{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Vi"]		  	  =	{2, 3, 1, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["Vi"]		  	    =	{2, 3, 1, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Viktor"]			=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Vladimir"]		=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Volibear"]		=	{2, 3, 1, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1},
@@ -170,12 +348,12 @@ Sequences = {
     ["Xerath"]			=	{1, 3, 2, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3},
     ["XinZhao"]			=	{2, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Yorick"]			=	{3, 2, 3, 1, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1},
-    ["Zac"]		  	  =	{2, 1, 3, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 3, 3, 4, 3, 3},
-    ["Zed"]		  	  =	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["Zac"]		  	    =	{2, 1, 3, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 3, 3, 4, 3, 3},
+    ["Zed"]		  	    =	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Ziggs"]		  	=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Zilean"]			=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Zyra"]		  	=	{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
-    ["Yasuo"]			  =	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}
+    ["Yasuo"]			=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}
 }
 
 Skills = {"Q", "W", "E", "R"}
@@ -185,7 +363,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 3.3
+    ToUpdate.Version = 3.4
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
@@ -196,35 +374,136 @@ function OnLoad()
     ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
     ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
---Credits SxTeam    
-PrintChat("<font color='#F0F8FF'><b>" ..GetGameVersion().. "</b></font>")
-    DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRoLeavel-Up] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>") end, 4.0)
+--Credits SxTeam
 
-	HLUMainMenu = scriptConfig('HeRoLevel-UP', 'HLU_MAIN')
-	
-	HLUMainMenu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, true)
-	HLUMainMenu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, true)
-	HLUMainMenu:addParam('Info', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
-	HLUMainMenu:addParam('Mode', 'Mode:', SCRIPT_PARAM_LIST, 1, {'Auto', 'Manual'})
-    HLUMainMenu:addParam('Level13', 'Level 1-3:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
-    HLUMainMenu:addParam('Level418', 'Level 4-18:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
-	HLUMainMenu:addParam('GameVer', GetGameVersion(), SCRIPT_PARAM_INFO, "")
-    HLUMainMenu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
-    HLUMainMenu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
-    HLUMainMenu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
+    if myHero.charName == 'Fizz' then
+        CustomModeGG = FizzCustomGG
+    elseif myHero.charName == 'Jinx' then
+        CustomModeGG = JinxCustomGG
+    elseif myHero.charName == 'Gnar' then
+        CustomModeGG = GnarCustomGG
+    elseif myHero.charName == 'Karma' then
+        CustomModeGG = KarmaCustomGG
+    elseif myHero.charName == 'Leblanc' then
+        CustomModeGG = LeblancCustomGG
+    elseif myHero.charName == 'Lulu' then
+        CustomModeGG = LuluCustomGG
+    elseif myHero.charName == 'Lux' then
+        CustomModeGG = LuxCustomGG
+    elseif myHero.charName == 'Morgana' then
+        CustomModeGG = MorganaCustomGG
+    elseif myHero.charName == 'Rengar' then
+        CustomModeGG = RengarCustomGG
+    elseif myHero.charName == 'Riven' then
+        CustomModeGG = RivenCustomGG
+    elseif myHero.charName == 'Shaco' then
+        CustomModeGG = ShacoCustomGG
+    elseif myHero.charName == 'TwistedFate' then
+        CustomModeGG = TwistedCustomGG
+    elseif myHero.charName == 'Udyr' then
+        CustomModeGG = UdyrCustomGG
+    end
 
-	
-	HLUMainMenu.Enable = false
-	
-    IDPerma = HLUMainMenu:permaShow("AlwaysON")
-    HLUMainMenu.permaShowEdit(IDPerma, "lText", "[HeRoLeavel-Up Active]")
-    HLUMainMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
-    IDPerma = HLUMainMenu:permaShow("Mode")
-    HLUMainMenu.permaShowEdit(IDPerma, "lText", "[HeRoLeavel-Up Mode]")
-    HLUMainMenu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+    if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then 
+        DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.6></b></font>") end, 4)
+    elseif (string.find(GetGameVersion(), 'Releases/6.7') ~= nil) then
+        DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.7></b></font>") end, 4)
+    end
 
-    DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>") end, 4.0)
-	
+    DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 4.5)
+
+	Menu = scriptConfig('HeRoLevel-UP', 'HeRoLevel-UP')
+
+    Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, true)
+
+	Menu:addParam('Info', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
+
+	Menu:addParam('Mode', 'Mode:', SCRIPT_PARAM_LIST, 1, {'Auto', 'Manual', 'Custom'})
+    
+    if myHero.charName == 'Fizz' or 'Jinx' or 'Gnar' or 'Karma' or 'Leblanc' or 'Lulu' or 'Lux' or 'Morgana' or 'Rengar' or 'Riven' or 'Shaco' or 'TwistedFate' or 'Udyr' then
+        Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, CustomModeGG)
+    end
+
+    Menu:addParam('Info2222', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
+
+    Menu:addParam('Infokek', 'Manual Spell Order Changer', SCRIPT_PARAM_INFO, "")
+    Menu:addParam('Level13', 'Level 1-3:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
+    Menu:addParam('Level418', 'Level 4-18:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
+
+    Menu:addParam('Info21123222', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
+
+    Menu:addParam("ChangeShow", 'Change PermaShow Color (Reload)', SCRIPT_PARAM_ONOFF, false)
+
+    Menu:addParam('Info2222332', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
+
+    if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
+        Menu:addParam('GameVer', 'Game Version - <Releases/6.6>', SCRIPT_PARAM_INFO, "")
+    elseif (string.find(GetGameVersion(), 'Releases/6.7') ~= nil) then
+        Menu:addParam('GameVer1', 'Game Version - <Releases/6.7>', SCRIPT_PARAM_INFO, "")
+    end
+
+    if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
+        Menu:addParam('kek', 'Package Updated', SCRIPT_PARAM_INFO, "")
+    elseif (string.find(GetGameVersion(), 'Releases/6.7') ~= nil) then
+        Menu:addParam('kek1', 'Package Outdated')
+    end
+
+    Menu:addParam('Info2222232332', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
+
+    Menu:addParam("info2", ""..SCRIPT_NAME.." [Version - "..version.."]", SCRIPT_PARAM_INFO, "")
+    Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
+    
+	Menu.Enable = false
+
+    if Menu.ChangeShow then
+        IDPerma = Menu:permaShow("Enable")
+        Menu.permaShowEdit(IDPerma, "lText", "[HeRoLeavel-Up Active]")
+        Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+
+        IDPerma = Menu:permaShow("Mode")
+        Menu.permaShowEdit(IDPerma, "lText", "[HeRoLeavel-Up Mode]")
+        Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+    else
+        Menu:permaShow('Enable')
+
+        Menu:permaShow('Mode')
+    end
+
+    DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>") end, 5)
+    if Menu.Mode == 3 and myHero.charName == 'Fizz' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqFName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Jinx' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqJName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Gnar' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqGName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Karma' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqKName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Leblanc' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqLeName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Lulu' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqLuName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Lux' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqLxName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Morgana' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqMName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Rengar' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqRName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Riven' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqRiName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Shaco' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqSName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'TwistedFate' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqTName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 3 and myHero.charName == 'Udyr' then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqUName[Menu.CustomSec]..'.') end, 5.5)
+    elseif Menu.Mode == 1 then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[myHero.charName]..'.') end, 5.5)
+    elseif Menu.Mode == 2 and myHero.level < 4 then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level13]..'.') end, 5.5)
+    elseif Menu.Mode == 2 and myHero.level > 3 then
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level418]..'.') end, 5.5)
+    end
+    DelayAction(function() PrintChat("<font color='#FF0000'><b>[Spell Name]: </b></font><font color='#F0F8FF'><b>1 = Q, 2 = W, 3 = E, 4 = R.</b></font>") end, 6)
 end
 
 function OnTick()
@@ -234,50 +513,76 @@ function OnTick()
 end
 
 function LevelUp()
-	if HLUMainMenu.Enable or HLUMainMenu.AlwaysON then
-		if HLUMainMenu.Mode == 1 then
+	if Menu.Enable then
+        if myHero.charName == "Fizz" and Menu.Mode == 3 then
+            Sequence = MySeqF[Menu.CustomSec]
+        elseif myHero.charName == "Jinx" and Menu.Mode == 3 then
+            Sequence = MySeqJ[Menu.CustomSec]
+         elseif myHero.charName == "Gnar" and Menu.Mode == 3 then
+            Sequence = MySeqG[Menu.CustomSec]
+        elseif myHero.charName == "Karma" and Menu.Mode == 3 then
+            Sequence = MySeqK[Menu.CustomSec]
+        elseif myHero.charName == "Leblanc" and Menu.Mode == 3 then
+            Sequence = MySeqLe[Menu.CustomSec]
+        elseif myHero.charName == "Lulu" and Menu.Mode == 3 then
+            Sequence = MySeqLu[Menu.CustomSec]
+        elseif myHero.charName == "Lux" and Menu.Mode == 3 then
+            Sequence = MySeqLx[Menu.CustomSec]
+        elseif myHero.charName == "Morgana" and Menu.Mode == 3 then
+            Sequence = MySeqM[Menu.CustomSec]
+        elseif myHero.charName == "Rengar" and Menu.Mode == 3 then
+            Sequence = MySeqR[Menu.CustomSec]
+        elseif myHero.charName == "Riven" and Menu.Mode == 3 then
+            Sequence = MySeqRi[Menu.CustomSec]
+        elseif myHero.charName == "Shaco" and Menu.Mode == 3 then
+            Sequence = MySeqS[Menu.CustomSec]
+        elseif myHero.charName == "TwistedFate" and Menu.Mode == 3 then
+            Sequence = MySeqT[Menu.CustomSec]
+        elseif myHero.charName == "Udyr" and Menu.Mode == 3 then
+            Sequence = MySeqU[Menu.CustomSec]
+		elseif Menu.Mode == 1 then
 			Sequence = Sequences[myHero.charName]
-		elseif myHero.level < 4 then
-			Sequence = Sequences[HLUMainMenu.Level13]
-		else
-			Sequence = Sequences[HLUMainMenu.Level418]
-		end
-		
-		
+		elseif Menu.Mode == 2 and myHero.level < 4 then
+			Sequence = Sequences[Menu.Level13]
+		elseif Menu.Mode == 2 and myHero.level > 3 then
+			Sequence = Sequences[Menu.Level418]
+        end
+	
 		LevelSpell(Sequence[myHero.level])
-		
+
 		if myHero.level < 18 then
 			PrintChat("<font color='#00BFFF'>This Level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level]].."</font><font color='#00BFFF'><font color='#FF0000'> ===></font> Next level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level + 1]].. "</font><font color='#EE82EE'>. </font>")
 		end
-		
-		LastLevel = myHero.level
-	else
-		
-	end
-
-end
-
-if VIP_USER then
-	_G.LevelSpell = function(id)
-  	if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
-		local offsets = { 
-    			[1] = 0xF8,
-    			[2] = 0x4F,
-    			[3] = 0x14,
-    			[4] = 0x9E,
-  		}
-  		local p = CLoLPacket(0xA9)
-  		p.vTable = 0xF3981C
-		  p:EncodeF(myHero.networkID)
-		  p:Encode4(0x19)
-		  p:Encode4(0x44)
-		  p:Encode1(0xEC)
-		  p:Encode1(offsets[id])
-		  p:Encode4(0xF7)
-		  SendPacket(p)
-		end
+		LastLevel = myHero.level	
 	end
 end
+
+function OnDraw()
+    if not Menu.Enable and myHero.charName == 'Fizz' or 'Jinx' or 'Gnar' or 'Karma' or 'Leblanc' or 'Lulu' or 'Lux' or 'Morgana' or 'Rengar' or 'Riven' or 'Shaco' or 'TwistedFate' or 'Udyr' then
+        local pos = WorldToScreen(D3DXVECTOR3(myHero.x, myHero.y, myHero.z))
+        DrawText("Chose Custom Sequence and Enable Script", 20, pos.x, pos.y, 0xFFFFF5EE)
+    end
+end
+
+    _G.LevelSpell = function(id)
+    if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
+        local offsets = { 
+                [1] = 0xF8,
+                [2] = 0x4F,
+                [3] = 0x14,
+                [4] = 0x9E,
+        }
+        local p = CLoLPacket(0xA9)
+        p.vTable = 0xF3981C
+          p:EncodeF(myHero.networkID)
+          p:Encode4(0x19)
+          p:Encode4(0x44)
+          p:Encode1(0xEC)
+          p:Encode1(offsets[id])
+          p:Encode4(0xF7)
+          SendPacket(p)
+        end
+    end
 
 --Credits SxTeam
 class "ScriptUpdate"
