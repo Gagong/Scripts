@@ -13,6 +13,7 @@
 local version = "3.1"
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
+local Sequence = nil
 local FizzCustomGG = {'AP', 'AD/AS'}
 local JinxCustomGG = {'Q - OP', 'W - OP'}
 local GnarCustomGG = {'Q - OP', 'W - OP'}
@@ -205,10 +206,7 @@ MySeq = {
         ['Support'] = 
         ['Mid'] = 
     }]]--
-    ['Rengar'] = {
-        ['AP Rengar'] = {1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
-        ['AD Rengar'] = {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}
-    } 
+    ['Rengar'] = {{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}, {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}} 
     --[[['Riven'] = {
         ['Q-Riven'] = 
         ['E-Riven'] = 
@@ -371,7 +369,6 @@ Skills = {"Q", "W", "E", "R"}
 LastLevel = 0;
 
 function OnLoad()
-    print(SequencesName[myHero.charName])
 --Credits SxTeam  
 --[[ local ToUpdate = {}
     ToUpdate.Version = 3.1
@@ -400,67 +397,54 @@ function OnLoad()
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, FizzCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Jinx' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, JinxCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Gnar' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, GnarCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Karma' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, KarmaCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Leblanc' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, LeblancCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Lulu' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, LulCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Lux' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, LuxCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Morgana' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, MorganaCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Rengar' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, RengarCustomGG)
-        --DrawGG()
     elseif myHero.charName == 'Riven' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, RivenCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Shaco' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, ShacoCustomGG)
-        DrawGG()
     elseif myHero.charName == 'TwistedFate' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, TwistedCustomGG)
-        DrawGG()
     elseif myHero.charName == 'Udyr' then
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, false)
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, UdyrCustomGG)
-        DrawGG()
     else
         Menu:addParam('Enable', 'Enable', SCRIPT_PARAM_ONOFF, true)
         Menu:addParam('AlwaysON', 'Always ON', SCRIPT_PARAM_ONOFF, true)
@@ -519,7 +503,6 @@ function OnTick()
 	if (LastLevel < myHero.level) then
 		LevelUp()
 	end
-    print(Sequence)
 end
 
 function LevelUp()
