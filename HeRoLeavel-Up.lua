@@ -2,15 +2,15 @@
 --[[
  _   _     ______      _                          _        _   _       
 | | | |    | ___ \    | |                        | |      | | | |      
-| |_| | ___| |_/ /___ | |     ___  __ _ __   _____| |      | | | |_ __  
-|  _  |/ _ \    // _ \| |    / _ \/ _`  \ \ / / _ \ |      | | | | '_ \ 
-| | | |  __/ |\ \ (_) | |___|  __/ (_| | \ V /  __/ |      | |_| | |_) |
-\_| |_/\___\_| \_\___/\_____/\___|\__,_|  \_/ \___|_|       \___/| .__/ 
+| |_| | ___| |_/ /___ | |     ___  __ ___   _____| |      | | | |_ __  
+|  _  |/ _ \    // _ \| |    / _ \/ _` \ \ / / _ \ |      | | | | '_ \ 
+| | | |  __/ |\ \ (_) | |___|  __/ (_| |\ V /  __/ |      | |_| | |_) |
+\_| |_/\___\_| \_\___/\_____/\___|\__,_| \_/ \___|_|       \___/| .__/ 
                                                                 | |    
                                                                 |_|  
 ]]--																																
 
-local version = "3.4"
+local version = "3.5"
 local SCRIPT_NAME = "HeRo Level-Up"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 --------------------------------------------------------------
@@ -363,7 +363,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 3.4
+    ToUpdate.Version = 3.5
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
@@ -376,7 +376,7 @@ function OnLoad()
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
 --Credits SxTeam
 
-    if myHero.charName == 'Fizz' then
+    --[[if myHero.charName == 'Fizz' then
         CustomModeGG = FizzCustomGG
     elseif myHero.charName == 'Jinx' then
         CustomModeGG = JinxCustomGG
@@ -402,7 +402,7 @@ function OnLoad()
         CustomModeGG = TwistedCustomGG
     elseif myHero.charName == 'Udyr' then
         CustomModeGG = UdyrCustomGG
-    end
+    end]]--
 
     if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then 
         DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.6></b></font>") end, 4)
@@ -420,9 +420,9 @@ function OnLoad()
 
 	Menu:addParam('Mode', 'Mode:', SCRIPT_PARAM_LIST, 1, {'Auto', 'Manual', 'Custom'})
     
-    if myHero.charName == 'Fizz' or 'Jinx' or 'Gnar' or 'Karma' or 'Leblanc' or 'Lulu' or 'Lux' or 'Morgana' or 'Rengar' or 'Riven' or 'Shaco' or 'TwistedFate' or 'Udyr' then
+    --[[if myHero.charName == 'Fizz' or 'Jinx' or 'Gnar' or 'Karma' or 'Leblanc' or 'Lulu' or 'Lux' or 'Morgana' or 'Rengar' or 'Riven' or 'Shaco' or 'TwistedFate' or 'Udyr' then
         Menu:addParam('CustomSec', myHero.charName.."'s Dominate Enemy Mode", SCRIPT_PARAM_LIST, 1, CustomModeGG)
-    end
+    end]]--
 
     Menu:addParam('Info2222', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
@@ -470,7 +470,7 @@ function OnLoad()
     end
 
     DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>") end, 5)
-    if Menu.Mode == 3 and myHero.charName == 'Fizz' then
+  --[[  if Menu.Mode == 3 and myHero.charName == 'Fizz' then
         DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqFName[Menu.CustomSec]..'.') end, 5.5)
     elseif Menu.Mode == 3 and myHero.charName == 'Jinx' then
         DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqJName[Menu.CustomSec]..'.') end, 5.5)
@@ -495,7 +495,7 @@ function OnLoad()
     elseif Menu.Mode == 3 and myHero.charName == 'TwistedFate' then
         DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqTName[Menu.CustomSec]..'.') end, 5.5)
     elseif Menu.Mode == 3 and myHero.charName == 'Udyr' then
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqUName[Menu.CustomSec]..'.') end, 5.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..MySeqUName[Menu.CustomSec]..'.') end, 5.5)]]--
     elseif Menu.Mode == 1 then
         DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[myHero.charName]..'.') end, 5.5)
     elseif Menu.Mode == 2 and myHero.level < 4 then
@@ -514,7 +514,13 @@ end
 
 function LevelUp()
 	if Menu.Enable then
-        if myHero.charName == "Fizz" and Menu.Mode == 3 then
+		if Menu.Mode == 1 then
+			Sequence = Sequences[myHero.charName]
+		elseif Menu.Mode == 2 and myHero.level < 4 then
+			Sequence = Sequences[Menu.Level13]
+		elseif Menu.Mode == 2 and myHero.level > 3 then
+			Sequence = Sequences[Menu.Level418]
+        --[[elseif myHero.charName == "Fizz" and Menu.Mode == 3 then
             Sequence = MySeqF[Menu.CustomSec]
         elseif myHero.charName == "Jinx" and Menu.Mode == 3 then
             Sequence = MySeqJ[Menu.CustomSec]
@@ -540,13 +546,7 @@ function LevelUp()
             Sequence = MySeqT[Menu.CustomSec]
         elseif myHero.charName == "Udyr" and Menu.Mode == 3 then
             Sequence = MySeqU[Menu.CustomSec]
-		elseif Menu.Mode == 1 then
-			Sequence = Sequences[myHero.charName]
-		elseif Menu.Mode == 2 and myHero.level < 4 then
-			Sequence = Sequences[Menu.Level13]
-		elseif Menu.Mode == 2 and myHero.level > 3 then
-			Sequence = Sequences[Menu.Level418]
-        end
+        end]]--
 	
 		LevelSpell(Sequence[myHero.level])
 
@@ -557,12 +557,12 @@ function LevelUp()
 	end
 end
 
-function OnDraw()
+--[[function OnDraw()
     if not Menu.Enable and myHero.charName == 'Fizz' or 'Jinx' or 'Gnar' or 'Karma' or 'Leblanc' or 'Lulu' or 'Lux' or 'Morgana' or 'Rengar' or 'Riven' or 'Shaco' or 'TwistedFate' or 'Udyr' then
         local pos = WorldToScreen(D3DXVECTOR3(myHero.x, myHero.y, myHero.z))
         DrawText("Chose Custom Sequence and Enable Script", 20, pos.x, pos.y, 0xFFFFF5EE)
     end
-end
+end]]--
 
     _G.LevelSpell = function(id)
     if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
