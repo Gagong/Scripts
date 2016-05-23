@@ -1,26 +1,19 @@
  --[[
- ---HeRo Jarvan Developed by HeRoBaNd---
     __  __     ____               __                           
    / / / /__  / __ \____         / /___ _______   ______ _____ 
   / /_/ / _ \/ /_/ / __ \   __  / / __ `/ ___/ | / / __ `/ __ \
  / __  /  __/ _, _/ /_/ /  / /_/ / /_/ / /   | |/ / /_/ / / / /
-/_/ /_/\___/_/ |_|\____/   \____/\__,_/_/    |___/\__,_/_/ /_/ 
-                                                               
----Changelog---
----1.0 - Closed Beta---
----1.1 - Open Beta---
----1.2 - 1.5 - New Auto-Updater, SkinChanger, BugFixed---
----1.6 - Fix KS Smite Error---
+/_/ /_/\___/_/ |_|\____/   \____/\__,_/_/    |___/\__,_/_/ /_/                                                               
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-local version = "1.9"
+local version = "2.0"
 local SCRIPT_NAME = "HeRo Jarvan VI"
-local SCRIPT_PATCH = '6.6'
+local SCRIPT_PATCH = '6.10'
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
-local lowBase = {["x"] = 406, ["z"] = 424}
-local upBase = {["x"] = 14322, ["z"] = 14394}
+local xBase = {["x"] = 406, ["z"] = 424}
+local zBase = {["x"] = 14322, ["z"] = 14394}
 local VP, DP, SP = nil
 local FHPred = false
 local ts
@@ -28,23 +21,16 @@ local Menu
 local MYFOCUS = nil
 local Qready, Wready, Eready, Rready = false, false, false, false
 local REGENTIME = false
-local SMITE, ATTACKSMITE = false
+local SMITE, ATTACKSMITE, ATTACKSMITE3 = false, false, false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
-local POT = {"ItemCrystalFlask", "REGENTIMEerationPotion", "ItemMiniREGENTIMEPotion", "ItemCrystalFlaskJungle", "ItemDarkCrystalFlask"}
+local POT = {"ItemCrystalFlask", "RegenerationPotion", "ItemMiniRegenPotion", "ItemCrystalFlaskJungle", "ItemDarkCrystalFlask"}
 local ATTACKITEMS = {"ItemTiamatCleave", "ItemTitanicHydraCleave", "BilgewaterCutlass", "YoumusBlade", "HextechGunblade", "ItemSwordOfFeastAndFamine"}
 local ANTICCITEMS = {"QuicksilverSash", "ItemDervishBlade"}
 local TIAMAT, TITANIC, CUTLASS, YOUMU, GUNBLADE, BOTRK, QSS, DERVISH = false
 local TIAMATSLOT, TITANICSLOT, CUTLASSSLOT, YOUMUSLOT, GUNBLADESLOT, BOTRKSLOT, QSSSLOT, DERVISHSLOT, SMITESLOT
 local UNDERCC = false
-local GamePatch = '6.5'
-local DANGERSPELL = {"MordekaiserChildrenOfTheGrave", "SkarnerImpale", "LuxLightBindingMis", "Wither", "SonaCrescendo", "DarkBindingMissile", "CurseoftheSadMummy",
-"EnchantedCrystalArrow", "BlindingDart", "LuluWTwo", "AhriSeduce", "CassiopeiaPetrifyingGaze", "Terrify", "HowlingGale", "JaxCounterStrike", "KennenShurikenStorm",
-"LeblancSoulShackle", "LeonaSolarFlare", "LissandraR", "AlZaharNetherGrasp", "MonkeyKingDecoy", "NamiQ", "OrianaDetonateCommand", "Pantheon_LeapBash", "PuncturingTaunt",
-"SejuaniGlacialPrisonStart", "SwainShadowGrasp", "Imbue", "ThreshQ", "UrgotSwap2", "VarusR", "VeigarEventHorizon", "ViR", "InfiniteDuress", "ZyraGraspingRoots",
-"paranoiamisschance", "puncturingtauntarmordebuff", "surpression", "zedulttargetmark", "enchantedcrystalarrow", "nasusw"}
-local SMITEFOCUS = {"SRU_Blue1.1.1", "SRU_Blue7.1.1", "SRU_Murkwolf2.1.1", "SRU_Murkwolf8.1.1", "SRU_Gromp13.1.1", "SRU_Gromp14.1.1", "Sru_Crab16.1.1", 
-"Sru_Crab15.1.1", "SRU_Red10.1.1", "SRU_Red4.1.1", "SRU_Krug11.1.2", "SRU_Krug5.1.2", "SRU_Razorbeak9.1.1", "SRU_Razorbeak3.1.1", "SRU_Dragon6.1.1", 
-"SRU_Baron12.1.1", "TT_NWraith1.1.1", "TT_NGolem2.1.1", "TT_NWolf3.1.1", "TT_NWraith4.1.1", "TT_NGolem5.1.1", "TT_NWolf6.1.1", "TT_Spiderboss8.1.1"}
+local DANGERSPELL = {"MordekaiserChildrenOfTheGrave", "SkarnerImpale", "LuxLightBindingMis", "Wither", "SonaCrescendo", "DarkBindingMissile", "CurseoftheSadMummy", "EnchantedCrystalArrow", "BlindingDart", "LuluWTwo", "AhriSeduce", "CassiopeiaPetrifyingGaze", "Terrify", "HowlingGale", "JaxCounterStrike", "KennenShurikenStorm", "LeblancSoulShackle", "LeonaSolarFlare", "LissandraR", "AlZaharNetherGrasp", "MonkeyKingDecoy", "NamiQ", "OrianaDetonateCommand", "Pantheon_LeapBash", "PuncturingTaunt", "SejuaniGlacialPrisonStart", "SwainShadowGrasp", "Imbue", "ThreshQ", "UrgotSwap2", "VarusR", "VeigarEventHorizon", "ViR", "InfiniteDuress", "ZyraGraspingRoots", "paranoiamisschance", "puncturingtauntarmordebuff", "surpression", "zedulttargetmark", "enchantedcrystalarrow", "nasusw"}
+local SMITEFOCUS = {"SRU_Blue1.1.1", "SRU_Blue7.1.1", "SRU_Murkwolf2.1.1", "SRU_Murkwolf8.1.1", "SRU_Gromp13.1.1", "SRU_Gromp14.1.1", "Sru_Crab16.1.1", "Sru_Crab15.1.1", "SRU_Red10.1.1", "SRU_Red4.1.1", "SRU_Krug11.1.2", "SRU_Krug5.1.2", "SRU_Razorbeak9.1.1", "SRU_Razorbeak3.1.1", "SRU_Dragon6.1.1", "SRU_Baron12.1.1", "TT_NWraith1.1.1", "TT_NGolem2.1.1", "TT_NWolf3.1.1", "TT_NWraith4.1.1", "TT_NGolem5.1.1", "TT_NWolf6.1.1", "TT_Spiderboss8.1.1"}
 local VARS = {
   AA = {RANGE = 270},
   Q = {RANGE = 770, WIDTH = 70, DELAY = 0.1, SPEED = math.huge},
@@ -74,17 +60,15 @@ Skills = {"Q", "W", "E", "R"}
 
 LastLevel = 0;
 
---[[OnLoad]]--
-
 function OnLoad()
 --Credits SxTeam
- local ToUpdate = {}
-    ToUpdate.Version = 1.9
+ 	local ToUpdate = {}
+    ToUpdate.Version = 2.0
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.lua"
-    ToUpdate.SavePath = SCRIPT_PATH.."/HeRo Jarvan_Test.lua"
+    ToUpdate.SavePath = LIB_PATH.."/HeRo Jarvan_Test.lua"
     ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
     ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
@@ -100,31 +84,21 @@ function OnLoad()
 
 	AddApplyBuffCallback(Buff_Add)
   	AddRemoveBuffCallback(Buff_Rem)
-
---[[Menu]]--
+  	AddTickCallback(AutoSmite)
+	AddDrawCallback(DrawSmiteable)	
 
 	Menu = scriptConfig(SCRIPT_NAME.." ["..SCRIPT_PATCH.."]", "Hero Jarvan")
-	
---[[Target Selector]]--
-	
-	Menu:addSubMenu("[HeRo Jarvan - Target Selector]", "targetSelector")
-		Menu.targetSelector:addTS(ts)
-		ts.name = "Focus"
-	
---[[Combo]]--
 	
 	Menu:addSubMenu("[HeRo Jarvan - Combo]", "Combo")
 		Menu.Combo:addParam("ComboMode", "Combo mode", SCRIPT_PARAM_ONKEYDOWN, false, 32)
 		Menu.Combo:addParam("ChangeCombo", "Change Combo Mode Key", SCRIPT_PARAM_ONKEYTOGGLE, false, 89)
-		Menu.Combo:addParam("Cmode", "Combo Q and E Mode", SCRIPT_PARAM_LIST, 1, {"E+Q", "Q or E", "Q Only", "E Only"})
+		Menu.Combo:addParam("Cmode", "Combo Q and E Mode", SCRIPT_PARAM_LIST, 1, {"Smart", "E+Q", "Q or E", "Q Only", "E Only"})
     	--Menu.Combo:addParam("Burst", "All In/Burst Combo (Toggle)", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("S"))
 		Menu.Combo:addParam("ComboQ", "Use Q in Combo", SCRIPT_PARAM_ONOFF, true)
 		Menu.Combo:addParam("ComboW", "Use W in Combo", SCRIPT_PARAM_ONOFF, true)
 		Menu.Combo:addParam("ComboE", "Use E in Combo", SCRIPT_PARAM_ONOFF, true)
 		Menu.Combo:addParam("ComboR", "Use R in Combo", SCRIPT_PARAM_ONOFF, false)
-		Menu.Combo:addParam("UseFocus", "Use Cistom TargetSelector", SCRIPT_PARAM_ONOFF, true)
-	
---[[Harass]]--
+		Menu.Combo:addParam("UseFocus", "Use Cistom Target Selector", SCRIPT_PARAM_ONOFF, true)
 	
 	Menu:addSubMenu("[HeRo Jarvan - Harass]", "Harass")
 		Menu.Harass:addParam("HS", "Harass", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C"))
@@ -134,7 +108,6 @@ function OnLoad()
 		Menu.Harass:addParam("HarassE", "Use E in Harass", SCRIPT_PARAM_ONOFF, true)
 		Menu.Harass:addParam("HarassMana", "% Mana for Harass", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 
---[[KillSteal]]--
 	igniteslot = FindSlotByName("SummonerDot")
 	Menu:addSubMenu("[HeRo Jarvan - KillSteal]", "KillSteal")
 		Menu.KillSteal:addParam("Steal", "Endble KillSteal", SCRIPT_PARAM_ONOFF, true)
@@ -145,8 +118,6 @@ function OnLoad()
 			Menu.KillSteal:addParam("UseIgnite", "Use Ignite", SCRIPT_PARAM_ONOFF, true)
 		end
 	
---[[LaneClear]]--
-	
 	Menu:addSubMenu("[HeRo Jarvan - LaneClear]", "Clear")
 		Menu.Clear:addParam("LaneClear", "LaneClear", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
 		Menu.Clear:addParam("LaneClearQ", "Use Q in LaneClear", SCRIPT_PARAM_ONOFF, true)
@@ -154,29 +125,21 @@ function OnLoad()
 		Menu.Clear:addParam("LaneClearW", "Use W in LaneClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.Clear:addParam("ClearMana", "% Mana for LaneClear", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 	
---[[JungleClear]]--
-	
 	Menu:addSubMenu("[HeRo Jarvan - JungleClear]", "JClear")
 		Menu.JClear:addParam("JungleClear", "JungleClear", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
 		Menu.JClear:addParam("JungleClearQ", "Use Q in JungleClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.JClear:addParam("JungleClearE", "Use E in JungleClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.JClear:addParam("JungleClearW", "Use W in JungleClear", SCRIPT_PARAM_ONOFF, true)
 		Menu.JClear:addParam("JClearMana", "% Mana for JungleClear", SCRIPT_PARAM_SLICE, 75, 0, 100, 0)
-		
---[[Escape]]--
 	
 	Menu:addSubMenu("[HeRo Jarvan - Escape]", "Escape")
 		Menu.Escape:addParam("EnableEscape", "Escape", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("S"))
 		Menu.Escape:addParam("WEscape", "Use W for slow Enemy", SCRIPT_PARAM_ONOFF, true)
 	
---[[Blacklist]]--
-	
 	Menu:addSubMenu("[HeRo Jarvan - Ult Blacklist]", "ultb")
 		for i, enemy in pairs(GetEnemyHeroes()) do
 			Menu.ultb:addParam(enemy.charName, "Use ult on: "..enemy.charName, SCRIPT_PARAM_ONOFF, true)
 		end
-
---[[ItemUsage]]--
 
 	Menu:addSubMenu("[HeRo Jarvan - Item Usage]", "Item")
 		Menu.Item:addParam("UseItem", "Enable Item Usage", SCRIPT_PARAM_ONOFF, true)
@@ -188,27 +151,21 @@ function OnLoad()
 		Menu.Item.AttackItem:addParam("UseYoumu", "Use Youmus Blade", SCRIPT_PARAM_ONOFF, true)
 		Menu.Item.AttackItem:addParam("UseGunblade", "Use Hextech Gunblade", SCRIPT_PARAM_ONOFF, true)
 
---[[Anti CC]]--
-
 	Menu.Item:addSubMenu("[HeRo Jarvan - Anti CC]", "DefItem")
 		Menu.Item.DefItem:addParam("EnableACC", "Enable AntiCC", SCRIPT_PARAM_ONOFF, true)
 		Menu.Item.DefItem:addParam("UseQSS", "Use Quicksilver Sash", SCRIPT_PARAM_ONOFF, true)
 		Menu.Item.DefItem:addParam("UseDervish", "Use Dervish Blade", SCRIPT_PARAM_ONOFF, true)
 
---[[Auto]]--
-
 	Menu:addSubMenu("[HeRo Jarvan - Auto]", "Auto")
 		Menu.Auto:addParam("autoPOT", "Auto Potions Usage", SCRIPT_PARAM_ONOFF, true)
  		Menu.Auto:addParam("autoPOTHealth", "% Health for Auto Potions", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
-		
---[[Others]]--
 
 	Menu:addSubMenu("[HeRo Jarvan - Others]", "Others")
 		Menu.Others:addSubMenu("[Change PermaShow]", "Snow")
 		Menu.Others.Snow:addParam("ChangeShow", "Change PermaShow Color(Green)", SCRIPT_PARAM_ONOFF, true)
 		Menu.Others.Snow:addParam("info", "Reload this(2xF9)", SCRIPT_PARAM_INFO, "")
 		
-		if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
+		if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) then
 			Menu.Others:addSubMenu("[Auto level - Up]", "LVLUP")
 				Menu.Others.LVLUP:addParam("Enable", "Enable LVL-UP", SCRIPT_PARAM_ONOFF, false)
 				Menu.Others.LVLUP:addParam("Mod", "Mode:", SCRIPT_PARAM_LIST, 1, {"Auto", "Manual"})
@@ -229,25 +186,24 @@ function OnLoad()
 				Menu.Others.Smite:addParam('Info12345', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
 				if GetGame().map.shortName == "twistedTreeline" then
-					Menu.Others.Smite:addParam("TTNWraith", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, true)
-					Menu.Others.Smite:addParam("TTNGolem", "Use Smite on: Golem", SCRIPT_PARAM_ONOFF, true)
-					Menu.Others.Smite:addParam("TTNWolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, true)
-					Menu.Others.Smite:addParam("TTSpiderboss", "Use Smite on: SpiderBoss", SCRIPT_PARAM_ONOFF, true)
+				   Menu.Others.Smite:addParam("Wraith", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, true)
+				   Menu.Others.Smite:addParam("Golem", "Use Smite on: Golem", SCRIPT_PARAM_ONOFF, true)
+				   Menu.Others.Smite:addParam("Wolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, true)
+				   Menu.Others.Smite:addParam("Spiderboss", "Use Smite on: SpiderBoss", SCRIPT_PARAM_ONOFF, true)
 				else
-					Menu.Others.Smite:addParam("SRUDragon", "Use Smite on: Dragon", SCRIPT_PARAM_ONOFF, true)
-					Menu.Others.Smite:addParam("SRUBaron", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
-					Menu.Others.Smite:addParam("SRURazorbeak", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, false)
-					Menu.Others.Smite:addParam("SRUMurkwolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, false)
-					Menu.Others.Smite:addParam("SRUKrug", "Use Smite on: Krug", SCRIPT_PARAM_ONOFF, false)
-					Menu.Others.Smite:addParam("SRUGromp", "Use Smite on: Gromp", SCRIPT_PARAM_ONOFF, false)
-					Menu.Others.Smite:addParam("SRURed", "Use Smite on: Red Buff", SCRIPT_PARAM_ONOFF, true)
-					Menu.Others.Smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
+				   Menu.Others.Smite:addParam("Dragon", "Use Smite on: Dragon", SCRIPT_PARAM_ONOFF, true)
+				   Menu.Others.Smite:addParam("Baron", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
+				   Menu.Others.Smite:addParam("Razorbeak", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, false)
+				   Menu.Others.Smite:addParam("Murkwolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, false)
+				   Menu.Others.Smite:addParam("Krug", "Use Smite on: Krug", SCRIPT_PARAM_ONOFF, false)
+				   Menu.Others.Smite:addParam("Gromp", "Use Smite on: Gromp", SCRIPT_PARAM_ONOFF, false)
+				   Menu.Others.Smite:addParam("Red", "Use Smite on: Red Buff", SCRIPT_PARAM_ONOFF, true)
+				   Menu.Others.Smite:addParam("Blue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
 				end
-	
---[[Drawings]]--
 	
 	Menu:addSubMenu("[HeRo Jarvan - Draw Settings]", "Drawings")
 		Menu.Drawings:addParam("AllDraw", "Enable or Disable all Draws", SCRIPT_PARAM_ONOFF, true)
+		Menu.Drawings:addParam("FPS", 'Use FPS Draw Circle(Fix Soon)', SCRIPT_PARAM_ONOFF, false)
 
 		Menu.Drawings:addParam('Info1', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 		Menu.Drawings:addParam("Infokek1", "[Spell Draw]", SCRIPT_PARAM_INFO, "")
@@ -280,8 +236,6 @@ function OnLoad()
   		Menu:addParam("info4", "Package: [Game Version - "..SCRIPT_PATCH.."]", SCRIPT_PARAM_INFO, "")
   		Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
 
-
---[[Predictions]]--
 
 	Menu:addSubMenu("[HeRo Jarvan - Prediction]", "Prediction")
   		Menu.Prediction:addParam("activePred", "Prediction (require reload)", SCRIPT_PARAM_LIST, 1, {"VPred", "DPred", "FHPred", "SPred"})
@@ -319,74 +273,67 @@ function OnLoad()
       			Menu.Prediction:addParam("ESPHC", "E HitChance", SCRIPT_PARAM_SLICE, 1.5, 0, 3, 0)
       			DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>SPrediction Found!</b></font>") end, 4.1)	
     		end
-    		--SMITESLOT = FindSlotByName("SummonerDot") or FindSlotByName("s5_summonersmiteduel") or FindSlotByName("s5_summonersmiteplayerganker")
-  end
+  		end
 
---[[PermaShow]]--
 
 	if Menu.Others.Snow.ChangeShow then
-	IDPerma = Menu.Combo:permaShow("ComboMode")
-	Menu.permaShowEdit(IDPerma, "lText", "[Combo]")
-	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+		IDPerma = Menu.Combo:permaShow("ComboMode")
+		Menu.permaShowEdit(IDPerma, "lText", "[Combo]")
+		Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-	IDPerma = Menu.Combo:permaShow("Cmode")
-	Menu.permaShowEdit(IDPerma, "lText", "[Combo Mode]")
-	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+		IDPerma = Menu.Combo:permaShow("Cmode")
+		Menu.permaShowEdit(IDPerma, "lText", "[Combo Mode]")
+		Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-  	--IDPerma = Menu.Combo:permaShow("Burst")
-  	--Menu.permaShowEdit(IDPerma, "lText", "[Burst Mode]")
-  	--Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+	  	--IDPerma = Menu.Combo:permaShow("Burst")
+	  	--Menu.permaShowEdit(IDPerma, "lText", "[Burst Mode]")
+	  	--Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-	IDPerma = Menu.Harass:permaShow("HS")
-	Menu.permaShowEdit(IDPerma, "lText", "[Harass]")
-	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+		IDPerma = Menu.Harass:permaShow("HS")
+		Menu.permaShowEdit(IDPerma, "lText", "[Harass]")
+		Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-	IDPerma = Menu.Harass:permaShow("Hmode")
-	Menu.permaShowEdit(IDPerma, "lText", "[Harass Mode]")
-	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
-	
-	IDPerma = Menu.Clear:permaShow("LaneClear")
-	Menu.permaShowEdit(IDPerma, "lText", "[Lane Clear]")
-	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
-	
-	IDPerma = Menu.JClear:permaShow("JungleClear")
-	Menu.permaShowEdit(IDPerma, "lText", "[Jungle Clear]")
-	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+		IDPerma = Menu.Harass:permaShow("Hmode")
+		Menu.permaShowEdit(IDPerma, "lText", "[Harass Mode]")
+		Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+		
+		IDPerma = Menu.Clear:permaShow("LaneClear")
+		Menu.permaShowEdit(IDPerma, "lText", "[Lane Clear]")
+		Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+		
+		IDPerma = Menu.JClear:permaShow("JungleClear")
+		Menu.permaShowEdit(IDPerma, "lText", "[Jungle Clear]")
+		Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
 
-	IDPerma = Menu.Escape:permaShow("EnableEscape")
-	Menu.permaShowEdit(IDPerma, "lText", "[Escape]")
-	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
-	
-	IDPerma = Menu.Prediction:permaShow("activePred")
-	Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
-	
+		IDPerma = Menu.Escape:permaShow("EnableEscape")
+		Menu.permaShowEdit(IDPerma, "lText", "[Escape]")
+		Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)
+		
+		IDPerma = Menu.Prediction:permaShow("activePred")
+		Menu.permaShowEdit(IDPerma, "lTextColor", 0xFF00FF00)	
 	else
-	
-	Menu.Combo:permaShow("ComboMode")
+		Menu.Combo:permaShow("ComboMode")
 
-	Menu.Combo:permaShow("Cmode")
-	
-	--Menu.Combo:permaShow("Burst")
-	
-	Menu.Harass:permaShow("HS")
+		Menu.Combo:permaShow("Cmode")
+		
+		--Menu.Combo:permaShow("Burst")
+		
+		Menu.Harass:permaShow("HS")
 
-	Menu.Harass:permaShow("Hmode")
-	
-	Menu.Clear:permaShow("LaneClear")
-	
-	Menu.JClear:permaShow("JungleClear")
-	
-	Menu.Escape:permaShow("EnableEscape")
-	
-	Menu.Prediction:permaShow("activePred")
+		Menu.Harass:permaShow("Hmode")
+		
+		Menu.Clear:permaShow("LaneClear")
+		
+		Menu.JClear:permaShow("JungleClear")
+		
+		Menu.Escape:permaShow("EnableEscape")
+		
+		Menu.Prediction:permaShow("activePred")
 	end
-	
 	if VIP_USER then 
 		SkinLoad() 
 	end
 end
-
---[[OnTick]]--
 
 function OnTick()
 	ts:update()
@@ -402,7 +349,7 @@ function OnTick()
 
 	if Menu.Combo.ChangeCombo then
 		Menu.Combo.ChangeCombo = false
-		Menu.Combo.Cmode = Menu.Combo.Cmode >= 4 and 1 or (Menu.Combo.Cmode + 1)
+		Menu.Combo.Cmode = Menu.Combo.Cmode >= 5 and 1 or (Menu.Combo.Cmode + 1)
 		print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>New Combo mode: </b></font> "..PrintComboMode(msgg))
 	end
 
@@ -412,10 +359,12 @@ function OnTick()
 		print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>New Harass mode: </b></font> "..PrintHarassMode(msgg))
 	end
 
-	if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.5') ~= nil) then
-		if (LastLevel < myHero.level) then
-			LevelUp()
-		end
+	if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) and Menu.Others.LVLUP.Enable then
+		print("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>I'm fix Lvl-Up function soon, sry.</b></font>")
+		Menu.Others.LVLUP.Enable = false
+		--if (LastLevel < myHero.level) then
+			--LevelUp()
+		--end
 	end
 
     if SMITE then
@@ -427,10 +376,6 @@ function OnTick()
 	if Menu.Combo.ComboMode then
 		JarvanCombo()
 		CastItemsF()
-		if Menu.Combo.ComboR then
-			DelayAction(function() UseR() end, 0.6)
-		end
-		UseW()
 	end
 	
 	if Menu.KillSteal.Steal then
@@ -505,7 +450,6 @@ function CastItemsCJ()
 	end
 end
 
-
 function CastItemsF()
 	if ts.target ~= nil and ts.target.visible then
 		if TITANIC and Menu.Item.AttackItem.UseTitanic then CastTITANIC() end
@@ -515,51 +459,40 @@ function CastItemsF()
 	end
 end
 
---[[Combo]]--
-
 function JarvanCombo()
 	local target = GetMyTarget(1000)
     if target ~= nil then
-		if Menu.Combo.Cmode == 1 and Qready and Eready and Menu.Combo.ComboQ and Menu.Combo.ComboE then
+    	if Menu.Combo.Cmode == 1 then
+			if Qready and Eready then
+				CastE(target)
+				DelayAction(function() CastQ(target) end, 0.3)
+			elseif Qready and not Eready then
+				CastQ(target)
+			elseif Eready and not Qready then
+				CastE(target)
+			end
+		elseif Menu.Combo.Cmode == 2 and (Qready and Eready and Menu.Combo.ComboQ and Menu.Combo.ComboE) then
 			CastE(target)
 			DelayAction(function() CastQ(target) end, 0.3)
-		end
-	elseif Menu.Combo.Cmode == 2 and Menu.Combo.ComboE then
-		CastE(target)
-		if Menu.Combo.ComboE then
+		elseif Menu.Combo.Cmode == 3 then
+			if Eready and Menu.Combo.ComboE then CastE(target) end
+			if Qready and Menu.Combo.ComboQ then CastQ(target) end
+		elseif Menu.Combo.Cmode == 4 and (Qready and Menu.Combo.ComboQ) then
 			CastQ(target)
+		elseif Menu.Combo.Cmode == 5 and (not Qready and Menu.Combo.ComboE) then
+			CastE(target)
 		end
-	elseif Menu.Combo.Cmode == 3 and Qready and Menu.Combo.ComboQ then
-		CastQ(target)
-	elseif Menu.Combo.Cmode == 4 and not Qready and Menu.Combo.ComboE then
-		CastE(target)
-	end
-	if SMITE and ATTACKSMITE3 and Menu.Others.Smite.UseSmiteCombo and GetDlina(myHero, target) <= 560 then
-	    CastSmite(target)
-	end
-end
-
-function UseW()
-	if Wready and Menu.Combo.ComboW then
-		local target = GetMyTarget(700) 
-		if target ~= nil then
-			if ValidTarget(target, 525) or CountEnemyHeroInRange(525) >= 1 then
-				CastSpell(_W)
-			end
+		if Menu.Combo.ComboR then
+			DelayAction(function() UseR() end, 0.7)
 		end
-	end
-end
-	
-function UseR()
-	if Rready and Menu.Combo.ComboR and blCheck(ts.target) then
-		local target = GetMyTarget(700) 
-		if target ~= nil then
-			CastR(target)
+		if Menu.Combo.ComboW then
+			UseW()
 		end
-	end
+		if SMITE and ATTACKSMITE3 and Menu.Others.Smite.UseSmiteCombo and GetDlina(myHero, target) <= 560 then
+	    	CastSmite(target)
+		end
 end
-
---[[KillSteal]]--
+end
 
 function KSteal()
 	if Menu.KillSteal.QSteal then
@@ -596,14 +529,12 @@ function KSteal()
 	end
 end
 
---[[KillStealQ]]--
-
 function QSteal()
  	for i,enemy in pairs(GetEnemyHeroes()) do
   		if not enemy.dead and enemy.visible then
 			if not Qready then return end
 			if ValidTarget(enemy, 770) then
-				if enemy.health < getDmg("Q", enemy, myHero) then
+				if enemy.health < GetQDamage(enemy) then
 					CastQ(enemy)
 				end
 			end
@@ -611,14 +542,12 @@ function QSteal()
 	end
 end
 
---[[KillStealE]]--
-
 function ESteal()
   	for i,enemy in pairs(GetEnemyHeroes()) do
   		if not enemy.dead and enemy.visible then
 			if not Eready then return end
 			if ValidTarget(enemy, 830) then
-				if enemy.health < getDmg("E", enemy, myHero) then
+				if enemy.health < GetEDamage(enemy) then
 					CastE(enemy)
 				end
 			end
@@ -626,14 +555,12 @@ function ESteal()
 	end
 end
 
---[[KillStealR]]--
-
 function RSteal() 
 	for i,enemy in pairs(GetEnemyHeroes()) do
     	if not enemy.dead and enemy.visible then
 		if not Rready then return end
 			if ValidTarget(enemy, 650) then
-				if enemy.health < getDmg("R", enemy, myHero) then
+				if enemy.health < GetRDamage(enemy) then
 					CastSpell(_R, enemy)
 				end
 			end
@@ -641,46 +568,37 @@ function RSteal()
 	end
 end
 
---[[Harass]]--
-
 function Harass()
 	local target = GetMyTarget(1000)
     if target ~= nil then
 		if Menu.Harass.Hmode == 1 and Qready and Eready then
-			if ValidTarget(target, 900) then
+			if ValidTarget(target, 1000) then
 				CastE(target)
 				DelayAction(function() CastQ(target) end, 0.3)
 			end
 		elseif Menu.Harass.Hmode == 2 and Menu.Harass.HarassE then
-			if ValidTarget(target, 900) then
+			if ValidTarget(target, 1000) then
 				CastE(target)
 				if Menu.Harass.HarassQ then
-					if ValidTarget(target, 900) then
+					if ValidTarget(target, 1000) then
 						CastQ(target)
 					end
 				end
 			end
 		elseif Menu.Harass.Hmode == 3 and Qready and Menu.Harass.HarassQ then
-			if ValidTarget(target, 800) then
+			if ValidTarget(target, 1000) then
 				CastQ(target)
 			end
 		elseif Menu.Harass.Hmode == 4 and Eready and Menu.Harass.HarassE then
-			if ValidTarget(target, 900) then
+			if ValidTarget(target, 1000) then
 				CastE(target)
 			end
 		end
 	end
 end
 
---[[LaneClear]]--
 
 function LCLR()
-	LCLRQ()
-end
-
---[[LaneClear]]--
-
-function LCLRQ()
 	for _, minions in pairs(minionManager(MINION_ENEMY, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
 		if Qready and Menu.Clear.LaneClearQ then
 			if ValidTarget(minions, 770) then
@@ -698,126 +616,85 @@ function LCLRQ()
 		end
 end
 
---[[JungleClear]]--
-
 function JCLR()
-	JCLRQ()
-end
-
-function JCLRQ()
 	for _, jminion in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
     	if ValidTarget(jminion, VARS.Q.RANGE) then
 			if Qready and Menu.JClear.JungleClearQ then
 				CastQ(jminion)
 			end
-		if Eready and Menu.JClear.JungleClearE then
-			CastE(jminion)
-    	end
-		if Wready and Menu.JClear.JungleClearW then
-			if GetDistance(jminion) <= 525 then
-				CastSpell(_W)
+			if Eready and Menu.JClear.JungleClearE then
+				CastE(jminion)
     		end
-  		end
-	end
-end
-end
-
---[[OnDraw]]--
-
-function OnDraw()
-	if myHero.dead then return end
-	if Menu.Drawings.AllDraw then
-		
-		if Menu.Drawings.drawHP then
-      		DrawHPbar()
-    	end
-	
-		if Menu.Drawings.DrawQ and Qready then
-			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.Q.RANGE, ARGB(255, 0, 0, 80))
-		end	
-
-		if Menu.Drawings.DrawW and Wready then
-			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.W.RANGE, ARGB(255, 0, 0, 80))
-		end
-
-		if Menu.Drawings.DrawE and Eready then
-			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.E.RANGE, ARGB(255, 0, 0, 80))
-		end
-
-		if Menu.Drawings.DrawAA then
-			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.AA.RANGE, ARGB(255, 0, 0, 80))
-		end
-	
-		if Menu.Drawings.DrawR and Rready then
-			DrawCircle(myHero.x, myHero.y, myHero.z, VARS.R.RANGE, ARGB(255, 0, 0, 80))
-		end
-
-      	if Menu.Drawings.DrawSmite then
-        	DrawCircle(myHero.x, myHero.y, myHero.z, 560, ARGB(255, 100, 100, 80))
-      	end
-
-      	if Menu.Drawings.DrawSmiteable then
-        	DrawSmiteable()
-        end
-
-        if Menu.Drawings.DrawSmiteTargetable then
-        	DrawSmiteTarget()
-        end
-
-        if Menu.Drawings.DrawComboModex then
-        	DrawComboMode()
-		end
-
-		if Menu.Drawings.DrawHarassModex then
-        	DrawHarassMode()
-		end
-
-        if Menu.Combo.UseFocus then
-			if not Menu.Combo.UseFocus then return end
-  			local target = MYFOCUS
-  			if target == nil then return end
-  			if (target ~= nil and target.type == myHero.type and target.team ~= myHero.team) then
-    			DrawCircle(target.x, target.y, target.z, 120, ARGB(255, 100, 100, 80))
-    			local posMinion = WorldToScreen(D3DXVECTOR3(target.x, target.y, target.z))
-    			DrawText("Target", 20, posMinion.x, posMinion.y, ARGB(255, 100, 100, 255))
+			if Wready and Menu.JClear.JungleClearW then
+				if GetDistance(jminion) <= 525 then
+					CastSpell(_W)
+    			end
   			end
 		end
 	end
 end
 
-function DrawComboMode()
-	if Menu.Combo.Cmode == 1 then
-		local txt = 'E + Q'
-		DrawText ("Combo Mode: "..txt.." [ Y ]", 20, 1125, 885, 0xFFFFF5EE)
-	elseif Menu.Combo.Cmode == 2 then
-		local txt = 'Q or E'
-		DrawText ("Combo Mode: "..txt.." [ Y ]", 20, 1125, 885, 0xFFFFF5EE)
-	elseif Menu.Combo.Cmode == 3 then 
-		local txt = 'Q Only'
-		DrawText ("Combo Mode: "..txt.." [ Y ]", 20, 1125, 885, 0xFFFFF5EE)
-	elseif Menu.Combo.Cmode == 4 then 
-		local txt = 'E Only'
-		DrawText ("Combo Mode: "..txt.." [ Y ]", 20, 1125, 885, 0xFFFFF5EE)
+function OnDraw()
+	if myHero.dead then return end
+	if Menu.Drawings.AllDraw then
+		
+			if Menu.Drawings.drawHP then
+	      		DrawHPbar()
+	    	end
+
+			if Menu.Drawings.DrawQ and Qready then
+				DrawCircle(myHero.x, myHero.y, myHero.z, VARS.Q.RANGE, ARGB(255, 0, 0, 80))
+			end	
+
+			if Menu.Drawings.DrawW and Wready then
+				DrawCircle(myHero.x, myHero.y, myHero.z, VARS.W.RANGE, ARGB(255, 0, 0, 80))
+			end
+
+			if Menu.Drawings.DrawE and Eready then
+				DrawCircle(myHero.x, myHero.y, myHero.z, VARS.E.RANGE, ARGB(255, 0, 0, 80))
+			end
+
+			if Menu.Drawings.DrawAA then
+				DrawCircle(myHero.x, myHero.y, myHero.z, VARS.AA.RANGE, ARGB(255, 0, 0, 80))
+			end
+		
+			if Menu.Drawings.DrawR and Rready then
+				DrawCircle(myHero.x, myHero.y, myHero.z, VARS.R.RANGE, ARGB(255, 0, 0, 80))
+			end
+			if SMITE or ATTACKSMITE or ATTACKSMITE3 then
+		      	if Menu.Drawings.DrawSmite then
+		        	DrawCircle(myHero.x, myHero.y, myHero.z, 560, ARGB(255, 100, 100, 80))
+		      	end
+	      	end
+
+	      	if Menu.Drawings.DrawComboModex then
+	        	DrawComboMode()
+			end
+
+			if Menu.Drawings.DrawHarassModex then
+	        	DrawHarassMode()
+			end
+
+			if Menu.Combo.UseFocus then
+				if not Menu.Combo.UseFocus then return end
+	  			local target = MYFOCUS
+	  			if target == nil then return end
+	  			if (target ~= nil and target.type == myHero.type and target.team ~= myHero.team) then
+	    			DrawCircle(target.x, target.y, target.z, 120, ARGB(255, 100, 100, 80))
+	    			local posMinion = WorldToScreen(D3DXVECTOR3(target.x, target.y, target.z))
+	    			DrawText("Target", 20, posMinion.x, posMinion.y, ARGB(255, 100, 100, 255))
+	  			end
+			end
+
+		      	if Menu.Drawings.DrawSmiteable then
+		        	DrawSmiteable()
+		        end
+
+		        if Menu.Drawings.DrawSmiteTargetable then
+		        	DrawSmiteTarget()
+		        end
 	end
 end
-
-function DrawHarassMode()
-	if Menu.Harass.Hmode == 1 then
-		local tst = 'E + Q'
-		DrawText ("Harass Mode: "..tst.." [ T ]", 20, 1125, 905, 0xFFFFF5EE)
-	elseif Menu.Harass.Hmode == 2 then 
-		local tst = 'Q or E'
-		DrawText ("Harass Mode: "..tst.." [ T ]", 20, 1125, 905, 0xFFFFF5EE)
-	elseif Menu.Harass.Hmode == 3 then 
-		local tst = 'Q Only'
-		DrawText ("Harass Mode: "..tst.." [ T ]", 20, 1125, 905, 0xFFFFF5EE)
-	elseif Menu.Harass.Hmode == 4 then 
-		local tst = 'E Only'
-		DrawText ("Harass Mode: "..tst.." [ T ]", 20, 1125, 905, 0xFFFFF5EE)
-	end
-end
-
---[[SpellCheck]]--
 
 function spell_check()
 	Qready = (myHero:CanUseSpell(_Q) == READY)
@@ -826,7 +703,6 @@ function spell_check()
 	Rready = (myHero:CanUseSpell(_R) == READY)
 end
 
---[[BlockList]]--
 
 function blCheck(target)
 	if ts.target ~= nil and Menu.ultb[target.charName] then
@@ -836,26 +712,20 @@ function blCheck(target)
 	end
 end
 
---[[OnCreateObj]]--
-
 function OnCreateObj(obj)
 	if obj == nil then return end
-	if obj.name:lower():find("jarvancataclysm_sound") then
+	if obj.name:find("jarvancataclysm_sound") then
 		ultActive = true
 		DelayAction(function() ultActive = false end, 3.5)
 	end
 end
 
---[[OnDeleteObj]]--	
-
 function OnDeleteteObj(obj)
 	if obj == nil then return end
-	if obj.name:lower():find("jarvancataclysm_sound") then
+	if obj.name:find("jarvancataclysm_sound") then
 		ultActive = false
 	end
 end
-
---[[EQEscape]]--
 
 function EQEscape()
   	myHero:MoveTo(mousePos.x, mousePos.z)
@@ -866,8 +736,6 @@ function EQEscape()
 		myHero:MoveTo(mousePos.x, mousePos.z)
 	end
 end
-
---[[CastQ]]--
 
 function CastQ(unit)
   	if unit == nil and Qready then return end
@@ -897,8 +765,6 @@ function CastQ(unit)
   	end
 end
 
---[[CastE]]--
-
 function CastE(unit)
   	if unit == nil and Eready then return end
   	if VP ~= nil then
@@ -927,16 +793,12 @@ function CastE(unit)
   	end
 end
 
---[[CastW]]--
-
 function CastW(unit)
 	if unit == nil and Wready then return end
  	if ValidTarget(ts.target, 525) or GetDlina(myHero, ts.target) <= 525 then
     	CastSpell(_W)
   	end
 end
-
---[[CastR]]--
 
 function CastR(unit)
   	if unit == nil then return end
@@ -945,20 +807,38 @@ function CastR(unit)
     end
 end
 
---[[GetDlina]]--
+--------------------------------------Need This too-
+
+function UseW()
+	if Wready and Menu.Combo.ComboW then
+		local target = GetMyTarget(700) 
+		if target ~= nil then
+			if ValidTarget(target, 525) or CountEnemyHeroInRange(525) >= 1 then
+				CastSpell(_W)
+			end
+		end
+	end
+end
+	
+function UseR()
+	if Rready and Menu.Combo.ComboR and blCheck(ts.target) then
+		local target = GetMyTarget(700) 
+		if target ~= nil then
+			CastR(target)
+		end
+	end
+end
+
+--------------------------------------Need This too-
 
 function GetDlina(a, b)
   	local Dlina = math.sqrt((b.x-a.x)*(b.x-a.x) + (b.z-a.z)*(b.z-a.z))
   	return Dlina
 end
 
---[[SpellReady]]--
-
 function SpellReady(spell)
   	return myHero:CanUseSpell(spell) == READY
 end
-
---[[FindItems]]--
 
 function FindItems()
   	if (Menu.Item.AttackItem.UseTiamat) then
@@ -993,8 +873,6 @@ function FindItems()
     	GetDervish()
  	end
 end
-
---[[Get Items]]--
 
 function GetTiamat()
   	local slot = GetItem(ATTACKITEMS[1])
@@ -1076,8 +954,6 @@ function GetDervish()
   	end
 end
 
---[[Cast Items]]--
-
 function CastTiamat()
   	if TIAMAT then
     	if (SpellReady(TIAMATSLOT)) then
@@ -1148,8 +1024,6 @@ function CastDervish()
   	end
 end
 
---[[Get Buff(Add)]]--
-
 function Buff_Add(unit, target, buff)
   	for j = 1, #DANGERSPELL do
     	if target then
@@ -1165,8 +1039,6 @@ function Buff_Add(unit, target, buff)
   	end
 end
 
---[[Get Buff(Rem)]]--
-
 function Buff_Rem(unit, buff)
   	for j = 1, #DANGERSPELL do
     	if unit.isMe and buff.name == DANGERSPELL[j] then
@@ -1180,20 +1052,16 @@ function Buff_Rem(unit, buff)
   	end
 end
 
---[[Auto Potion]]--
-
 function AutoPotion()
   	for i=1, 5 do
-    	local pot = GetItem(POT[i])
-    	if (pot ~= nil) then
+    	local Hilka = GetItem(POT[i])
+    	if (Hilka ~= nil) then
       		if (((myHero.health*100)/myHero.maxHealth) <= Menu.Auto.autoPOTHealth and not REGENTIME) then
-        		CastSpell(pot)
+        		CastSpell(Hilka)
       		end
     	end
   	end
 end
-
---[[Find Slot]]--
 
 function FindSlotByName(name)
   	if name ~= nil then
@@ -1206,8 +1074,6 @@ function FindSlotByName(name)
   	return nil
 end
 
---[[Get Item]]--
-
 function GetItem(name)
   	local slot = FindSlotByName(name)
   	return slot 
@@ -1216,14 +1082,14 @@ end
 function CheckFountain()
   	if not GetGame().map.index == 15 then return end
   	if myHero.team == 100 then
-    	local rastoyanieDown = math.sqrt((myHero.x-lowBase.x)*(myHero.x-lowBase.x) + (myHero.z-lowBase.z)*(myHero.z-lowBase.z))
+    	local rastoyanieDown = math.sqrt((myHero.x-xBase.x)*(myHero.x-xBase.x) + (myHero.z-xBase.z)*(myHero.z-xBase.z))
     	if rastoyanieDown < 900 then
       		FONTAN = true
     	else
       		FONTAN = false
     	end
   	elseif myHero.team == 200 then
-    	local rastoyanieUp = math.sqrt((myHero.x-upBase.x)*(myHero.x-upBase.x) + (myHero.z-upBase.z)*(myHero.z-upBase.z))
+    	local rastoyanieUp = math.sqrt((myHero.x-zBase.x)*(myHero.x-zBase.x) + (myHero.z-zBase.z)*(myHero.z-zBase.z))
     	if rastoyanieUp < 900 then
       		FONTAN = true
     	else
@@ -1278,48 +1144,45 @@ function GetSmiteDamage(unit)
 end
 
 function AutoSmite()
-  	local SmiteDmg = GetSmiteDamage()
-  	for _, jminions in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
-	    if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
-	      	if Menu.Others.Smite[jminions.charName:gsub("_", "")] then
-	        	if SpellReady(SMITESLOT) and GetDlina(myHero, jminions) <= 560 and SmiteDmg >= jminions.health then
-	          		CastSpell(SMITESLOT, jminions)
-	        	end
-	      	end
-    	end
-  	end
+   	local SmiteDmg = GetSmiteDamage()
+   	for _, jminions in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
+   		if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
+      		local name = jminions.charName
+      		name = name:sub(name:find("_")+1, name:len())
+      		name = name:sub(1, (name:find("_") or name:len()+1)-1)
+      		if Menu.Others.Smite[name] then
+        		if SpellReady(SMITESLOT) and GetDlinaForSmiteDraw(myHero, jminions) <= 560 and SmiteDmg >= jminions.health then
+          			CastSpell(SMITESLOT, jminions)
+        		end
+      		end
+     	end
+   	end
 end
 
 function DrawSmiteable()
-  	local SmiteDmg = GetSmiteDamage()
-  	for _, jminion in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
-    	for k = 1, #SMITEFOCUS do
-      		if jminion.name == SMITEFOCUS[k] then
-      	  		if not jminion.dead and jminion.visible and ValidTarget(jminion, 560) and Menu.Others.Smite[jminion.charName:gsub("_", "")] then
-        			local posMinion = WorldToScreen(D3DXVECTOR3(jminion.x, jminion.y, jminion.z))
-        			local SmiteProcess = math.round((jminion.health - SmiteDmg))
-        			if SpellReady(SMITESLOT) and GetDlina(myHero, jminion) <= 560 then
-            			DrawText("Smite Process - "..SmiteProcess.."HP", 20, posMinion.x, posMinion.y, ARGB(255,255,0,0))
-          			end
-        		end
-      		end
-    	end
-  	end
+	local SmiteDmg = GetSmiteDamage()
+	for _, jminion in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
+    	if not jminion.dead and jminion.visible and ValidTarget(jminion, 560) then
+      		local name = jminion.charName
+      		name = name:sub(name:find("_")+1, name:len())
+      		name = name:sub(1, (name:find("_") or name:len()+1)-1)
+      		if Menu.Others.Smite[name] then
+       			local posMinion = WorldToScreen(D3DXVECTOR3(jminion.x, jminion.y, jminion.z))
+       			local SmiteProcess = math.round(100-100*(jminion.health-SmiteDmg)/jminion.maxHealth)
+       			if SpellReady(SMITESLOT) and GetDlinaForSmiteDraw(myHero, jminion) <= 560 then
+        			DrawText("Smite Process - "..SmiteProcess.."%", 20, posMinion.x - GetTextArea("Smite Process - "..SmiteProcess.."%", 20).x/2, posMinion.y, ARGB(255,255,0,0))
+        			DrawCircle(jminion.x, jminion.y, jminion.z, 1.5*SmiteProcess, ARGB(255, 255*(1-SmiteProcess/100), 255*SmiteProcess/100, 255*(1-SmiteProcess/100)))
+        			DrawCircle(jminion.x, jminion.y, jminion.z, 150, ARGB(55, 55, 155, 55))
+        			DrawCircle(jminion.x, jminion.y, jminion.z, 75, ARGB(255, 128, 128, 128))
+       			end
+     		end
+   		end
+ 	end
 end
 
-function DrawSmiteTarget()
-  	for _, jminions in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
-    	for j = 1, #SMITEFOCUS do
-      		if jminions.name == SMITEFOCUS[j] then
-        		if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
-        			local posMinion = WorldToScreen(D3DXVECTOR3(jminions.x, jminions.y, jminions.z))
-        			if SpellReady(SMITESLOT) and GetDlina(myHero, jminions) <= 560 and Menu.Others.Smite[jminions.charName:gsub("_", "")] then
-            			DrawCircle(jminions.x, jminions.y, jminions.z, 150, ARGB(255, 100, 100, 80))
-          			end
-        		end
-      		end
-    	end
-  	end
+function GetDlinaForSmiteDraw(a, b)
+  	local dx, dz = a.x - b.x, (a.z or a.y) - (b.z or b.y)
+  	return math.sqrt(dx*dx + dz*dz)
 end
 
 local invul = {"undyingrage", "sionpassivezombie", "aatroxpassivedeath", "chronoshift", "judicatorintervention"}
@@ -1378,10 +1241,11 @@ end
 
 
 function PrintComboMode(msgg)
-	if Menu.Combo.Cmode == 1 then msgg = 'E + Q'
-		elseif Menu.Combo.Cmode == 2 then msgg = 'Q or E'
-		elseif Menu.Combo.Cmode == 3 then msgg = 'Q Only'
-		elseif Menu.Combo.Cmode == 4 then msgg = 'E Only'
+	if Menu.Combo.Cmode == 2 then msgg = 'E + Q'
+		elseif Menu.Combo.Cmode == 3 then msgg = 'Q or E'
+		elseif Menu.Combo.Cmode == 4 then msgg = 'Q Only'
+		elseif Menu.Combo.Cmode == 5 then msgg = 'E Only'
+		elseif Menu.Combo.Cmode == 1 then msgg = 'Smart'	
 	end
 	return msgg
 end
@@ -1393,6 +1257,41 @@ function PrintHarassMode(msgg)
 		elseif Menu.Harass.Hmode == 4 then msgg = 'E Only'
 	end
 	return msgg
+end
+
+function DrawComboMode()
+	if Menu.Combo.Cmode == 1 then
+		local txt = 'Smart'
+		DrawText ("Combo Mode: "..txt, 20, 1125, 885, 0xFFFFF5EE)
+	elseif Menu.Combo.Cmode == 2 then
+		local txt = 'E + Q'
+		DrawText ("Combo Mode: "..txt, 20, 1125, 885, 0xFFFFF5EE)
+	elseif Menu.Combo.Cmode == 3 then
+		local txt = 'Q or E'
+		DrawText ("Combo Mode: "..txt, 20, 1125, 885, 0xFFFFF5EE)
+	elseif Menu.Combo.Cmode == 4 then 
+		local txt = 'Q Only'
+		DrawText ("Combo Mode: "..txt, 20, 1125, 885, 0xFFFFF5EE)
+	elseif Menu.Combo.Cmode == 5 then 
+		local txt = 'E Only'
+		DrawText ("Combo Mode: "..txt, 20, 1125, 885, 0xFFFFF5EE)
+	end
+end
+
+function DrawHarassMode()
+	if Menu.Harass.Hmode == 1 then
+		local tst = 'E + Q'
+		DrawText ("Harass Mode: "..tst, 20, 1125, 905, 0xFFFFF5EE)
+	elseif Menu.Harass.Hmode == 2 then 
+		local tst = 'Q or E'
+		DrawText ("Harass Mode: "..tst, 20, 1125, 905, 0xFFFFF5EE)
+	elseif Menu.Harass.Hmode == 3 then 
+		local tst = 'Q Only'
+		DrawText ("Harass Mode: "..tst, 20, 1125, 905, 0xFFFFF5EE)
+	elseif Menu.Harass.Hmode == 4 then 
+		local tst = 'E Only'
+		DrawText ("Harass Mode: "..tst, 20, 1125, 905, 0xFFFFF5EE)
+	end
 end
 
 -- Credits PvPSuite
@@ -1443,22 +1342,23 @@ end
 
 if VIP_USER then
 	_G.LevelSpell = function(id)
-  	if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
-		local offsets = { 
-    			[1] = 0xF8,
-    			[2] = 0x4F,
-    			[3] = 0x14,
-    			[4] = 0x9E,
-  		}
-  		local p = CLoLPacket(0xA9)
-  		p.vTable = 0xF3981C
-		  p:EncodeF(myHero.networkID)
-		  p:Encode4(0x19)
-		  p:Encode4(0x44)
-		  p:Encode1(0xEC)
-		  p:Encode1(offsets[id])
-		  p:Encode4(0xF7)
-		  SendPacket(p)
+  	if (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) then
+		local offsets =
+			{ 
+				[1] = 0x71,
+				[2] = 0xF1,
+				[3] = 0x31,
+				[4] = 0xB1
+			}	
+		local p = CLoLPacket(0x13)
+		p.vTable = 0xF4DA68
+		p:EncodeF(myHero.networkID)
+		p:Encode1(0x17)
+		p:Encode1(offsets[id])
+		p:Encode4(0x6A6A6A6A)
+		p:Encode4(0x30303030)
+		p:Encode4(0x81818181)
+		SendPacket(p)
 		end
 	end
 end
@@ -1492,7 +1392,6 @@ function GetRDamage(unit)
   	local Dmg = myHero:CalcDamage(unit, DmgRaw)
   	return Dmg
 end
-
 
 function DrawLineHPBar(damage, text, unit, enemyteam)
   	if unit.dead or not unit.visible then return end
@@ -1775,4 +1674,3 @@ function ScriptUpdate:DownloadUpdate()
     end
 end
 --Credits SxTeam
---[[End]]--
