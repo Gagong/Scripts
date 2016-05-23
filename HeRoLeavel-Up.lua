@@ -1,4 +1,3 @@
----Auto Leavel Up Developed by HeRoBaNd---
 --[[
  _   _     ______      _                          _        _   _       
 | | | |    | ___ \    | |                        | |      | | | |      
@@ -10,39 +9,9 @@
                                                                 |_|  
 ]]--																																
 
-local version = "3.51"
+local version = "3.6"
 local SCRIPT_NAME = "HeRo Level-Up"
 local SCRIPT_AUTHOR = "HeRoBaNd"
---------------------------------------------------------------
-local FizzCustomGG = {'AP', 'AD/AS'}
-local JinxCustomGG = {'Q - OP', 'W - OP'}
-local GnarCustomGG = {'Q - OP', 'W - OP'}
-local KarmaCustomGG = {'Mid', 'Support'}
-local LeblancCustomGG = {'Q - OP', 'W - OP'}
-local LuluCustomGG = {'Support', 'Mid'}
-local LuxCustomGG = {'Support', 'Mid'}
-local MorganaCustomGG = {'Support', 'Mid'}
-local RengarCustomGG = {'AP Rengar', 'AD Rengar'}
-local RivenCustomGG = {'Q-Riven', 'E-Riven'}
-local ShacoCustomGG = {'AD', 'AP'}
-local TwistedCustomGG = {'Mid', 'ADC'}
-local UdyrCustomGG = {'Fenix', 'Tiger'}
---------------------------------------------------------------
-local MySeqFName = {'AP', 'AD/AS'}
-local MySeqJName = {'Q - OP', 'W - OP'}
-local MySeqGName = {'Q - OP', 'W - OP'}
-local MySeqKName = {'Mid', 'Support'}
-local MySeqLeName = {'Q - OP', 'W - OP'}
-local MySeqLuName = {'Support', 'Mid'}
-local MySeqLxName = {'Support', 'Mid'}
-local MySeqMName = {'Support', 'Mid'}
-local MySeqRName = {'AP Rengar', 'AD Rengar'}
-local MySeqRiName = {'Q - Riven', 'E - Riven'}
-local MySeqSName = {'AD', 'AP'}
-local MySeqTName = {'Mid', 'ADC'}
-local MySeqUName = {'Fenix', 'Tiger'}
---------------------------------------------------------------
-local CustomChar = {'Fizz', 'Jinx', 'Gnar', 'Karma', 'Leblanc', 'Lulu', 'Lux', 'Morgana', 'Rengar', 'Riven', 'Shaco', 'TwistedFate', 'Udyr'}
 
 -- BoL Tools Tracker --
 assert(load(Base64Decode("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"), nil, "bt", _ENV))()
@@ -157,6 +126,7 @@ SequencesName = {
     ["Soraka"]          =   '{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
     ["Swain"]           =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}',
     ["Syndra"]          =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
+    ["Taliyah"]         =   '{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
     ["TahmKench"]       =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
     ["Talon"]           =   '{2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}',
     ["Taric"]           =   '{3, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
@@ -188,33 +158,6 @@ SequencesName = {
     ["Zyra"]            =   '{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}',
     ["Yasuo"]           =   '{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}'
 }
-
-MySeqF = {{3, 2, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}, {2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
-
-MySeqJ = {{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, {1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
-
-MySeqG = {{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, {1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
-
-MySeqK = {{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, {1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}} 
-
-MySeqLe = {{1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, {1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
-
-MySeqLu = {{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, {1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}}
-
-MySeqLx = {{2, 1, 3, 2, 2, 4, 2, 3, 2, 3, 4, 3, 3, 1, 1, 4, 1, 1}, {3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}}
-
-MySeqM = {{1, 3, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, {2, 1, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}}
-
-MySeqR = {{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3}, {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}} 
-
-MySeqRi = {{1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2}, {1, 2, 3, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}}
-
-MySeqS = {{2, 3, 1, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2}, {2, 3, 1, 3, 3, 4, 3, 2, 3, 2, 4, 2, 2, 1, 1, 4, 1, 1}}
-
-MySeqT = {{2, 1, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3}, {3, 2, 3, 2, 3, 4, 3, 3, 2, 2, 4, 2, 1, 1, 1, 4, 1, 1}}
-
-MySeqU = {{4, 1, 3, 2, 4, 4, 4, 3, 4, 3, 3, 3, 2, 2, 2, 2, 1, 1}, {1, 3, 2, 1, 1, 4, 1, 4, 1, 3, 3, 3, 3, 2, 4, 4, 4, 4}}
-
 
 Sequences = {
 	[0]					=	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -324,6 +267,7 @@ Sequences = {
     ["Soraka"]			=	{1, 2, 3, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
     ["Swain"]		  	=	{3, 1, 2, 3, 3, 4, 3, 1, 3, 1, 4, 1, 1, 2, 2, 4, 2, 2},
     ["Syndra"]			=	{1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
+    ["Taliyah"]         =   {1, 3, 2, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["TahmKench"]		=   {1, 2, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
     ["Talon"]		  	=	{2, 3, 1, 2, 2, 4, 2, 1, 2, 1, 4, 1, 1, 3, 3, 4, 3, 3},
     ["Taric"]		  	=	{3, 1, 3, 1, 1, 4, 1, 3, 1, 3, 4, 3, 3, 2, 2, 4, 2, 2},
@@ -362,8 +306,8 @@ LastLevel = 0;
 
 function OnLoad()
 --Credits SxTeam  
- local ToUpdate = {}
-    ToUpdate.Version = 3.51
+    local ToUpdate = {}
+    ToUpdate.Version = 3.6
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
@@ -376,13 +320,13 @@ function OnLoad()
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
 --Credits SxTeam
 
-    if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then 
-        DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.6></b></font>") end, 4)
-    elseif (string.find(GetGameVersion(), 'Releases/6.7') ~= nil) then
-        DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.7></b></font>") end, 4)
+    if (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) then 
+        DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.10></b></font>") end, 5)
+    elseif (string.find(GetGameVersion(), 'Releases/6.11') ~= nil) then
+        DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.11></b></font>") end, 5)
     end
 
-    DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 4.5)
+    DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up]: </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 5.5)
 
 	Menu = scriptConfig('HeRoLevel-UP', 'HeRoLevel-UP')
 
@@ -390,8 +334,7 @@ function OnLoad()
 
 	Menu:addParam('Info', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
-	Menu:addParam('Mode', 'Mode:', SCRIPT_PARAM_LIST, 1, {'Auto', 'Manual', 'Custom(SooN)'})
-    
+	Menu:addParam('Mode', 'Mode:', SCRIPT_PARAM_LIST, 1, {'Auto', 'Manual'})
 
     Menu:addParam('Info2222', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
@@ -405,15 +348,15 @@ function OnLoad()
 
     Menu:addParam('Info2222332', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
-    if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
-        Menu:addParam('GameVer', 'Game Version - <Releases/6.6>', SCRIPT_PARAM_INFO, "")
-    elseif (string.find(GetGameVersion(), 'Releases/6.7') ~= nil) then
-        Menu:addParam('GameVer1', 'Game Version - <Releases/6.7>', SCRIPT_PARAM_INFO, "")
+    if (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) then
+        Menu:addParam('GameVer', 'Game Version - <Releases/6.10>', SCRIPT_PARAM_INFO, "")
+    elseif (string.find(GetGameVersion(), 'Releases/6.11') ~= nil) then
+        Menu:addParam('GameVer1', 'Game Version - <Releases/6.11>', SCRIPT_PARAM_INFO, "")
     end
 
-    if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
+    if (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) then
         Menu:addParam('kek', 'Package Updated', SCRIPT_PARAM_INFO, "")
-    elseif (string.find(GetGameVersion(), 'Releases/6.7') ~= nil) then
+    elseif (string.find(GetGameVersion(), 'Releases/6.11') ~= nil) then
         Menu:addParam('kek1', 'Package Outdated')
     end
 
@@ -421,8 +364,6 @@ function OnLoad()
 
     Menu:addParam("info2", ""..SCRIPT_NAME.." [Version - "..version.."]", SCRIPT_PARAM_INFO, "")
     Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
-    
-	Menu.Enable = false
 
     if Menu.ChangeShow then
         IDPerma = Menu:permaShow("Enable")
@@ -438,15 +379,15 @@ function OnLoad()
         Menu:permaShow('Mode')
     end
 
-    DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>") end, 5)
+    DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>") end, 6)
     if Menu.Mode == 1 then
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[myHero.charName]..'.') end, 5.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[myHero.charName]..'.') end, 6.5)
     elseif Menu.Mode == 2 and myHero.level < 4 then
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level13]..'.') end, 5.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level13]..'.') end, 6.5)
     elseif Menu.Mode == 2 and myHero.level > 3 then
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level418]..'.') end, 5.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level418]..'.') end, 6.5)
     end
-    DelayAction(function() PrintChat("<font color='#FF0000'><b>[Spell Name]: </b></font><font color='#F0F8FF'><b>1 = Q, 2 = W, 3 = E, 4 = R.</b></font>") end, 6)
+    DelayAction(function() PrintChat("<font color='#FF0000'><b>[Spell Name]: </b></font><font color='#F0F8FF'><b>1 = Q, 2 = W, 3 = E, 4 = R.</b></font>") end, 6.6)
 end
 
 function OnTick()
@@ -463,7 +404,8 @@ function LevelUp()
 			Sequence = Sequences[Menu.Level13]
 		elseif Menu.Mode == 2 and myHero.level > 3 then
 			Sequence = Sequences[Menu.Level418]
-		LevelSpell(Sequence[myHero.level])
+        end
+	    LevelSpell(Sequence[myHero.level])
 
 		if myHero.level < 18 then
 			PrintChat("<font color='#00BFFF'>This Level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level]].."</font><font color='#00BFFF'><font color='#FF0000'> ===></font> Next level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level + 1]].. "</font><font color='#EE82EE'>. </font>")
@@ -472,25 +414,26 @@ function LevelUp()
 	end
 end
 
-    _G.LevelSpell = function(id)
-    if (string.find(GetGameVersion(), 'Releases/6.6') ~= nil) then
-        local offsets = { 
-                [1] = 0xF8,
-                [2] = 0x4F,
-                [3] = 0x14,
-                [4] = 0x9E,
-        }
-        local p = CLoLPacket(0xA9)
-        p.vTable = 0xF3981C
-          p:EncodeF(myHero.networkID)
-          p:Encode4(0x19)
-          p:Encode4(0x44)
-          p:Encode1(0xEC)
-          p:Encode1(offsets[id])
-          p:Encode4(0xF7)
-          SendPacket(p)
-        end
+_G.LevelSpell = function(id)
+if (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) then
+    local offsets =
+        { 
+            [1] = 0x71,
+            [2] = 0xF1,
+            [3] = 0x31,
+            [4] = 0xB1
+        }   
+    local p = CLoLPacket(0x13)
+    p.vTable = 0xF4DA68
+    p:EncodeF(myHero.networkID)
+    p:Encode1(0x17)
+    p:Encode1(offsets[id])
+    p:Encode4(0x6A6A6A6A)
+    p:Encode4(0x30303030)
+    p:Encode4(0x81818181)
+    SendPacket(p)
     end
+end
 
 --Credits SxTeam
 class "ScriptUpdate"
