@@ -1,4 +1,3 @@
----Auto Smite Developed by HeRoBaNd---
 --[[
  _   _     ______        _____           _ _       
 | | | |    | ___ \      /  ___|         (_) |      
@@ -7,25 +6,13 @@
 | | | |  __/ |\ \ (_) | /\__/ / | | | | | | ||  __/
 \_| |_/\___\_| \_\___/  \____/|_| |_| |_|_|\__\___|
 ]]--
----Changelog---
----1.0 - Reliased For Bol---
----1.1 - Added AutoUpdater (Credit - Simple & HiranN & BF Team)---
----1.2 - 6.1 Updated---
----1.3 - Added SpellUsage for more Champions and 3x3 map support---
----1.4 - Fixed some colorbug---
----1.5 - Added KillSteal---
----1.6 - Fixed KillSteal error---
----1.7 - Fixed KillSteal Error---
----1.8 - Delete KillStealSmite(soon)---
----1.9 - Fixed KillSteal---
----2.0 - Reliased KillSteal---
 
 local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local version = "2.122212"
-local SMITE, ATTACKSMITE = false
+local version = "2.2"
+local SMITE, ATTACKSMITE = false, false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
 local SMITEFOCUS = {"SRU_Blue1.1.1", "SRU_Blue7.1.1", "SRU_Murkwolf2.1.1", "SRU_Murkwolf8.1.1", "SRU_Gromp13.1.1", "SRU_Gromp14.1.1", "Sru_Crab16.1.1", 
 "Sru_Crab15.1.1", "SRU_Red10.1.1", "SRU_Red4.1.1", "SRU_Krug11.1.2", "SRU_Krug5.1.2", "SRU_Razorbeak9.1.1", "SRU_Razorbeak3.1.1", "SRU_Dragon6.1.1", 
@@ -40,22 +27,22 @@ TrackerLoad("bNcYC6SsMjdS12ov")
 if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerSmite") then Smite = SUMMONER_2 end
 
 if Smite ~= nil then 
-	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.0] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") end, 4.0) 
-	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.0] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>")  end, 4.0)
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.2] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") end, 4.0) 
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.2] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>")  end, 4.0)
 else
-	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.0] </b></font>".."<font color='#00BFFF'><b>Smite not found.</b></font>")  end, 4.0) 
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.2] </b></font>".."<font color='#00BFFF'><b>Smite not found.</b></font>")  end, 4.0) 
 	return 
 end
 
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 2.122212
+    ToUpdate.Version = 2.2
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Smite.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Smite.lua"
-    ToUpdate.SavePath = SCRIPT_PATH.."/HeRo Smite_Test.lua"
+    ToUpdate.SavePath = LIB_PATH.."/HeRo Smite_Test.lua"
     ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
     ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
@@ -64,6 +51,8 @@ function OnLoad()
 --Credits SxTeam    
 	jungleMinions = minionManager(MINION_JUNGLE, RangeSmite, myHero, MINION_SORT_MAXHEALTH_DEC)
 	MenuInit()
+	AddTickCallback(AutoSmite)
+	AddDrawCallback(DrawSmiteable)	
 end
 
 function MenuInit()
@@ -78,27 +67,26 @@ function MenuInit()
 
     Menu:addSubMenu("Draw", "Draw")
 		Menu.Draw:addParam("drawSmite", "Draw Smite Range " , SCRIPT_PARAM_ONOFF, true)
-		Menu.Draw:addParam("drawSmitetext", "Draw Smite Process Text", SCRIPT_PARAM_ONOFF, true)
-		Menu.Draw:addParam("drawSmitetarget", "Draw Smite Target", SCRIPT_PARAM_ONOFF, true)
+		Menu.Draw:addParam("drawSmitetext", "Draw Smite Process", SCRIPT_PARAM_ONOFF, true)
 		
 	Menu:addSubMenu("Smite Monsters:", "smite")
 		if GetGame().map.shortName == "twistedTreeline" then
-			Menu.smite:addParam("TTNWraith", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, true)
-			Menu.smite:addParam("TTNGolem", "Use Smite on: Golem", SCRIPT_PARAM_ONOFF, true)
-			Menu.smite:addParam("TTNWolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, true)
-			Menu.smite:addParam("TTSpiderboss", "Use Smite on: SpiderBoss", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("Wraith", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("Golem", "Use Smite on: Golem", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("Wolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("Spiderboss", "Use Smite on: SpiderBoss", SCRIPT_PARAM_ONOFF, true)
 		else
-			Menu.smite:addParam("SRUDragon", "Use Smite on: Dragon", SCRIPT_PARAM_ONOFF, true)
-			Menu.smite:addParam("SRUBaron", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
-			Menu.smite:addParam("SRURazorbeak", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, false)
-			Menu.smite:addParam("SRUMurkwolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, false)
-			Menu.smite:addParam("SRUKrug", "Use Smite on: Krug", SCRIPT_PARAM_ONOFF, false)
-			Menu.smite:addParam("SRUGromp", "Use Smite on: Gromp", SCRIPT_PARAM_ONOFF, false)
-			Menu.smite:addParam("SRURed", "Use Smite on: Red Buff", SCRIPT_PARAM_ONOFF, true)
-			Menu.smite:addParam("SRUBlue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("Dragon", "Use Smite on: Dragon", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("Baron", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("Razorbeak", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, false)
+			Menu.smite:addParam("Murkwolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, false)
+			Menu.smite:addParam("Krug", "Use Smite on: Krug", SCRIPT_PARAM_ONOFF, false)
+			Menu.smite:addParam("Gromp", "Use Smite on: Gromp", SCRIPT_PARAM_ONOFF, false)
+			Menu.smite:addParam("Red", "Use Smite on: Red Buff", SCRIPT_PARAM_ONOFF, true)
+			Menu.smite:addParam("Blue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
 		end
 	Menu:addParam("info1", "", SCRIPT_PARAM_INFO, "")
-  	Menu:addParam("info2", ""..SCRIPT_NAME.." [Version - "..version.."]", SCRIPT_PARAM_INFO, "")
+  	Menu:addParam("info2", ""..SCRIPT_NAME.." [ver. "..version.."]", SCRIPT_PARAM_INFO, "")
   	Menu:addParam("info3", "Author - "..SCRIPT_AUTHOR.."", SCRIPT_PARAM_INFO, "")
 		
 	IDPerma = Menu:permaShow("SmiteActive")
@@ -784,11 +772,110 @@ function Spell()
 end
 
 function OnTick()
-	GetSmiteSlot()
-	KillStealSmite()
 	if myHero.dead then return end
 	jungleMinions:update()
 	CheckJungle()
+	GetSmiteSlot()
+	KillStealSmite()
+	AutoSmite()
+end
+
+function OnDraw()
+	if myHero.dead then return end
+	if SpellReady(SMITESLOT) then 
+	    if Menu.Draw.drawSmite then
+	      	DrawCircle(myHero.x, myHero.y, myHero.z, 560, ARGB(255, 100, 100, 80))
+	    end
+	    if Menu.Draw.drawSmitetext then
+	        DrawSmiteable()
+	    end
+	end
+end
+
+function AutoSmite()
+   	local SmiteDmg = GetSmiteDamage()
+   	for _, jminions in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
+   		if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
+      		local name = jminions.charName
+      		name = name:sub(name:find("_")+1, name:len())
+      		name = name:sub(1, (name:find("_") or name:len()+1)-1)
+      		if Menu.smite[name] then
+        		if SpellReady(SMITESLOT) and GetDlinaForSmiteDraw(myHero, jminions) <= 560 and SmiteDmg >= jminions.health then
+          			CastSpell(SMITESLOT, jminions)
+        		end
+      		end
+     	end
+   	end
+end
+
+function DrawSmiteable()
+	local SmiteDmg = GetSmiteDamage()
+	for _, jminion in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
+    	if not jminion.dead and jminion.visible and ValidTarget(jminion, 560) then
+      		local name = jminion.charName
+      		name = name:sub(name:find("_")+1, name:len())
+      		name = name:sub(1, (name:find("_") or name:len()+1)-1)
+      		if Menu.smite[name] then
+       			local posMinion = WorldToScreen(D3DXVECTOR3(jminion.x, jminion.y, jminion.z))
+       			local SmiteProcess = math.round(100-100*(jminion.health-SmiteDmg)/jminion.maxHealth)
+       			if SpellReady(SMITESLOT) and GetDlinaForSmiteDraw(myHero, jminion) <= 560 then
+        			DrawText("Smite Process - "..SmiteProcess.."%", 20, posMinion.x - GetTextArea("Smite Process - "..SmiteProcess.."%", 20).x/2, posMinion.y, ARGB(255,255,0,0))
+        			DrawCircle(jminion.x, jminion.y, jminion.z, 1.5*SmiteProcess, ARGB(255, 255*(1-SmiteProcess/100), 255*SmiteProcess/100, 255*(1-SmiteProcess/100)))
+        			DrawCircle(jminion.x, jminion.y, jminion.z, 150, ARGB(55, 55, 155, 55))
+        			DrawCircle(jminion.x, jminion.y, jminion.z, 75, ARGB(255, 128, 128, 128))
+       			end
+     		end
+   		end
+ 	end
+end
+
+function GetDlinaForSmiteDraw(a, b)
+  	local dx, dz = a.x - b.x, (a.z or a.y) - (b.z or b.y)
+  	return math.sqrt(dx*dx + dz*dz)
+end
+
+function CheckJungle()
+	if Menu.SmiteActive then
+		for i, jungle in pairs(jungleMinions.objects) do
+			if jungle ~= nil then
+				if Menu.smite[jungle.charName:gsub("_", "")] then
+					if myHero.charName == "Aatrox" or myHero.charName == "Akali" or myHero.charName == "Amumu" or myHero.charName == "Chogath" or myHero.charName == "Diana" or myHero.charName == "Evlynn" or myHero.charName == "Fiora" or myHero.charName == "Fizz" or myHero.charName == "Gragas" or myHero.charName == "Hecarim" or myHero.charName == "Nunu" or myHero.charName == "Illaoi" or myHero.charName == "Irelia" or myHero.charName == "JarvanIV" or myHero.charName == "Jax" or myHero.charName == "Karthus" or myHero.charName == "Kayle" or myHero.charName == "Kindred" or myHero.charName == "LeeSin" or myHero.charName == "Malphite" or myHero.charName == "Maokai" or myHero.charName == "MasterYi" or myHero.charName == "Mordekaiser" or myHero.charName == "Nautilus" or myHero.charName == "Nocturne" or myHero.charName == "Olaf" or myHero.charName == "Pantheon" or myHero.charName == "Poppy" or myHero.charName == "Quinn" or myHero.charName == "Sejuani" or myHero.charName == "Shaco" or myHero.charName == "Shyvana" or myHero.charName == "TahmKench" or myHero.charName == "Trundle" or myHero.charName == "Vi" or myHero.charName == "Volibear" or myHero.charName == "Warwick" or myHero.charName == "MonkeyKing" or myHero.charName == "XinZhao" or myHero.charName == "Zac" and Menu.UseSpells then
+						SpellMonster(jungle)
+					end
+				end
+			end
+		end
+	end
+end
+
+function SpellMonster(obj)
+    local DistanceMonster = GetDistance(obj)
+    	if myHero:CanUseSpell(Smite) == READY and myHero:CanUseSpell(Spell()) == READY then
+    		if DistanceMonster <= RangeSmite and obj.health <= GetSmiteDamage() + GetDamageSpell() then
+				CastSpell(Spell(), obj)
+			end
+	return
+	end
+
+	if myHero:CanUseSpell(Smite) == READY then
+		if DistanceMonster <= RangeSmite and obj.health <= GetSmiteDamage() then
+			CastSpell(Smite, obj)
+   		end
+
+	elseif myHero:CanUseSpell(Spell()) == READY then
+		if DistanceMonster <= RangeSmite and obj.health <= GetDamageSpell() then
+			CastSpell(Spell(), obj)
+		end
+	end
+end
+
+function GetDlina(a, b)
+  	local Dlina = math.sqrt((b.x-a.x)*(b.x-a.x) + (b.z-a.z)*(b.z-a.z))
+  	return Dlina
+end
+
+function SpellReady(spell)
+  	return myHero:CanUseSpell(spell) == READY
 end
 
 function FindSlotByName(name)
@@ -847,106 +934,6 @@ function KillStealSmite()
       				end
     			end
 			end
-		end
-	end
-end
-
-function GetDlina(a, b)
-  local Dlina = math.sqrt((b.x-a.x)*(b.x-a.x) + (b.z-a.z)*(b.z-a.z))
-  return Dlina
-end
-
-function SpellReady(spell)
-  return myHero:CanUseSpell(spell) == READY
-end
-
-function OnDraw()
-	if myHero.dead then return end
-	if SpellReady(SMITESLOT) then 
-	    if Menu.Draw.drawSmite then
-	      	DrawCircle(myHero.x, myHero.y, myHero.z, 560, ARGB(255, 100, 100, 80))
-	    end
-	    if Menu.Draw.drawSmitetext then
-	        DrawSmiteable()
-	    end
-	    if Menu.Draw.drawSmitetarget then
-	    	DrawSmiteTarget()
-	    end
-	end
-end
-
-function DrawSmiteable()
-  	local SmiteDmg = GetSmiteDamage()
-  	for _, jminions in pairs(jungleMinions.objects) do
-    	for j = 1, #SMITEFOCUS do
-      		if jminions.name == SMITEFOCUS[j] then
-        		if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
-        			local posMinion = WorldToScreen(D3DXVECTOR3(jminions.x, jminions.y, jminions.z))
-        			local SmiteProcess = math.round(jminions.health - SmiteDmg)
-        			if SpellReady(SMITESLOT) and GetDlina(myHero, jminions) <= 560 and Menu.smite[jminions.charName:gsub("_", "")] then
-            			DrawText("Smite Process - "..SmiteProcess, 20, posMinion.x, posMinion.y, ARGB(255,255,0,0))
-          			end
-        		end
-      		end
-    	end
-  	end
-end
-
-function DrawSmiteTarget()
-  	for _, jminions in pairs(jungleMinions.objects) do
-    	for k = 1, #SMITEFOCUS do
-      		if jminions.name == SMITEFOCUS[k] then
-        		if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
-        			local posMinion = WorldToScreen(D3DXVECTOR3(jminions.x, jminions.y, jminions.z))
-        			if SpellReady(SMITESLOT) and GetDlina(myHero, jminions) <= 560 and Menu.smite[jminions.charName:gsub("_", "")] then
-            			DrawCircle(jminions.x, jminions.y,jminions.z, 150, ARGB(255, 100, 100, 80))
-          			end
-        		end
-      		end
-    	end
-  	end
-end
-
-function CheckJungle()
-	if Menu.SmiteActive then
-	for i, jungle in pairs(jungleMinions.objects) do
-	if jungle ~= nil then
-		if Menu.smite[jungle.charName:gsub("_", "")] then
-			if myHero.charName == "Aatrox" or myHero.charName == "Akali" or myHero.charName == "Amumu" or myHero.charName == "Chogath" or myHero.charName == "Diana" or myHero.charName == "Evlynn" or myHero.charName == "Fiora" or myHero.charName == "Fizz" or myHero.charName == "Gragas" or myHero.charName == "Hecarim" or myHero.charName == "Nunu" or myHero.charName == "Illaoi" or myHero.charName == "Irelia" or myHero.charName == "JarvanIV" or myHero.charName == "Jax" or myHero.charName == "Karthus" or myHero.charName == "Kayle" or myHero.charName == "Kindred" or myHero.charName == "LeeSin" or myHero.charName == "Malphite" or myHero.charName == "Maokai" or myHero.charName == "MasterYi" or myHero.charName == "Mordekaiser" or myHero.charName == "Nautilus" or myHero.charName == "Nocturne" or myHero.charName == "Olaf" or myHero.charName == "Pantheon" or myHero.charName == "Poppy" or myHero.charName == "Quinn" or myHero.charName == "Sejuani" or myHero.charName == "Shaco" or myHero.charName == "Shyvana" or myHero.charName == "TahmKench" or myHero.charName == "Trundle" or myHero.charName == "Vi" or myHero.charName == "Volibear" or myHero.charName == "Warwick" or myHero.charName == "MonkeyKing" or myHero.charName == "XinZhao" or myHero.charName == "Zac" and Menu.UseSpells then
-				SpellMonster(jungle)
-			else
-				SmiteMonster(jungle)
-					end
-				end
-			end
-		end
-	end
-end
-
-function SmiteMonster(obj)
-    local DistanceMonster = GetDistance(obj)
-    if myHero:CanUseSpell(Smite) == READY and DistanceMonster <= RangeSmite and obj.health <= GetSmiteDamage() then
-    	CastSpell(Smite, obj)
-    end
-end
-
-function SpellMonster(obj)
-    local DistanceMonster = GetDistance(obj)
-    	if myHero:CanUseSpell(Smite) == READY and myHero:CanUseSpell(Spell()) == READY then
-    		if DistanceMonster <= RangeSmite and obj.health <= GetSmiteDamage() + GetDamageSpell() then
-				CastSpell(Spell(), obj)
-			end
-	return
-	end
-
-	if myHero:CanUseSpell(Smite) == READY then
-		if DistanceMonster <= RangeSmite and obj.health <= GetSmiteDamage() then
-			CastSpell(Smite, obj)
-   		end
-
-	elseif myHero:CanUseSpell(Spell()) == READY then
-		if DistanceMonster <= RangeSmite and obj.health <= GetDamageSpell() then
-			CastSpell(Spell(), obj)
 		end
 	end
 end
