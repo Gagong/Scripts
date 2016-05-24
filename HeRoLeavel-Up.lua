@@ -9,7 +9,7 @@
                                                                 |_|  
 ]]--																																
 
-local version = "3.6"
+local version = "3.61"
 local SCRIPT_NAME = "HeRo Level-Up"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 
@@ -307,16 +307,16 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam  
     local ToUpdate = {}
-    ToUpdate.Version = 3.6
+    ToUpdate.Version = 3.61
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.lua"
     ToUpdate.SavePath = SCRIPT_PATH.."/HeRoLeavel-Up_Test.lua"
-    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
-    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
-    ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
-    ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRoLeavel-Up]: </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
+    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Info]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
+    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Info]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
+    ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Info]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
+    ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Info]: </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
 --Credits SxTeam
 
@@ -326,7 +326,7 @@ function OnLoad()
         DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.11></b></font>") end, 5)
     end
 
-    DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Leavel-Up]: </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 5.5)
+    DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Level-Up]: </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 5.5)
 
 	Menu = scriptConfig('HeRoLevel-UP', 'HeRoLevel-UP')
 
@@ -379,15 +379,15 @@ function OnLoad()
         Menu:permaShow('Mode')
     end
 
-    DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>") end, 6)
+    DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Level-Up]: </b></font>" ..myHero.charName.. "<font color='#00FF00'> confirmed!</font></font></b>") end, 6)
     if Menu.Mode == 1 then
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[myHero.charName]..'.') end, 6.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Level-Up]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[myHero.charName]..'.') end, 6.5)
     elseif Menu.Mode == 2 and myHero.level < 4 then
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level13]..'.') end, 6.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Level-Up]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level13]..'.') end, 6.5)
     elseif Menu.Mode == 2 and myHero.level > 3 then
-        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Leavel-UP]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level418]..'.') end, 6.5)
+        DelayAction(function() PrintChat("<font color='#EE82EE'><b><font color='#FF0000'><b>[HeRo Level-Up]: </b></font><font color='#00FF00'>Sequence - </font></font></b>"..SequencesName[Menu.Level418]..'.') end, 6.5)
     end
-    DelayAction(function() PrintChat("<font color='#FF0000'><b>[Spell Name]: </b></font><font color='#F0F8FF'><b>1 = Q, 2 = W, 3 = E, 4 = R.</b></font>") end, 6.6)
+    DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Info - Spell Name]: </b></font><font color='#F0F8FF'><b>1 = Q, 2 = W, 3 = E, 4 = R.</b></font>") end, 6.6)
 end
 
 function OnTick()
