@@ -11,7 +11,7 @@ local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local version = "2.2"
+local version = "2.21"
 local SMITE, ATTACKSMITE = false, false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
 local SMITEFOCUS = {"SRU_Blue1.1.1", "SRU_Blue7.1.1", "SRU_Murkwolf2.1.1", "SRU_Murkwolf8.1.1", "SRU_Gromp13.1.1", "SRU_Gromp14.1.1", "Sru_Crab16.1.1", 
@@ -27,26 +27,26 @@ TrackerLoad("bNcYC6SsMjdS12ov")
 if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSmite") then Smite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerSmite") then Smite = SUMMONER_2 end
 
 if Smite ~= nil then 
-	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.2] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") end, 4.0) 
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Info] </b></font>".."<font color='#00BFFF'><b>Smite found.</b></font>") end, 4.0) 
 	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.2] </b></font>".."<font color='#00BFFF'><b>Loaded.</b></font>")  end, 4.0)
 else
-	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Smite 2.2] </b></font>".."<font color='#00BFFF'><b>Smite not found.</b></font>")  end, 4.0) 
+	DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Info] </b></font>".."<font color='#00BFFF'><b>Smite not found.</b></font>")  end, 4.0) 
 	return 
 end
 
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 2.2
+    ToUpdate.Version = 2.21
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Smite.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Smite.lua"
-    ToUpdate.SavePath = LIB_PATH.."/HeRo Smite_Test.lua"
-    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
-    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
-    ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
-    ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Smite]: </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
+    ToUpdate.SavePath = SCRIPT_PATH.."/HeRo Smite_Test.lua"
+    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<font color='#FF0000'><b>[HeRo Info]: </b> </font><font color='#00BFFF'><b>Updated to "..NewVersion..". </b></font>") end
+    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<font color='#FF0000'><b>[HeRo Info]: </b></font> <font color='#00BFFF'><b>No Updates Found</b></font>") end
+    ToUpdate.CallbackNewVersion = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Info]: </b></font> <font color='#00BFFF'><b>New Version found ("..NewVersion.."). Please wait until its downloaded</b></font>") end
+    ToUpdate.CallbackError = function(NewVersion) print("<font color='#FF0000'><b>[HeRo Info]: </b></font> <font color='#00BFFF'><b>Error while Downloading. Please try again.</b></font>") end
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
 --Credits SxTeam    
 	jungleMinions = minionManager(MINION_JUNGLE, RangeSmite, myHero, MINION_SORT_MAXHEALTH_DEC)
