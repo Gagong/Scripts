@@ -7,9 +7,9 @@
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-local version = "2.01"
+local version = "2.02"
 local SCRIPT_NAME = "HeRo Jarvan VI"
-local SCRIPT_PATCH = '6.10'
+local SCRIPT_PATCH = '6.11'
 local SCRIPT_AUTHOR = "HeRoBaNd"
 local FONTAN = false
 local xBase = {["x"] = 406, ["z"] = 424}
@@ -63,7 +63,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam
  	local ToUpdate = {}
-    ToUpdate.Version = 2.01
+    ToUpdate.Version = 2.02
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
@@ -165,7 +165,7 @@ function OnLoad()
 		Menu.Others.Snow:addParam("ChangeShow", "Change PermaShow Color(Green)", SCRIPT_PARAM_ONOFF, true)
 		Menu.Others.Snow:addParam("info", "Reload this(2xF9)", SCRIPT_PARAM_INFO, "")
 		
-		if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) then
+		if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.11') ~= nil) then
 			Menu.Others:addSubMenu("[Auto level - Up]", "LVLUP")
 				Menu.Others.LVLUP:addParam("Enable", "Enable LVL-UP", SCRIPT_PARAM_ONOFF, false)
 				Menu.Others.LVLUP:addParam("Mod", "Mode:", SCRIPT_PARAM_LIST, 1, {"Auto", "Manual"})
@@ -359,7 +359,7 @@ function OnTick()
 		print("<font color='#FF0000'><b>[HeRo Jarvan]: </b></font><font color='#F0F8FF'><b>New Harass mode: </b></font> "..PrintHarassMode(msgg))
 	end
 
-	if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) and Menu.Others.LVLUP.Enable then
+	if VIP_USER and (string.find(GetGameVersion(), 'Releases/6.11') ~= nil) and Menu.Others.LVLUP.Enable then
 		print("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>I'm fix Lvl-Up function soon, sry.</b></font>")
 		Menu.Others.LVLUP.Enable = false
 		--if (LastLevel < myHero.level) then
@@ -1342,24 +1342,24 @@ end
 
 if VIP_USER then
 	_G.LevelSpell = function(id)
-  	if (string.find(GetGameVersion(), 'Releases/6.10') ~= nil) then
+  	if (string.find(GetGameVersion(), 'Releases/6.11') ~= nil) then
 		local offsets =
-			{ 
-				[1] = 0x71,
-				[2] = 0xF1,
-				[3] = 0x31,
-				[4] = 0xB1
-			}	
-		local p = CLoLPacket(0x13)
-		p.vTable = 0xF4DA68
-		p:EncodeF(myHero.networkID)
-		p:Encode1(0x17)
-		p:Encode1(offsets[id])
-		p:Encode4(0x6A6A6A6A)
-		p:Encode4(0x30303030)
-		p:Encode4(0x81818181)
-		SendPacket(p)
-		end
+	{ 
+		[1] = 0x71,
+		[2] = 0xF1,
+		[3] = 0x31,
+		[4] = 0xB1
+	}
+	local p = CLoLPacket(0xC0)
+	p.vTable = 0xFC44F0
+	p:EncodeF(myHero.networkID)
+	p:Encode4(0x17)
+	p:Encode4(offset[id])
+	p:Encode1(0x6A6A6A6A)
+	p:Encode4(0x30303030)
+	p:Encode1(0x81818181)
+	SendPacket(p)
+	end
 	end
 end
 
