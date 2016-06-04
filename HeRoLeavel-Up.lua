@@ -9,7 +9,7 @@
                                                                 |_|  
 ]]--																																
 
-local version = "3.62"
+local version = "3.63"
 local SCRIPT_NAME = "HeRo Level-Up"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 
@@ -307,7 +307,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam  
     local ToUpdate = {}
-    ToUpdate.Version = 3.62
+    ToUpdate.Version = 3.63
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
@@ -428,7 +428,7 @@ if (string.find(GetGameVersion(), 'Releases/6.11') ~= nil) then
 	p.vTable = 0xFC44F0
 	p:EncodeF(myHero.networkID)
 	p:Encode4(0x17)
-	p:Encode4(offset[id])
+	p:Encode4(offsets[id])
 	p:Encode1(0x6A6A6A6A)
 	p:Encode4(0x30303030)
 	p:Encode1(0x81818181)
