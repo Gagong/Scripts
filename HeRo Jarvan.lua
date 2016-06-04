@@ -7,7 +7,7 @@
 ]]--
 
 if myHero.charName ~= "JarvanIV" then return end
-local version = "2.02"
+local version = "2.03"
 local SCRIPT_NAME = "HeRo Jarvan VI"
 local SCRIPT_PATCH = '6.11'
 local SCRIPT_AUTHOR = "HeRoBaNd"
@@ -63,7 +63,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam
  	local ToUpdate = {}
-    ToUpdate.Version = 2.02
+    ToUpdate.Version = 2.03
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Jarvan.version"
@@ -1354,7 +1354,7 @@ if VIP_USER then
 	p.vTable = 0xFC44F0
 	p:EncodeF(myHero.networkID)
 	p:Encode4(0x17)
-	p:Encode4(offset[id])
+	p:Encode4(offsets[id])
 	p:Encode1(0x6A6A6A6A)
 	p:Encode4(0x30303030)
 	p:Encode1(0x81818181)
