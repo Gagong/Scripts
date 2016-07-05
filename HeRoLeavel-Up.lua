@@ -9,7 +9,7 @@
                                                                 |_|  
 ]]--																																
 
-local version = "3.64"
+local version = "3.65"
 local SCRIPT_NAME = "HeRo Level-Up"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 
@@ -307,7 +307,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam  
     local ToUpdate = {}
-    ToUpdate.Version = 3.64
+    ToUpdate.Version = 3.65
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
@@ -320,9 +320,9 @@ function OnLoad()
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
 --Credits SxTeam
 
-    if (string.find(GetGameVersion(), 'Releases/6.12') ~= nil) then 
+    if (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then 
         DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.11></b></font>") end, 5)
-    elseif (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then
+    elseif (string.find(GetGameVersion(), 'Releases/6.14') ~= nil) then
         DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.12></b></font>") end, 5)
     end
 
@@ -348,15 +348,15 @@ function OnLoad()
 
     Menu:addParam('Info2222332', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
-    if (string.find(GetGameVersion(), 'Releases/6.12') ~= nil) then
+    if (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then
         Menu:addParam('GameVer', 'Game Version - <Releases/6.11>', SCRIPT_PARAM_INFO, "")
-    elseif (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then
-        Menu:addParam('GameVer1', 'Game Version - <Releases/6.12>', SCRIPT_PARAM_INFO, "")
+    elseif (string.find(GetGameVersion(), 'Releases/6.14') ~= nil) then
+        Menu:addParam('GameVer1', 'Game Version - <Releases/6.13>', SCRIPT_PARAM_INFO, "")
     end
 
-    if (string.find(GetGameVersion(), 'Releases/6.12') ~= nil) then
+    if (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then
         Menu:addParam('kek', 'Package Updated', SCRIPT_PARAM_INFO, "")
-    elseif (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then
+    elseif (string.find(GetGameVersion(), 'Releases/6.14') ~= nil) then
         Menu:addParam('kek1', 'Package Outdated')
     end
 
@@ -415,7 +415,7 @@ function LevelUp()
 end
 
 _G.LevelSpell = function(id)
-if (string.find(GetGameVersion(), 'Releases/6.12') ~= nil) then
+if (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then
 	local Offset =
 	{ 
 		[1] = 0xEC,
@@ -424,10 +424,10 @@ if (string.find(GetGameVersion(), 'Releases/6.12') ~= nil) then
 		[4] = 0x65
 	}
 
-	local p = CLoLPacket(0xB9)
-	p.vTable = 0x108B5C0
+	local p = CLoLPacket(0x118)
+	p.vTable = 0x10134FC
 	p:EncodeF(myHero.networkID)
-	p:Encode4(Offset[id])
+	p:Encode1(Offset[id])
 	p:Encode4(0x70707070)
 	p:Encode4(0x43434343)
 	p:Encode1(0x7A)
