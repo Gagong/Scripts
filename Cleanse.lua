@@ -40,84 +40,85 @@ function Cleanse:Global_Menu()
 end 
 
 function Cleanse:Loader()
-    AddApplyBuffCallback(function() self:OnApplyBuff(Source, Unit, Buff) end)
+    AddApplyBuffCallback(function() self:OnApplyBuff() end)
     self.NoCleanseSpamMsg = 0
 end
 
 
-function Cleanse:OnApplyBuff(Source, Unit, Buff)
-    if Source and Source.isMe then
-        if DeBuff.name == "SummonerExhaust" and  self.Menu.DeBuff_List.Exhaust then
+function Cleanse:OnApplyBuff(unit, sourse, buff)
+    if unit and unit.isMe then
+        print(buff.name)
+        if buff.name == "SummonerExhaust" and  self.Menu.DeBuff_List.Exhaust then
             self:AutoCleanse("Exhaust")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Exhaust Removed", 0)
             end
         end
-        if DeBuff.name == "SummonerDot" and  self.Menu.DeBuff_List.Ignite then
+        if buff.name == "SummonerDot" and  self.Menu.DeBuff_List.Ignite then
             self:AutoCleanse("Ignite")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Ignite Removed", 0)
             end
         end
-        if DeBuff.type == 5 and  self.Menu.DeBuff_List.Stun then
+        if buff.type == 5 and  self.Menu.DeBuff_List.Stun then
             self:AutoCleanse("Stun")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Stun Removed", 0)
             end
         end
-        if DeBuff.type == 7 and  self.Menu.DeBuff_List.Silence then
+        if buff.type == 7 and  self.Menu.DeBuff_List.Silence then
             self:AutoCleanse("Silence")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Silence Removed", 0)
             end
         end
-        if DeBuff.type == 8 and  self.Menu.DeBuff_List.Taunt then
+        if buff.type == 8 and  self.Menu.DeBuff_List.Taunt then
             self:AutoCleanse("Taunt")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Taunt Removed", 0)
             end
         end
-        if DeBuff.type == 10 and  self.Menu.DeBuff_List.Fear then
+        if buff.type == 10 and  self.Menu.DeBuff_List.Fear then
             self:AutoCleanse("Fear")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Fear Removed", 0)
             end
         end
-        if DeBuff.type == 11 and  self.Menu.DeBuff_List.Root then
+        if buff.type == 11 and  self.Menu.DeBuff_List.Root then
             self:AutoCleanse("Root")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Root Removed", 0)
             end
         end
-        if DeBuff.type == 21 and  self.Menu.DeBuff_List.Charm then
+        if buff.type == 21 and  self.Menu.DeBuff_List.Charm then
             self:AutoCleanse("Charm")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Charm Removed", 0)
             end
         end
-        if DeBuff.type == 24 and  self.Menu.DeBuff_List.Suppression then
+        if buff.type == 24 and  self.Menu.DeBuff_List.Suppression then
             self:AutoCleanse("Suppression")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Suppression Removed", 0)
             end
         end
-        if DeBuff.type == 25 and  self.Menu.DeBuff_List.Blind then
+        if buff.type == 25 and  self.Menu.DeBuff_List.Blind then
             self:AutoCleanse("Blind")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Blind Removed", 0)
             end
         end
-        if DeBuff.type == 29 and  self.Menu.DeBuff_List.KnockUp then
+        if buff.type == 29 and  self.Menu.DeBuff_List.KnockUp then
             self:AutoCleanse("KnockUp")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
