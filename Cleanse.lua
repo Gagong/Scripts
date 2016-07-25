@@ -1,4 +1,3 @@
-local NoCleanseSpamMsg = 0
 local SummonerBoost = nil
 
 function OnLoad()
@@ -41,11 +40,12 @@ function Cleanse:Global_Menu()
 end 
 
 function Cleanse:Loader()
-    AddApplyBuffCallback(function() self:OnApplyBuff(Unit, Source, DeBuff) end)
+    AddApplyBuffCallback(function() self:OnApplyBuff(Source, Unit, Buff) end)
+    self.NoCleanseSpamMsg = 0
 end
 
 
-function Cleanse:OnApplyBuff(Unit, Source, DeBuff)
+function Cleanse:OnApplyBuff(Source, Unit, Buff)
     if Source and Source.isMe then
         if DeBuff.name == "SummonerExhaust" and  self.Menu.DeBuff_List.Exhaust then
             self:AutoCleanse("Exhaust")
@@ -63,7 +63,6 @@ function Cleanse:OnApplyBuff(Unit, Source, DeBuff)
         end
         if DeBuff.type == 5 and  self.Menu.DeBuff_List.Stun then
             self:AutoCleanse("Stun")
-            print("stun")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Stun Removed", 0)
@@ -120,7 +119,6 @@ function Cleanse:OnApplyBuff(Unit, Source, DeBuff)
         end
         if DeBuff.type == 29 and  self.Menu.DeBuff_List.KnockUp then
             self:AutoCleanse("KnockUp")
-            print("KnockUp")
             if os.clock() - NoCleanseSpamMsg > 2 then
                 NoCleanseSpamMsg = os.clock()
                 self:Message("Cleanse", "Knock-Up Removed", 0)
@@ -129,10 +127,8 @@ function Cleanse:OnApplyBuff(Unit, Source, DeBuff)
     end
 end
 
-function Cleanse:AutoCleanse(DeBuffType)
-    if (SummonerBoost ~= nil and myHero:CanUseSpell(SummonerBoost)) then
-        DelayAction(function() CastSpell(SummonerBoost) end, self.Menu.Humanizer/1000)
-    elseif (SummonerBoost ~= nil and myHero:CanUseSpell(SummonerBoost)) then
+function Cleanse:AutoCleanse(BuffType)
+    if myHero:CanUseSpell(SummonerBoost) then
         DelayAction(function() CastSpell(SummonerBoost) end, self.Menu.Humanizer/1000)
     end
 end
