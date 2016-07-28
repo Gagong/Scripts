@@ -1,17 +1,8 @@
---[[
- _   _     ______        _____           _ _       
-| | | |    | ___ \      /  ___|         (_) |      
-| |_| | ___| |_/ /___   \ `--. _ __ ___  _| |_ ___ 
-|  _  |/ _ \    // _ \   `--. \ '_ ` _ \| | __/ _ \
-| | | |  __/ |\ \ (_) | /\__/ / | | | | | | ||  __/
-\_| |_/\___\_| \_\___/  \____/|_| |_| |_|_|\__\___|
-]]--
-
 local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
 local SCRIPT_AUTHOR = "HeRoBaNd"
-local version = "2.21"
+local version = "2.3"
 local SMITE, ATTACKSMITE = false, false
 local SMITELIST = {"summonersmite", "s5_summonersmiteplayerganker", "s5_summonersmiteduel"}
 local SMITEFOCUS = {"SRU_Blue1.1.1", "SRU_Blue7.1.1", "SRU_Murkwolf2.1.1", "SRU_Murkwolf8.1.1", "SRU_Gromp13.1.1", "SRU_Gromp14.1.1", "Sru_Crab16.1.1", 
@@ -37,7 +28,7 @@ end
 function OnLoad()
 --Credits SxTeam  
  local ToUpdate = {}
-    ToUpdate.Version = 2.21
+    ToUpdate.Version = 2.3
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Smite.version"
