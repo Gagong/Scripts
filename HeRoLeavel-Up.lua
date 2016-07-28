@@ -9,7 +9,7 @@
                                                                 |_|  
 ]]--																																
 
-local version = "3.65"
+local version = "3.66"
 local SCRIPT_NAME = "HeRo Level-Up"
 local SCRIPT_AUTHOR = "HeRoBaNd"
 
@@ -307,7 +307,7 @@ LastLevel = 0;
 function OnLoad()
 --Credits SxTeam  
     local ToUpdate = {}
-    ToUpdate.Version = 3.65
+    ToUpdate.Version = 3.66
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRoLeavel-Up.version"
@@ -345,20 +345,6 @@ function OnLoad()
     Menu:addParam('Info21123222', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
     Menu:addParam("ChangeShow", 'Change PermaShow Color (Reload)', SCRIPT_PARAM_ONOFF, false)
-
-    Menu:addParam('Info2222332', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
-
-    if (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then
-        Menu:addParam('GameVer', 'Game Version - <Releases/6.11>', SCRIPT_PARAM_INFO, "")
-    elseif (string.find(GetGameVersion(), 'Releases/6.14') ~= nil) then
-        Menu:addParam('GameVer1', 'Game Version - <Releases/6.13>', SCRIPT_PARAM_INFO, "")
-    end
-
-    if (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then
-        Menu:addParam('kek', 'Package Updated', SCRIPT_PARAM_INFO, "")
-    elseif (string.find(GetGameVersion(), 'Releases/6.14') ~= nil) then
-        Menu:addParam('kek1', 'Package Outdated')
-    end
 
     Menu:addParam('Info2222232332', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
@@ -411,28 +397,6 @@ function LevelUp()
 			PrintChat("<font color='#00BFFF'>This Level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level]].."</font><font color='#00BFFF'><font color='#FF0000'> ===></font> Next level: </font><font color='#7CFC00'>"..Skills[Sequence[myHero.level + 1]].. "</font><font color='#EE82EE'>. </font>")
 		end
 		LastLevel = myHero.level	
-	end
-end
-
-_G.LevelSpell = function(id)
-if (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then
-	local Offset =
-	{ 
-		[1] = 0xEC,
-		[2] = 0x8F,
-		[3] = 0x9D,
-		[4] = 0x65
-	}
-
-	local p = CLoLPacket(0x118)
-	p.vTable = 0x10134FC
-	p:EncodeF(myHero.networkID)
-	p:Encode1(Offset[id])
-	p:Encode4(0x70707070)
-	p:Encode4(0x43434343)
-	p:Encode1(0x7A)
-	p:Encode4(0x0A0A0A0A)
-	SendPacket(p)
 	end
 end
 
