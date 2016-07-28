@@ -309,12 +309,6 @@ function OnLoad()
     ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
 --Credits SxTeam
 
-    if (string.find(GetGameVersion(), 'Releases/6.13') ~= nil) then 
-        DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.11></b></font>") end, 5)
-    elseif (string.find(GetGameVersion(), 'Releases/6.14') ~= nil) then
-        DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo - Info]: </b></font><font color='#F0F8FF'><b>Game Version - <Releases/6.12></b></font>") end, 5)
-    end
-
     DelayAction(function() PrintChat("<font color='#FF0000'><b>[HeRo Level-Up]: </b></font><font color='#00BFFF'><b>Loaded.</b></font>") end, 5.5)
 
 	Menu = scriptConfig('HeRoLevel-UP', 'HeRoLevel-UP')
@@ -330,6 +324,7 @@ function OnLoad()
     Menu:addParam('Infokek', 'Manual Spell Order Changer', SCRIPT_PARAM_INFO, "")
     Menu:addParam('Level13', 'Level 1-3:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
     Menu:addParam('Level418', 'Level 4-18:', SCRIPT_PARAM_LIST, 1, {'Q-W-E',  'Q-E-W',  'W-Q-E',  'W-E-Q',  'E-Q-W',  'E-W-Q'})
+    Menu:addParam("Humanizer", "Use Humanizer:", SCRIPT_PARAM_SLICE, 100, 0, 1000, 0)
 
     Menu:addParam('Info21123222', '-----------------------------------------------------', SCRIPT_PARAM_INFO, "-------------")
 
@@ -367,7 +362,7 @@ end
 
 function OnTick()
 	if (LastLevel < myHero.level) then
-		LevelUp()
+		 DelayAction(function() LevelUp() end, Menu.Humanizer)
 	end
 end
 
