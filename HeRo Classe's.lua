@@ -7,22 +7,22 @@ local SummonerBall = nil
 local SummonerSmite = nil
 local SummonerFlash = nil
 
-_G.ScriptVersion = "1.0"
+_G.ScriptVersion = {1.0, "1.0"}
 _G.ScriptAuthor = "HeRoBaNd"
 
 function OnLoad()
     local ToUpdate = {}
-    ToUpdate.Version = _G.ScriptVersion
+    ToUpdate.Version = _G.ScriptVersion[1]
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Classe's.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/HeRo%20Classe's.lua"
     ToUpdate.SavePath = SCRIPT_PATH.."/HeRo Classe's.lua"
-    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\"> Classe's</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: "..NewVersion..""!"</font></b>") end
+    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\"> Classe's</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: "..NewVersion.."</font></b>") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\"> Classe's</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: No Updates Found!</font></b>") end
     ToUpdate.CallbackNewVersion = function(NewVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\"> Classe's</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: New Version Found ("..NewVersion.."). Please wait until it's Downloaded!</font></b>") end
     ToUpdate.CallbackError = function(NewVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\"> Classe's</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: Error while Downloading! Please try again!</font></b>") end
-    ScriptUpdate(ToUpdate.Version,ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate,ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion,ToUpdate.CallbackError)
+    ScriptUpdate(ToUpdate.Version, ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate, ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion, ToUpdate.CallbackError)
 
     if myHero:GetSpellData(SUMMONER_1).name:find("SummonerDot") then SummunerIgnite = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerDot") then SummunerIgnite = SUMMONER_2 end
     if SummunerIgnite ~= nil then
@@ -93,7 +93,7 @@ function Flash:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
     self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
@@ -246,7 +246,7 @@ function Smite:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
     self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
@@ -379,7 +379,7 @@ function Poro_Shoot:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
     self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
        
 end
@@ -494,7 +494,7 @@ function Cleanse:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
     self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
 end 
 
@@ -607,7 +607,7 @@ function Exhaust:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
     self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
 end 
  
@@ -731,7 +731,7 @@ function Barrier:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
     self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
@@ -792,7 +792,7 @@ function Heal:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
     self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
@@ -905,7 +905,7 @@ function Ignite:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
     self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
@@ -985,6 +985,7 @@ function Ignite:DrawFPSCircle(x, z, radius, color, quality)
 end
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 class "ScriptUpdate"
+
 function ScriptUpdate:__init(LocalVersion,UseHttps, Host, VersionPath, ScriptPath, SavePath, CallbackUpdate, CallbackNoUpdate, CallbackNewVersion,CallbackError)
     self.LocalVersion = LocalVersion
     self.Host = Host
