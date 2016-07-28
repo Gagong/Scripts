@@ -6,8 +6,9 @@ local SummonerBoost = nil
 local SummonerBall = nil
 local SummonerSmite = nil
 local SummonerFlash = nil
+local SummonerM = nil
 
-_G.ScriptVersion = {1.1, "1.1"}
+_G.ScriptVersion = {1.2, "1.2"}
 _G.ScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -53,6 +54,12 @@ function OnLoad()
     if SummonerBoost ~= nil then
         Cleanse()
     end
+
+    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerMana") then SummonerM = SUMMONER_1 elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerMana") then SummonerM = SUMMONER_2 end
+    if SummonerM ~= nil then
+        Clarity()
+    end
+
     --[[
     -------------WAIT UPL UPDATE--------------
     if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSnowball") then SummonerBall = SUMMONER_1 SKey = "D" elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerSnowball") then SummonerBall = SUMMONER_2 SKey = "F" end
@@ -72,6 +79,7 @@ function OnLoad()
         Flash()
     end
 end
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------WORKED FINE--------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -114,8 +122,8 @@ function Flash:OnDraw()
         if self.Menu.FlashRange then
             if myHero:CanUseSpell(SummonerFlash) == READY then
                 self.MaxDistance = self:GetMaxLocation(450)
-                self:DrawFPSCircle(myHero.x, myHero.z, 400, RGB(255, 0, 0), 7)
-                self:DrawFPSCircle(self.MaxDistance.x, self.MaxDistance.z, 50, RGB(255, 0, 0), 7)
+                _G.DrawFPSCircle(myHero.x, myHero.z, 400, RGB(255, 0, 0), 7)
+                _G.DrawFPSCircle(self.MaxDistance.x, self.MaxDistance.z, 50, RGB(255, 0, 0), 7)
             end
         end
     end
@@ -176,37 +184,6 @@ function Flash:Message(class,msg,time)
     DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
 end
 
-function Flash:DrawLineA(x1, y1, x2, y2, color)
-    DrawLine(x1, y1, x2, y2, 1, color)
-end
- 
-function Flash:DrawFPSCircle(x, z, radius, color, quality)
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z + math.sqrt(radius * radius - i * i))))
-        local c = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z - math.sqrt(radius * radius - i * i))))
-        local k = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        local n = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z - math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
- 
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local c = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local k = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius * math.cos(math.pi/4)/quality)))
-        local n = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius-(i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius*  math.cos(math.pi/4)/quality)))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
-end
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------WORKED FINE--------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -307,7 +284,7 @@ function Smite:OnDraw()
         end
     end
     if self.Menu.DrawSmiteRange and not myHero.dead and myHero:CanUseSpell(SummonerSmite) then
-        self:DrawFPSCircle(myHero.x, myHero.z, 560, RGB(255, 128, 0), 7)
+        _G.DrawFPSCircle(myHero.x, myHero.z, 560, RGB(255, 128, 0), 7)
     end
 end
 
@@ -315,40 +292,10 @@ function Smite:Message(class,msg,time)
     DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
 end
 
-function Smite:DrawLineA(x1, y1, x2, y2, color)
-    DrawLine(x1, y1, x2, y2, 1, color)
-end
- 
-function Smite:DrawFPSCircle(x, z, radius, color, quality)
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z + math.sqrt(radius * radius - i * i))))
-        local c = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z - math.sqrt(radius * radius - i * i))))
-        local k = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        local n = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z - math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
- 
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local c = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local k = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius * math.cos(math.pi/4)/quality)))
-        local n = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius-(i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius*  math.cos(math.pi/4)/quality)))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
-end
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------WAIT UPL UPDATE--------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -------------WAIT UPL UPDATE--------------
 --[[class("Poro_Shoot")
 
@@ -405,7 +352,7 @@ end
 
 function Poro_Shoot:OnDraw()
     if not myHero.dead and self.Menu.Draw and myHero:CanUseSpell(SummonerBall) == READY then
-        self:DrawFPSCircle(myHero.x, myHero.z, 1580, RGB(255, 128, 0), 7)
+        _G.DrawFPSCircle(myHero.x, myHero.z, 1580, RGB(255, 128, 0), 7)
     end
 end
 
@@ -425,40 +372,98 @@ end
 
 function Poro_Shoot:Message(class,msg,time)
     DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
-end
-
-function Poro_Shoot:DrawLineA(x1, y1, x2, y2, color)
-    DrawLine(x1, y1, x2, y2, 1, color)
-end
- 
-function Poro_Shoot:DrawFPSCircle(x, z, radius, color, quality)
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z + math.sqrt(radius * radius - i * i))))
-        local c = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z - math.sqrt(radius * radius - i * i))))
-        local k = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        local n = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z - math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
- 
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local c = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local k = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius * math.cos(math.pi/4)/quality)))
-        local n = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius-(i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius*  math.cos(math.pi/4)/quality)))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
 end]]--
 -------------WAIT UPL UPDATE--------------
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------WORKED FINE--------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class("Clarity")
+
+function Clarity:__init()
+
+    self:Message("Clarity", "Class loaded!", 3)
+    self:Loader()
+    self:Global_Menu()
+
+end
+
+function Clarity:Global_Menu()
+    self.Menu = scriptConfig("[HeRo] Clarity Class", "HeRoClarity")
+
+    self.Menu:addParam("Enable", "Enable Auto Clarity:", SCRIPT_PARAM_ONOFF, true)
+    self.Menu:addParam("MinMana", "Mana to Use Auto Clarity:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
+    self.Menu:addParam("ComboEnable", "Use only in Combo Mode:", SCRIPT_PARAM_ONOFF, true)
+    self.Menu:addParam("Key", "You Combo Mode Key:", SCRIPT_PARAM_ONKEYDOWN, false, 32)
+    self.Menu:addParam("AllyClarity", "Use on Ally:", SCRIPT_PARAM_ONOFF, true)
+    self.Menu:addParam("AllyMinMana", "Ally Mana to Use Auto Clarity:", SCRIPT_PARAM_SLICE, 10, 0, 100, 0)
+    self.Menu:addParam("Draw", "Enable Clarity Range Draw:", SCRIPT_PARAM_ONOFF, true)
+    ------------------------------------------------------------------------------------------------------------------
+    self.Menu:addParam("b", "", SCRIPT_PARAM_INFO, "")
+    if VIP_USER then
+        self.Menu:addParam("b1", "User: "..GetUser().." (VIP)", SCRIPT_PARAM_INFO, "")
+    else
+        self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
+    end
+    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+end
+
+function Clarity:Loader()
+    self.NoClaritySpamMsg = 0
+    AddTickCallback(function() self:OnTick() end)
+    AddDrawCallback(function() self:OnDraw() end)
+end
+
+function Clarity:OnTick()
+    if (self.Menu.Enable and not self.Menu.ComboEnable) then
+        self:AutoClarity()
+    elseif self.Menu.Enable and self.Menu.ComboEnable and self.Menu.Key then
+        self:AutoClarity()
+    end
+    if (self.Menu.Enable and self.Menu.AllyClarity) then
+        self:AllyAutoClarity()
+    end
+end
+
+function Clarity:OnDraw()
+    if not myHero.dead and self.Menu.Draw and myHero:CanUseSpell(SummonerM) == READY then
+        _G.DrawFPSCircle(myHero.x, myHero.z, 600, RGB(0, 153, 0), 7)
+    end
+end
+
+function Clarity:AutoClarity()
+    if SummonerM == nil then return end
+    if ((myHero.mana*100)/myHero.maxMana) <= self.Menu.MinMana and myHero:CanUseSpell(SummonerM) == READY then
+        CastSpell(SummonerM)
+        if os.clock() - self.NoClaritySpamMsg > 2 then
+            self.NoClaritySpamMsg = os.clock()
+            self:Message("Clarity", "Clarity Casted on: Yourself", 0)
+        end
+    end
+end
+
+function Clarity:AllyAutoClarity()
+    for k, ally in pairs(GetAllyHeroes()) do
+        if not ally.dead and ally.visible then
+            if SummonerM ~= nil and GetDistance(myHero, ally) <= 600 and myHero:CanUseSpell(SummonerM) == READY then
+                if ((ally.mana*100)/ally.maxMana) <= self.Menu.AllyMinMana and not ally.dead then
+                    CastSpell(SummonerM)
+                    if os.clock() - self.NoClaritySpamMsg > 2 then
+                        self.NoClaritySpamMsg = os.clock()
+                        self:Message("Clarity", "Clarity Casted on: "..ally.charName, 0)
+                    end
+                end
+            end
+        end
+    end
+end
+
+function Clarity:Message(class,msg,time)
+    DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
+end
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------WORKED FINE--------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -568,9 +573,11 @@ end
 function Cleanse:Message(class,msg,time)
     DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
 end
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------WORKED FINE--------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 class("Exhaust")
  
 function Exhaust:__init()
@@ -629,7 +636,7 @@ end
  
 function Exhaust:OnDraw()
     if not myHero.dead and self.Menu.Draw and myHero:CanUseSpell(SummonerExhaust) then
-        self:DrawFPSCircle(myHero.x, myHero.z, 650, RGB(255, 128, 0), 7)
+        _G.DrawFPSCircle(myHero.x, myHero.z, 650, RGB(255, 128, 0), 7)
     end
 end
  
@@ -676,40 +683,10 @@ function Exhaust:Message(class,msg,time)
     DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
 end
  
-function Exhaust:DrawLineA(x1, y1, x2, y2, color)
-    DrawLine(x1, y1, x2, y2, 1, color)
-end
- 
-function Exhaust:DrawFPSCircle(x, z, radius, color, quality)
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z + math.sqrt(radius * radius - i * i))))
-        local c = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z - math.sqrt(radius * radius - i * i))))
-        local k = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        local n = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z - math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
- 
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local c = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local k = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius * math.cos(math.pi/4)/quality)))
-        local n = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius-(i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius*  math.cos(math.pi/4)/quality)))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
-end
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------WORKED FINE--------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 class("Barrier")
 
 function Barrier:__init()
@@ -765,6 +742,7 @@ end
 function Barrier:Message(class,msg,time)
     DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
 end
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------WORKED FINE--------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -818,7 +796,7 @@ end
 
 function Heal:OnDraw()
     if not myHero.dead and self.Menu.Draw and myHero:CanUseSpell(SummunerHeal) == READY then
-        self:DrawFPSCircle(myHero.x, myHero.z, 840, RGB(0, 153, 0), 7)
+        _G.DrawFPSCircle(myHero.x, myHero.z, 840, RGB(0, 153, 0), 7)
     end
 end
 
@@ -853,40 +831,10 @@ function Heal:Message(class,msg,time)
     DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
 end
 
-function Heal:DrawLineA(x1, y1, x2, y2, color)
-    DrawLine(x1, y1, x2, y2, 1, color)
-end
-
-function Heal:DrawFPSCircle(x, z, radius, color, quality)
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z + math.sqrt(radius * radius - i * i))))
-        local c = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z - math.sqrt(radius * radius - i * i))))
-        local k = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        local n = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z - math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
-
-    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
-        local v = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local c = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
-        local k = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius * math.cos(math.pi/4)/quality)))
-        local n = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius-(i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius*  math.cos(math.pi/4)/quality)))
-        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
-        end
-        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
-        end
-    end
-end
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------WORKED FINE--------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 class("Ignite")
 
 function Ignite:__init()
@@ -928,7 +876,7 @@ end
 
 function Ignite:OnDraw()
     if not myHero.dead and self.Menu.Draw and myHero:CanUseSpell(SummunerIgnite) == READY then
-       self:DrawFPSCircle(myHero.x, myHero.z, 600, RGB(255, 0, 0), 7)
+       _G.DrawFPSCircle(myHero.x, myHero.z, 600, RGB(255, 0, 0), 7)
     end
 end
 
@@ -951,25 +899,25 @@ function Ignite:AutoIgnite()
     end
 end
 
-function Ignite:Message(class,msg,time)
-    DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
-end
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------_G.DrawFPSCircle Start--------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-function Ignite:DrawLineA(x1, y1, x2, y2, color)
+function _G.DrawLineA(x1, y1, x2, y2, color)
     DrawLine(x1, y1, x2, y2, 1, color)
 end
 
-function Ignite:DrawFPSCircle(x, z, radius, color, quality)
+function _G.DrawFPSCircle(x, z, radius, color, quality)
     for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
         local v = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z + math.sqrt(radius * radius - i * i))))
         local c = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z - math.sqrt(radius * radius - i * i))))
         local k = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
         local n = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z - math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
         if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
+            _G.DrawLineA(v.x, v.y, k.x, k.y, color)
         end
         if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
+            _G.DrawLineA(c.x, c.y, n.x, n.y, color)
         end
     end
 
@@ -979,14 +927,18 @@ function Ignite:DrawFPSCircle(x, z, radius, color, quality)
         local k = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius * math.cos(math.pi/4)/quality)))
         local n = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius-(i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius*  math.cos(math.pi/4)/quality)))
         if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
-            self:DrawLineA(v.x, v.y, k.x, k.y, color)
+            _G.DrawLineA(v.x, v.y, k.x, k.y, color)
         end
         if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
-            self:DrawLineA(c.x, c.y, n.x, n.y, color)
+            _G.DrawLineA(c.x, c.y, n.x, n.y, color)
         end
     end
 end
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------_G.DrawFPSCircle End--------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 class "ScriptUpdate"
 
 function ScriptUpdate:__init(LocalVersion,UseHttps, Host, VersionPath, ScriptPath, SavePath, CallbackUpdate, CallbackNoUpdate, CallbackNewVersion,CallbackError)
