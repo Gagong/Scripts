@@ -638,8 +638,8 @@ function Exhaust:AutoExhoust()
         ts:update()
         if ValidTarget(ts.target) and ts.target.type == myHero.type then
             CastSpell(SummonerExhaust, ts.target) 
-            if os.clock() - NoExhaustSpamMsg > 2 then
-                NoExhaustSpamMsg = os.clock()
+            if os.clock() - self.NoExhaustSpamMsg > 2 then
+                self.NoExhaustSpamMsg = os.clock()
                 self:Message("Exhaust", "Exhaust Casted on: "..ts.target, 0)
             end
         end
@@ -739,7 +739,7 @@ function Barrier:Global_Menu()
 end
 
 function Barrier:Loader()
-    NoBarrierSpamMsg = 0
+    self.NoBarrierSpamMsg = 0
     AddTickCallback(function() self:OnTick() end)
 end
 
@@ -755,8 +755,8 @@ function Barrier:AutoBarrier()
     if SummonerBarrier == nil then return end
     if ((myHero.health*100)/myHero.maxHealth) <= self.Menu.MinHealth and myHero:CanUseSpell(SummonerBarrier) == READY then
         CastSpell(SummonerBarrier)
-        if os.clock() - NoBarrierSpamMsg > 2 then
-            NoBarrierSpamMsg = os.clock()
+        if os.clock() - self.NoBarrierSpamMsg > 2 then
+            self.NoBarrierSpamMsg = os.clock()
             self:Message("Barrier", "Barrier Casted on: Yourself", 0)
         end
     end
@@ -826,8 +826,8 @@ function Heal:AutoHeal()
     if SummunerHeal == nil then return end
     if ((myHero.health*100)/myHero.maxHealth) <= self.Menu.MinHealth and myHero:CanUseSpell(SummunerHeal) == READY then
         CastSpell(SummunerHeal)
-        if os.clock() - NoHealSpamMsg > 2 then
-            NoHealSpamMsg = os.clock()
+        if os.clock() - self.NoHealSpamMsg > 2 then
+            self.NoHealSpamMsg = os.clock()
             self:Message("Heal", "Heal Casted on: Yourself", 0)
         end
     end
@@ -839,8 +839,8 @@ function Heal:AllyAutoHeal()
             if SummunerHeal ~= nil and GetDistance(myHero, ally) <= 840 and myHero:CanUseSpell(SummunerHeal) == READY then
                 if ((ally.health*100)/ally.maxHealth) <= self.Menu.AllyMinHealth and not ally.dead then
                     CastSpell(SummunerHeal)
-                    if os.clock() - NoHealSpamMsg > 2 then
-                        NoHealSpamMsg = os.clock()
+                    if os.clock() - self.NoHealSpamMsg > 2 then
+                        self.NoHealSpamMsg = os.clock()
                         self:Message("Heal", "Heal Casted on: "..ally.charName, 0)
                     end
                 end
@@ -940,8 +940,8 @@ function Ignite:AutoIgnite()
                     local igniteDmg = 50 + 20 * myHero.level
                     if igniteDmg >= enemy.health and not enemy.dead then
                         CastSpell(SummunerIgnite, enemy)
-                        if os.clock() - NoIgniteSpamMsg > 2 then
-                            NoIgniteSpamMsg = os.clock()
+                        if os.clock() - self.NoIgniteSpamMsg > 2 then
+                            self.NoIgniteSpamMsg = os.clock()
                             self:Message("Ignite", "Ignite Casted on: "..enemy.charName, 0)
                         end
                     end
