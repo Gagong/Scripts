@@ -3,12 +3,12 @@ local SummunerHeal = nil
 local SummunerIgnite = nil
 local SummonerExhaust = nil
 local SummonerBoost = nil
-local SummonerBall = nil
+local Ball = nil
 local SummonerSmite = nil
 local SummonerFlash = nil
 local SummonerM = nil
 
-_G.ScriptVersion = {1.2, "1.2"}
+_G.ScriptVersion = {1.3, "1.3"}
 _G.ScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -62,8 +62,8 @@ function OnLoad()
 
     --[[
     -------------WAIT UPL UPDATE--------------
-    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSnowball") then SummonerBall = SUMMONER_1 SKey = "D" elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerSnowball") then SummonerBall = SUMMONER_2 SKey = "F" end
-    if SummonerBall ~= nil  then 
+    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSnowball") then Ball = SUMMONER_1 SKey = "D" elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerSnowball") then Ball = SUMMONER_2 SKey = "F" end
+    if Ball ~= nil  then 
         Poro_Shoot()
     end
     -------------WAIT UPL UPDATE--------------
@@ -897,6 +897,10 @@ function Ignite:AutoIgnite()
             end
         end
     end
+end
+
+function Ignite:Message(class,msg,time)
+    DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">HeRo</font> <font color=\"#F7CB72\">"..class.." Class</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
 end
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
