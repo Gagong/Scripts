@@ -3,7 +3,7 @@ _G.HextechScriptAuthor = "HeRoBaNd"
 
 function OnLoad()
     local ToUpdate = {}
-    ToUpdate.Version = _G.ScriptVersion[1]
+    ToUpdate.Version = _G.HextechScriptVersion[1]
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Hextech.version"
@@ -16,7 +16,7 @@ function OnLoad()
     ScriptUpdate(ToUpdate.Version, ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate, ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion, ToUpdate.CallbackError)
     
     Hextech()
-    
+
 end
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -248,7 +248,7 @@ function ScriptUpdate:__init(LocalVersion,UseHttps, Host, VersionPath, ScriptPat
     self.CallbackNoUpdate = CallbackNoUpdate
     self.CallbackNewVersion = CallbackNewVersion
     self.CallbackError = CallbackError
-    AddDrawCallback(function() self:OnDraw() end)
+    --AddDrawCallback(function() self:OnDraw() end)
     self:CreateSocket(self.VersionPath)
     self.DownloadStatus = 'Connect to Server for VersionInfo'
     AddTickCallback(function() self:GetOnlineVersion() end)
