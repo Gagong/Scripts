@@ -1,7 +1,7 @@
 if myHero.charName ~= "Vayne" then return end
 
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.1, "1.1"}
+_G.VayneScriptVersion = {1.15, "1.15"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -113,7 +113,7 @@ function MyHeRoVayne:Global_Menu()
             self.Menu.Combo.Items:addParam("BWC", "Use Bilgewater Cutlass in Combo:", SCRIPT_PARAM_ONOFF, true)
             self.Menu.Combo.Items:addParam("YGB", "Use Youmu in Combo:", SCRIPT_PARAM_ONOFF, true)
 
-    self.Menu:addSubMenu('[Vayne] - AntiGapCloser Settings', 'AntiGapClosers')
+    --[[self.Menu:addSubMenu('[Vayne] - AntiGapCloser Settings', 'AntiGapClosers')
     self.Menu:addSubMenu('[Vayne] - Auto Stun Target', 'ASTarget')
     self.Menu:addSubMenu('[Vayne] - Interrupt Settings', 'Interrupt')
 
@@ -176,11 +176,11 @@ function MyHeRoVayne:Global_Menu()
             end
         end
     end
-    if not Foundinterrupt then self.Menu.Interrupt:addParam('nil','No Enemies to Interrupt found!', SCRIPT_PARAM_INFO, '') end
+    if not Foundinterrupt then self.Menu.Interrupt:addParam('nil','No Enemies to Interrupt found!', SCRIPT_PARAM_INFO, '') end]]--
 
     self.Menu:addSubMenu("[Vayne] - Condemn Settings", "Condemn")
-        self.Menu.Condemn:addParam("AfterAACondemn", "Use Condemn After Next Attack:", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("E"))
-        self.Menu.Condemn:addParam("AutoStun", "Enable Auto Stun:", SCRIPT_PARAM_ONOFF, true)
+        --self.Menu.Condemn:addParam("AfterAACondemn", "Use Condemn After Next Attack:", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("E"))
+        --self.Menu.Condemn:addParam("AutoStun", "Enable Auto Stun:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Condemn:addParam("PushDistance", "Push Distance:", SCRIPT_PARAM_SLICE, 440, 440, 450, 0)
 
     self.Menu:addSubMenu("[Vayne] - Lane Clear", "LaneClear")
@@ -217,7 +217,7 @@ function MyHeRoVayne:Loader()
     self.LastTarget = nil
     AddTickCallback(function() self:OnTick() end)
     AddDrawCallback(function() self:OnDraw() end)
-    AddProcessSpellCallback(function(unit, spell) self:OnProcessSpell(unit, spell) end)
+    --AddProcessSpellCallback(function(unit, spell) self:OnProcessSpell(unit, spell) end)
     AddProcessAttackCallback(function(unit, spell) self:OnProcessAttack(unit, spell) end)
 end
 
@@ -225,7 +225,7 @@ function MyHeRoVayne:OnTick()
     ts:update()
     self:BotRK()
     self:BilgeWater()
-    self:CondemnStun()
+    --self:CondemnStun()
     self:ComboREnemy()
 end
 
@@ -330,7 +330,7 @@ function MyHeRoVayne:OnProcessAttack(unit, spell)
     end
 end
 
-function MyHeRoVayne:OnProcessSpell(unit, spell)
+--[[function MyHeRoVayne:OnProcessSpell(unit, spell)
     if unit.team ~= myHero.team then
         if self.isAGapcloserUnitTarget[spell.name] then
             if spell.target and spell.target.networkID == myHero.networkID then
@@ -346,7 +346,7 @@ function MyHeRoVayne:OnProcessSpell(unit, spell)
             end
         end
 
-        --[[if self.isAGapcloserUnitNoTarget[spell.name] and GetDistance(unit) <= 2000 and (spell.target == nil or (spell.target and spell.target.isMe)) then
+        if self.isAGapcloserUnitNoTarget[spell.name] and GetDistance(unit) <= 2000 and (spell.target == nil or (spell.target and spell.target.isMe)) then
             if (self.Menu.AntiGapClosers[unit.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.AntiGapClosers[unit.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.AntiGapClosers[unit.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.AntiGapClosers[unit.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.AntiGapClosers[unit.charName].Always then
                 SpellInfo = {
                     Source = unit,
@@ -358,9 +358,9 @@ function MyHeRoVayne:OnProcessSpell(unit, spell)
                 }
                 self:CondemnGapCloser(SpellInfo)
             end
-        end]]--
+        end
     end
-end
+end]]--
 
 --[[function MyHeRoVayne:CondemnGapCloser(SpellInfo)
     if (os.clock() - SpellInfo.CastTime) <= (SpellInfo.Range/SpellInfo.Speed) and myHero:CanUseSpell(_E) == READY then
@@ -387,7 +387,7 @@ function MyHeRoVayne:OnDraw()
     end
 end
 
-function MyHeRoVayne:CheckWallStun(Target)
+--[[function MyHeRoVayne:CheckWallStun(Target)
     local Pos, Hitchance, PredictPos = VP:GetLineCastPosition(Target, 0.250, 0, 770, 2200, myHero, false)
     if Hitchance > 1 then
         local checks = 30
@@ -416,7 +416,7 @@ function MyHeRoVayne:CondemnStun()
             end
         end
     end
-end
+end]]--
 
 function MyHeRoVayne:Message(msg)
     PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>")
