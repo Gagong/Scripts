@@ -1,7 +1,7 @@
 if myHero.charName ~= "Vayne" then return end
 
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.15, "1.15"}
+_G.VayneScriptVersion = {1.16, "1.16"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
