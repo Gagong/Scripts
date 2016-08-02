@@ -280,7 +280,11 @@ function MyHeRoVayne:OnProcessAttack(unit, spell)
         SpellTarget = spell.target
         if SpellTarget.type == myHero.type and myHero:CanUseSpell(_Q) == READY and myHero:CanUseSpell(_E) == READY then
             DelayAction(function() CastSpell(_Q, mousePos.x, mousePos.z) end, spell.windUpTime - GetLatency() / 2000)
-            DelayAction(function() CastSpell(_E, mousePos.x, mousePos.z) end, spell.windUpTime - GetLatency() / 2000)
+            --AddProcessSpellCallback(function (unit, spell) if unit.isMe and spell.name:lower():find("walltumble") then SpellTarget = spell.target  print(spell.name)  DelayAction(function() CastSpell(_E, SpellTarget) end, spell.windUpTime - GetLatency() / 2000) end)
+            --[[if unit.isMe and spell.name:lower():find("walltumble") then
+                SpellTarget = spell.target
+                DelayAction(function() CastSpell(_E, SpellTarget) end, spell.windUpTime - GetLatency() / 2000)
+            end]]--
         end
     end
 
@@ -304,15 +308,19 @@ function MyHeRoVayne:OnProcessSpell(unit, spell)
     if unit.team ~= myHero.team then
         if self.isAGapcloserUnitTarget[spell.name] then
             if spell.target and spell.target.networkID == myHero.networkID then
-                if (self.Menu.AntiGapClosers[unit.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.AntiGapClosers[unit.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.AntiGapClosers[unit.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.AntiGapClosers[unit.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.AntiGapClosers[unit.charName].Always then CastSpell(_E, unit) end
+                if (self.Menu.AntiGapClosers[unit.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.AntiGapClosers[unit.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.AntiGapClosers[unit.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.AntiGapClosers[unit.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.AntiGapClosers[unit.charName].Always then 
+                    CastSpell(_E, unit) 
+                end
             end
         end
 
-        if self.isAChampToInterrupt[spell.name] and GetDistanceSqr(unit) <= 715*715 then
-            if (self.Menu.Interrupt[unit.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.Interrupt[unit.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.Interrupt[unit.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.Interrupt[unit.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.Interrupt[unit.charName].Always then CastSpell(_E, unit) end
+        if self.isAChampToInterrupt[spell.name] and GetDistance(unit) <= 770 then
+            if (self.Menu.Interrupt[unit.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.Interrupt[unit.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.Interrupt[unit.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.Interrupt[unit.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.Interrupt[unit.charName].Always then 
+                CastSpell(_E, unit) 
+            end
         end
 
-        if self.isAGapcloserUnitNoTarget[spell.name] and GetDistanceSqr(unit) <= 2000*2000 and (spell.target == nil or (spell.target and spell.target.isMe)) then
+        --[[if self.isAGapcloserUnitNoTarget[spell.name] and GetDistance(unit) <= 2000 and (spell.target == nil or (spell.target and spell.target.isMe)) then
             if (self.Menu.AntiGapClosers[unit.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.AntiGapClosers[unit.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.AntiGapClosers[unit.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.AntiGapClosers[unit.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.AntiGapClosers[unit.charName].Always then
                 SpellInfo = {
                     Source = unit,
@@ -324,11 +332,11 @@ function MyHeRoVayne:OnProcessSpell(unit, spell)
                 }
                 self:CondemnGapCloser(SpellInfo)
             end
-        end
+        end]]--
     end
 end
 
-function MyHeRoVayne:CondemnGapCloser(SpellInfo)
+--[[function MyHeRoVayne:CondemnGapCloser(SpellInfo)
     if (os.clock() - SpellInfo.CastTime) <= (SpellInfo.Range/SpellInfo.Speed) and myHero:CanUseSpell(_E) == READY then
         local EndPosition = Vector(SpellInfo.StartPos) + (Vector(SpellInfo.StartPos) - SpellInfo.EndPos):normalized()*(SpellInfo.Range)
         local StartPosition = SpellInfo.StartPos + SpellInfo.Direction
@@ -342,14 +350,19 @@ function MyHeRoVayne:CondemnGapCloser(SpellInfo)
             DelayAction(function() self:CondemnGapCloser(SpellInfo) end)
         end
     end
-end
+end]]--
 
 function MyHeRoVayne:OnDraw()
-
+    if self.Menu.Drawings.DrawCircleE and myHero:CanUseSpell(_E) == READY then
+        _G.VayneDrawFPSCircle(myHero.x, myHero.z, 770, RGB(255, 0, 0), 7)
+    end
+    if self.Menu.Drawings.DrawCircleAA then
+        _G.VayneDrawFPSCircle(myHero.x, myHero.z, 620, RGB(0, 255, 0), 7)
+    end
 end
 
 function MyHeRoVayne:CheckWallStun(Target)
-    local Pos, Hitchance, PredictPos = VP:GetLineCastPosition(Target, 0.250, 0, 750, 2200, myHero, false)
+    local Pos, Hitchance, PredictPos = VP:GetLineCastPosition(Target, 0.250, 0, 770, 2200, myHero, false)
     if Hitchance > 1 then
         local checks = 30
         local CheckD = math.ceil(self.Menu.Condemn.PushDistance / checks)
@@ -372,9 +385,49 @@ function MyHeRoVayne:CondemnStun()
     if myHero:CanUseSpell(_E) == READY then
         if self.Menu.Condemn.AutoStun then
             local Target = ts.target
-            if Target and Target.type == myHero.type and ValidTarget(Target, 710) and ((self.Menu.ASTarget[Target.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.ASTarget[Target.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.ASTarget[Target.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.ASTarget[Target.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.ASTarget[Target.charName].Always) then
+            if Target and Target.type == myHero.type and ValidTarget(Target, 770) and ((self.Menu.ASTarget[Target.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.ASTarget[Target.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.ASTarget[Target.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.ASTarget[Target.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.ASTarget[Target.charName].Always) then
                 self:CheckWallStun(Target)
             end
         end
     end
 end
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------_G.VayneDrawFPSCircle Start--------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function _G.VayneDrawLineA(x1, y1, x2, y2, color)
+    DrawLine(x1, y1, x2, y2, 1, color)
+end
+
+function _G.VayneDrawFPSCircle(x, z, radius, color, quality)
+    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
+        local v = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z + math.sqrt(radius * radius - i * i))))
+        local c = WorldToScreen(D3DXVECTOR3((x + i), myHero.y, (z - math.sqrt(radius * radius - i * i))))
+        local k = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
+        local n = WorldToScreen(D3DXVECTOR3((x + i + radius * math.cos(math.pi/4)/quality), myHero.y, (z - math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality)))))
+        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
+            _G.VayneDrawLineA(v.x, v.y, k.x, k.y, color)
+        end
+        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
+            _G.VayneDrawLineA(c.x, c.y, n.x, n.y, color)
+        end
+    end
+
+    for i = -radius * math.cos(math.pi/4), radius * math.cos(math.pi/4) - 1, radius * math.cos(math.pi/4)/quality do
+        local v = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
+        local c = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius - i * i)), myHero.y, (z + i)))
+        local k = WorldToScreen(D3DXVECTOR3((x + math.sqrt(radius * radius - (i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius * math.cos(math.pi/4)/quality)))
+        local n = WorldToScreen(D3DXVECTOR3((x - math.sqrt(radius * radius-(i + radius * math.cos(math.pi/4)/quality) * (i + radius * math.cos(math.pi/4)/quality))), myHero.y, (z + i + radius*  math.cos(math.pi/4)/quality)))
+        if (v.x > 0 and v.x < WINDOW_W) and (v.y > 0 and v.y < WINDOW_H) and (k.x > 0 and k.x < WINDOW_W) and (k.y > 0 and k.y < WINDOW_H) then
+            _G.VayneDrawLineA(v.x, v.y, k.x, k.y, color)
+        end
+        if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
+            _G.VayneDrawLineA(c.x, c.y, n.x, n.y, color)
+        end
+    end
+end
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------_G.HextechDrawFPSCircle End--------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
