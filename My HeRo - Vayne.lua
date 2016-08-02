@@ -7,16 +7,34 @@ _G.VayneScriptAuthor = "HeRoBaNd"
 function OnLoad()
     require 'VPrediction'
     VP = VPrediction()
+
+    local ToUpdate = {}
+    ToUpdate.Version = _G.HextechScriptVersion[1]
+    ToUpdate.UseHttps = true
+    ToUpdate.Host = "raw.githubusercontent.com"
+    ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/My%20HeRo%20-%20Vayne.version"
+    ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/My%20HeRo%20-%20Vayne(0.03).lua"
+    ToUpdate.SavePath = SCRIPT_PATH.."/HeRo Hextech.lua"
+    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: "..NewVersion.."</font></b>") end
+    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: No Updates Found!</font></b>") end
+    ToUpdate.CallbackNewVersion = function(NewVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: New Version Found ("..NewVersion.."). Please wait until it's Downloaded!</font></b>") end
+    ToUpdate.CallbackError = function(NewVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: Error while Downloading! Please try again!</font></b>") end
+    ScriptUpdate(ToUpdate.Version, ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate, ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion, ToUpdate.CallbackError)
+    
     MyHeRoVayne()
+
 end
 
-class 'MyHeRoVayne'
+class("MyHeRoVayne")
 
 function MyHeRoVayne:__init()
-    ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_MAGIC)
+
+    self:Message("Loaded!")
+    ts = TargetSelector(TARGET_PRIORITY, 1500, DAMAGE_PHYSICAL)
     self:Tables()
     self:Global_Menu()
     self:Loader()
+
 end
 
 function MyHeRoVayne:Tables()
@@ -80,7 +98,7 @@ end
 function MyHeRoVayne:Global_Menu()
     self.Menu = scriptConfig('My HeRo - Vayne', 'MHV')
 
-    self.Menu:addSubMenu("["..myHero.charName.."] - Combo", "Combo")
+    self.Menu:addSubMenu("[Vayne] - Combo", "Combo")
         self.Menu.Combo:addParam("ComboKey", "Combo Key:", SCRIPT_PARAM_ONKEYDOWN, false, 32)
         self.Menu.Combo:addParam("ComboQ", "Use Q in Combo:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Combo:addParam("ComboR", "Use R in Combo:", SCRIPT_PARAM_ONOFF, true)
@@ -90,9 +108,9 @@ function MyHeRoVayne:Global_Menu()
             self.Menu.Combo.Items:addParam("BWC", "Use Bilgewater Cutlass in Combo:", SCRIPT_PARAM_ONOFF, true)
             self.Menu.Combo.Items:addParam("YGB", "Use Youmu in Combo:", SCRIPT_PARAM_ONOFF, true)
 
-    self.Menu:addSubMenu('['..myHero.charName..'] - AntiGapCloser Settings', 'AntiGapClosers')
-    self.Menu:addSubMenu('['..myHero.charName..'] - Auto Stun Target', 'ASTarget')
-    self.Menu:addSubMenu('['..myHero.charName..'] - Interrupt Settings', 'Interrupt')
+    self.Menu:addSubMenu('[Vayne] - AntiGapCloser Settings', 'AntiGapClosers')
+    self.Menu:addSubMenu('[Vayne] - Auto Stun Target', 'ASTarget')
+    self.Menu:addSubMenu('[Vayne] - Interrupt Settings', 'Interrupt')
 
     local FoundAGapCloser = false
     for index, data in pairs(self.isAGapcloserUnitTarget) do
@@ -155,28 +173,28 @@ function MyHeRoVayne:Global_Menu()
     end
     if not Foundinterrupt then self.Menu.Interrupt:addParam('nil','No Enemies to Interrupt found!', SCRIPT_PARAM_INFO, '') end
 
-    self.Menu:addSubMenu("["..myHero.charName.."] - Condemn Settings", "Condemn")
+    self.Menu:addSubMenu("[Vayne] - Condemn Settings", "Condemn")
         self.Menu.Condemn:addParam("AfterAACondemn", "Use Condemn After Next Attack:", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("E"))
         self.Menu.Condemn:addParam("AutoStun", "Enable Auto Stun:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Condemn:addParam("PushDistance", "Push Distance:", SCRIPT_PARAM_SLICE, 440, 440, 450, 0)
 
-    self.Menu:addSubMenu("["..myHero.charName.."] - Lane Clear", "LaneClear")
+    self.Menu:addSubMenu("[Vayne] - Lane Clear", "LaneClear")
         self.Menu.LaneClear:addParam("ClearKey", "Lane Clear Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("V"))
         self.Menu.LaneClear:addParam("ClearQ", "Use Q in Lane Clear:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.LaneClear:addParam("LaneClearMana", "Min mana % to use Q in Lane Clear:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
-    self.Menu:addSubMenu("["..myHero.charName.."] - Last Hit", "LastHit")
+    self.Menu:addSubMenu("[Vayne] - Last Hit", "LastHit")
         self.Menu.LastHit:addParam("LastHitKey", "Last Hit Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("V"))
         self.Menu.LastHit:addParam("LastHitQ", "Use Q in Last Hit:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.LastHit:addParam("LastHitMana", "Min mana % to use Q in LastHit:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
-    self.Menu:addSubMenu("["..myHero.charName.."] - Harass", "Harass")
+    self.Menu:addSubMenu("[Vayne] - Harass", "Harass")
         self.Menu.Harass:addParam("HarassKey", "Harass Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C"))
-        self.Menu.Harass:addParam("BurstHarass", "Use Burst Harass (AA+Q+E):", SCRIPT_PARAM_ONOFF, true)
+        --self.Menu.Harass:addParam("BurstHarass", "Use Burst Harass (AA+Q+E):", SCRIPT_PARAM_ONOFF, true) (This released soon)
         self.Menu.Harass:addParam("HarassQ", "Use Q in Harass:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Harass:addParam("HarassMana", "Min mana % to use Q in Harass:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
-    self.Menu:addSubMenu("["..myHero.charName.."] - Drawings", "Drawings")
+    self.Menu:addSubMenu("[Vayne] - Drawings", "Drawings")
         self.Menu.Drawings:addParam("DrawCircleAA", "Draw AA Range:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Drawings:addParam("DrawCircleE", "Draw E Range:", SCRIPT_PARAM_ONOFF, true)
     ------------------------------------------------------------------------------------------------------------------
@@ -261,50 +279,53 @@ function MyHeRoVayne:ComboREnemy()
 end
 
 function MyHeRoVayne:OnProcessAttack(unit, spell)
-    if unit.isMe and spell.name:lower():find("attack") and self.Menu.Combo.ComboKey and self.Menu.Combo.ComboQ then
-        SpellTarget = spell.target
-        if SpellTarget.type == myHero.type and myHero:CanUseSpell(_Q) == READY then
-            DelayAction(function() CastSpell(_Q, mousePos.x, mousePos.z) end, spell.windUpTime - GetLatency() / 2000)
+    --[[if self.Menu.Harass.HarassKey and self.Menu.Harass.BurstHarass and myHero:CanUseSpell(_Q) == READY and myHero:CanUseSpell(_E) == READY then
+        if unit.isMe and spell.name:lower():find("attack") then
+            SpellTarget = spell.target
+            if SpellTarget.type == myHero.type then
+                CastSpell(_Q, mousePos.x, mousePos.z)
+            end
         end
-    end
+        if unit.isMe and spell.name:lower():find("vaynetumbleattack") then
+            SpellTarget = spell.target
+            if SpellTarget.type == myHero.type then
+                print("TumbleAttack find")
+                CastSpell(_E, SpellTarget)
+            end
+        end
+    end]]--
 
     if unit.isMe and spell.name:lower():find("attack") then
+        if self.Menu.Combo.ComboKey and self.Menu.Combo.ComboQ then
+            SpellTarget = spell.target
+            if SpellTarget.type == myHero.type and myHero:CanUseSpell(_Q) == READY then
+                CastSpell(_Q, mousePos.x, mousePos.z)
+            end
+        end
+
         if spell.target then self.LastTarget = spell.target end
         if self.Menu.Condemn.AfterAACondemn and self.LastTarget.type == myHero.type and myHero:CanUseSpell(_Q) and myHero:CanUseSpell(_E) then
-            DelayAction(function() CastSpell(_E, self.LastTarget) end, spell.windUpTime + GetLatency()/2000)
+            CastSpell(_E, self.LastTarget)
             self.Menu.Condemn.AfterAACondemn = false
         end
-    end
 
-    if unit.isMe and spell.name:lower():find("attack") and self.Menu.Harass.HarassKey and self.Menu.Harass.BurstHarass and myHero:CanUseSpell(_Q) == READY and myHero:CanUseSpell(_E) == READY then
-        SpellTarget = spell.target
-        if SpellTarget.type == myHero.type and myHero:CanUseSpell(_Q) == READY and myHero:CanUseSpell(_E) == READY then
-            DelayAction(function() CastSpell(_Q, mousePos.x, mousePos.z) end, spell.windUpTime - GetLatency() / 2000)
-            --AddProcessSpellCallback(function (unit, spell) if unit.isMe and spell.name:lower():find("walltumble") then SpellTarget = spell.target  print(spell.name)  DelayAction(function() CastSpell(_E, SpellTarget) end, spell.windUpTime - GetLatency() / 2000) end)
-            --[[if unit.isMe and spell.name:lower():find("walltumble") then
-                SpellTarget = spell.target
-                DelayAction(function() CastSpell(_E, SpellTarget) end, spell.windUpTime - GetLatency() / 2000)
-            end]]--
+        if self.Menu.Harass.HarassQ and self.Menu.Harass.HarassKey and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01)) then
+            SpellTarget = spell.target
+            if (SpellTarget.type ~= myHero.type) or (SpellTarget.type == myHero.type) and myHero:CanUseSpell(_Q) == READY then
+                CastSpell(_Q, mousePos.x, mousePos.z)
+            end
         end
-    end
 
-    if unit.isMe and spell.name:lower():find("attack") and self.Menu.Harass.HarassQ and self.Menu.Harass.HarassKey and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01)) then
-        SpellTarget = spell.target
-        if (SpellTarget.type ~= myHero.type) or (SpellTarget.type == myHero.type) and myHero:CanUseSpell(_Q) == READY then
-            DelayAction(function() CastSpell(_Q, mousePos.x, mousePos.z) end, spell.windUpTime - GetLatency() / 2000)
-        end
-    end
-
-    if unit.isMe and spell.name:lower():find("attack") and self.Menu.LaneClear.ClearQ and self.Menu.LaneClear.ClearKey and myHero.mana >= (myHero.maxMana*(self.Menu.LaneClear.LaneClearMana*0.01)) then
-        SpellTarget = spell.target
-        if SpellTarget.type ~= myHero.type and myHero:CanUseSpell(_Q) == READY then
-            DelayAction(function() CastSpell(_Q, mousePos.x, mousePos.z) end, spell.windUpTime - GetLatency() / 2000)
+        if self.Menu.LaneClear.ClearQ and self.Menu.LaneClear.ClearKey and myHero.mana >= (myHero.maxMana*(self.Menu.LaneClear.LaneClearMana*0.01)) then
+            SpellTarget = spell.target
+            if SpellTarget.type ~= myHero.type and myHero:CanUseSpell(_Q) == READY then
+                CastSpell(_Q, mousePos.x, mousePos.z)
+            end
         end
     end
 end
 
 function MyHeRoVayne:OnProcessSpell(unit, spell)
-    --print("Work")
     if unit.team ~= myHero.team then
         if self.isAGapcloserUnitTarget[spell.name] then
             if spell.target and spell.target.networkID == myHero.networkID then
@@ -392,6 +413,10 @@ function MyHeRoVayne:CondemnStun()
     end
 end
 
+function MyHeRoVayne:Message(msg)
+    PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>")
+end
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------_G.VayneDrawFPSCircle Start--------------
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -430,4 +455,196 @@ end
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------_G.HextechDrawFPSCircle End--------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+class "ScriptUpdate"
+
+function ScriptUpdate:__init(LocalVersion, UseHttps, Host, VersionPath, ScriptPath, SavePath, CallbackUpdate, CallbackNoUpdate, CallbackNewVersion, CallbackError)
+    self.LocalVersion = LocalVersion
+    self.Host = Host
+    self.VersionPath = '/BoL/TCPUpdater/GetScript'..(UseHttps and '5' or '6')..'.php?script='..self:Base64Encode(self.Host..VersionPath)..'&rand='..math.random(99999999)
+    self.ScriptPath = '/BoL/TCPUpdater/GetScript'..(UseHttps and '5' or '6')..'.php?script='..self:Base64Encode(self.Host..ScriptPath)..'&rand='..math.random(99999999)
+    self.SavePath = SavePath
+    self.CallbackUpdate = CallbackUpdate
+    self.CallbackNoUpdate = CallbackNoUpdate
+    self.CallbackNewVersion = CallbackNewVersion
+    self.CallbackError = CallbackError
+    --AddDrawCallback(function() self:OnDraw() end)
+    self:CreateSocket(self.VersionPath)
+    self.DownloadStatus = 'Connect to Server for VersionInfo'
+    AddTickCallback(function() self:GetOnlineVersion() end)
+end
+
+function ScriptUpdate:print(str)
+    print('<font color="#FFFFFF">'..os.clock()..': '..str)
+end
+
+function ScriptUpdate:OnDraw()
+    if self.DownloadStatus ~= 'Downloading Script (100%)' and self.DownloadStatus ~= 'Downloading VersionInfo (100%)'then
+        DrawText('Download Status: '..(self.DownloadStatus or 'Unknown'),50,10,50,ARGB(0xFF,0xFF,0xFF,0xFF))
+    end
+end
+
+function ScriptUpdate:CreateSocket(url)
+    if not self.LuaSocket then
+        self.LuaSocket = require("socket")
+    else
+        self.Socket:close()
+        self.Socket = nil
+        self.Size = nil
+        self.RecvStarted = false
+    end
+    self.LuaSocket = require("socket")
+    self.Socket = self.LuaSocket.tcp()
+    self.Socket:settimeout(0, 'b')
+    self.Socket:settimeout(99999999, 't')
+    self.Socket:connect('sx-bol.eu', 80)
+    self.Url = url
+    self.Started = false
+    self.LastPrint = ""
+    self.File = ""
+end
+
+function ScriptUpdate:Base64Encode(data)
+    local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+    return ((data:gsub('.', function(x)
+        local r,b='',x:byte()
+        for i=8,1,-1 do r=r..(b%2^i-b%2^(i-1)>0 and '1' or '0') end
+        return r;
+    end)..'0000'):gsub('%d%d%d?%d?%d?%d?', function(x)
+        if (#x < 6) then return '' end
+        local c=0
+        for i=1,6 do c=c+(x:sub(i,i)=='1' and 2^(6-i) or 0) end
+        return b:sub(c+1,c+1)
+    end)..({ '', '==', '=' })[#data%3+1])
+end
+
+function ScriptUpdate:GetOnlineVersion()
+    if self.GotScriptVersion then return end
+
+    self.Receive, self.Status, self.Snipped = self.Socket:receive(1024)
+    if self.Status == 'timeout' and not self.Started then
+        self.Started = true
+        self.Socket:send("GET "..self.Url.." HTTP/1.1\r\nHost: sx-bol.eu\r\n\r\n")
+    end
+    if (self.Receive or (#self.Snipped > 0)) and not self.RecvStarted then
+        self.RecvStarted = true
+        self.DownloadStatus = 'Downloading VersionInfo (0%)'
+    end
+
+    self.File = self.File .. (self.Receive or self.Snipped)
+    if self.File:find('</s'..'ize>') then
+        if not self.Size then
+            self.Size = tonumber(self.File:sub(self.File:find('<si'..'ze>')+6,self.File:find('</si'..'ze>')-1))
+        end
+        if self.File:find('<scr'..'ipt>') then
+            local _,ScriptFind = self.File:find('<scr'..'ipt>')
+            local ScriptEnd = self.File:find('</scr'..'ipt>')
+            if ScriptEnd then ScriptEnd = ScriptEnd - 1 end
+            local DownloadedSize = self.File:sub(ScriptFind+1,ScriptEnd or -1):len()
+            self.DownloadStatus = 'Downloading VersionInfo ('..math.round(100/self.Size*DownloadedSize,2)..'%)'
+        end
+    end
+    if self.File:find('</scr'..'ipt>') then
+        self.DownloadStatus = 'Downloading VersionInfo (100%)'
+        local a,b = self.File:find('\r\n\r\n')
+        self.File = self.File:sub(a,-1)
+        self.NewFile = ''
+        for line,content in ipairs(self.File:split('\n')) do
+            if content:len() > 5 then
+                self.NewFile = self.NewFile .. content
+            end
+        end
+        local HeaderEnd, ContentStart = self.File:find('<scr'..'ipt>')
+        local ContentEnd, _ = self.File:find('</sc'..'ript>')
+        if not ContentStart or not ContentEnd then
+            if self.CallbackError and type(self.CallbackError) == 'function' then
+                self.CallbackError()
+            end
+        else
+            self.OnlineVersion = (Base64Decode(self.File:sub(ContentStart + 1,ContentEnd-1)))
+            self.OnlineVersion = tonumber(self.OnlineVersion)
+            if self.OnlineVersion > self.LocalVersion then
+                if self.CallbackNewVersion and type(self.CallbackNewVersion) == 'function' then
+                    self.CallbackNewVersion(self.OnlineVersion,self.LocalVersion)
+                end
+                self:CreateSocket(self.ScriptPath)
+                self.DownloadStatus = 'Connect to Server for ScriptDownload'
+                AddTickCallback(function() self:DownloadUpdate() end)
+            else
+                if self.CallbackNoUpdate and type(self.CallbackNoUpdate) == 'function' then
+                    self.CallbackNoUpdate(self.LocalVersion)
+                end
+            end
+        end
+        self.GotScriptVersion = true
+    end
+end
+
+function ScriptUpdate:DownloadUpdate()
+    if self.GotScriptUpdate then return end
+    self.Receive, self.Status, self.Snipped = self.Socket:receive(1024)
+    if self.Status == 'timeout' and not self.Started then
+        self.Started = true
+        self.Socket:send("GET "..self.Url.." HTTP/1.1\r\nHost: sx-bol.eu\r\n\r\n")
+    end
+    if (self.Receive or (#self.Snipped > 0)) and not self.RecvStarted then
+        self.RecvStarted = true
+        self.DownloadStatus = 'Downloading Script (0%)'
+    end
+
+    self.File = self.File .. (self.Receive or self.Snipped)
+    if self.File:find('</si'..'ze>') then
+        if not self.Size then
+            self.Size = tonumber(self.File:sub(self.File:find('<si'..'ze>')+6,self.File:find('</si'..'ze>')-1))
+        end
+        if self.File:find('<scr'..'ipt>') then
+            local _,ScriptFind = self.File:find('<scr'..'ipt>')
+            local ScriptEnd = self.File:find('</scr'..'ipt>')
+            if ScriptEnd then ScriptEnd = ScriptEnd - 1 end
+            local DownloadedSize = self.File:sub(ScriptFind+1,ScriptEnd or -1):len()
+            self.DownloadStatus = 'Downloading Script ('..math.round(100/self.Size*DownloadedSize,2)..'%)'
+        end
+    end
+    if self.File:find('</scr'..'ipt>') then
+        self.DownloadStatus = 'Downloading Script (100%)'
+        local a,b = self.File:find('\r\n\r\n')
+        self.File = self.File:sub(a,-1)
+        self.NewFile = ''
+        for line,content in ipairs(self.File:split('\n')) do
+            if content:len() > 5 then
+                self.NewFile = self.NewFile .. content
+            end
+        end
+        local HeaderEnd, ContentStart = self.NewFile:find('<sc'..'ript>')
+        local ContentEnd, _ = self.NewFile:find('</scr'..'ipt>')
+        if not ContentStart or not ContentEnd then
+            if self.CallbackError and type(self.CallbackError) == 'function' then
+                self.CallbackError()
+            end
+        else
+            local newf = self.NewFile:sub(ContentStart+1,ContentEnd-1)
+            local newf = newf:gsub('\r','')
+            if newf:len() ~= self.Size then
+                if self.CallbackError and type(self.CallbackError) == 'function' then
+                    self.CallbackError()
+                end
+                return
+            end
+            local newf = Base64Decode(newf)
+            if type(load(newf)) ~= 'function' then
+                if self.CallbackError and type(self.CallbackError) == 'function' then
+                    self.CallbackError()
+                end
+            else
+                local f = io.open(self.SavePath,"w+b")
+                f:write(newf)
+                f:close()
+                if self.CallbackUpdate and type(self.CallbackUpdate) == 'function' then
+                    self.CallbackUpdate(self.OnlineVersion,self.LocalVersion)
+                end
+            end
+        end
+        self.GotScriptUpdate = true
+    end
+end
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
