@@ -14,7 +14,7 @@ function OnLoad()
     VP = VPrediction()
 
     local ToUpdate = {}
-    ToUpdate.Version = _G.HextechScriptVersion[1]
+    ToUpdate.Version = _G.VayneScriptVersion[1]
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/My%20HeRo%20-%20Vayne.version"
