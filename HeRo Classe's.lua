@@ -8,7 +8,7 @@ local SummonerSmite = nil
 local SummonerFlash = nil
 local SummonerM = nil
 
-_G.ScriptVersion = {1.3, "1.3"}
+_G.ScriptVersion = {1.4, "1.4"}
 _G.ScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -247,9 +247,9 @@ function Smite:OnTick()
     self.SmiteDmg = self:GetSmiteDamage()
     for _, jminions in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
         if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
-                name = jminions.charName
-                name = name:sub(name:find("_")+1, name:len())
-                name = name:sub(1, (name:find("_") or name:len()+1)-1)
+                local name = jminions.charName
+                local name = name:sub(name:find("_")+1, name:len())
+                local name = name:sub(1, (name:find("_") or name:len()+1)-1)
                 if self.Menu.Smite[name] then
                 if myHero:CanUseSpell(SummonerSmite) == READY and GetDistance(myHero, jminions) <= 560 and self.SmiteDmg >= jminions.health then
                     CastSpell(SummonerSmite, jminions)
@@ -268,9 +268,9 @@ function Smite:OnDraw()
         self.SmiteDmg = self:GetSmiteDamage()
         for _, jminion in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
             if not jminion.dead and jminion.visible and ValidTarget(jminion, 560) then
-                name = jminion.charName
-                name = name:sub(name:find("_")+1, name:len())
-                name = name:sub(1, (name:find("_") or name:len()+1)-1)
+                local name = jminion.charName
+                local name = name:sub(name:find("_")+1, name:len())
+                local name = name:sub(1, (name:find("_") or name:len()+1)-1)
                 if self.Menu.Smite[name] then
                     self.posMinion = WorldToScreen(D3DXVECTOR3(jminion.x, jminion.y, jminion.z))
                     self.SmiteProcess = math.round(100 - 100 * (jminion.health - self.SmiteDmg)/jminion.maxHealth)
@@ -513,7 +513,7 @@ end
 
 
 function Cleanse:OnApplyBuff(unit, sourse, buff)
-    if sourse and sourse.isMe then
+    if sourse and sourse.isMe end self.Menu.Enable then
         if buff.name == "SummonerExhaust" and  self.Menu.DeBuff_List.Exhaust then
             self:AutoCleanse("Exhaust")
         end
@@ -582,34 +582,24 @@ class("Exhaust")
  
 function Exhaust:__init()
     
-    self:Variables()
     self:Message("Exhaust", "Class loaded!", 3)
     self:Global_Menu()
     self:Loader()
  
 end  
 
-function Exhaust:Variables()
-    self.PriorityTable = {
-    First = {"Ashe", "Caitlyn", "Corki", "Draven", "Ezreal", "Graves", "Jayce", "KogMaw", "MissFortune", "Pantheon", "Quinn", "Shaco", "Sivir","Talon", "Tristana", "Twitch", "Urgot", "Varus", "Vayne", "Zed", "Lucian", "Jinx"},
-    Second = {"Taliyah", "Annie", "Ahri", "Akali", "Anivia", "Annie", "Brand", "Cassiopeia", "Diana", "Evelynn", "FiddleSticks", "Fizz", "Heimerdinger", "Karthus","Kassadin", "Katarina", "Kayle", "Kennen", "Leblanc", "Lissandra", "Lux", "Malzahar", "Mordekaiser", "Morgana", "Nidalee", "Orianna","Rumble", "Ryze", "Swain", "Syndra", "Teemo", "TwistedFate", "Veigar", "Viktor", "Vladimir", "Xerath", "Ziggs", "Zyra", "VelKoz", "Azir", "Ekko"},
-    Third = {"MasterYi", "Aatrox", "Darius", "Elise", "Fiora", "Gangplank", "Garen", "Irelia", "JarvanIV", "Jax", "Khazix", "LeeSin", "Nautilus", "Nocturne", "Olaf", "Poppy","Renekton", "Rengar", "Riven", "Shyvana", "Trundle", "Tryndamere", "Udyr", "Vi", "MonkeyKing", "XinZhao", "Gnar", "Kindred"},
-    Fourth = {"Sion", "Gragas", "Amumu", "Chogath", "DrMundo", "Galio", "Hecarim", "Malphite", "Maokai", "Nasus", "Rammus", "Sejuani", "Shen", "Singed", "Skarner", "Volibear","Warwick", "Yorick", "Zac", "Illaoi", "RekSai"},
-    Fifth = {"Alistar", "Blitzcrank", "Janna", "Karma", "Leona", "Lulu", "Nami", "Nunu", "Sona", "Soraka", "Taric", "Thresh", "Zilean", "Braum", "Bard", "TahmKench"}, 
-    }
-end
-
 function Exhaust:Global_Menu()
     self.Menu = scriptConfig("[HeRo] Exhaust Class", "HeRoExhaust")
- 
+
+    self.Menu:addParam("b5", "", SCRIPT_PARAM_INFO, "")
+
     self.Menu:addParam("Enable", "Enable Auto Exhaust:", SCRIPT_PARAM_ONOFF, true)
     self.Menu:addParam("Key", "You Auto Exhaust Key:", SCRIPT_PARAM_ONKEYDOWN, false, GetKey("N"))
     self.Menu:addParam("Draw", "Enable Exhaust Range Draw:", SCRIPT_PARAM_ONOFF, true)
-    self.Menu:addSubMenu("Target_Selector", "Target_Selector")
-    ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_MAGIC)
-    self.Menu.Target_Selector:addTS(ts)
+
+    ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_PHYSICAL)
+    self.Menu.:addTS(ts)
     ts.name = "Exhaust Targeting"
-    self.Menu.Target_Selector:addParam("Info", "Don't Change This!", SCRIPT_PARAM_INFO, "")
     ------------------------------------------------------------------------------------------------------------------
     self.Menu:addParam("b", "", SCRIPT_PARAM_INFO, "")
     if VIP_USER then
@@ -625,7 +615,6 @@ function Exhaust:Loader()
     self.NoExhaustSpamMsg = 0
     AddTickCallback(function() self:OnTick() end)
     AddDrawCallback(function() self:OnDraw() end)
-    self:TargetPrioriti()
 end
  
 function Exhaust:OnTick()
@@ -641,7 +630,7 @@ function Exhaust:OnDraw()
 end
  
 function Exhaust:AutoExhoust()
-    if myHero:CanUseSpell(SummonerExhaust) == 0 then
+    if myHero:CanUseSpell(SummonerExhaust) == READY then
         ts:update()
         if ValidTarget(ts.target) and ts.target.type == myHero.type then
             CastSpell(SummonerExhaust, ts.target) 
@@ -650,32 +639,6 @@ function Exhaust:AutoExhoust()
                 self:Message("Exhaust", "Exhaust Casted on: "..ts.target, 0)
             end
         end
-    end
-end
- 
-function Exhaust:SetPriorityTable(table, hero, priority)
-    for i=1, #table, 1 do
-        if hero.charName:find(table[i]) ~= nil then
-            TS_SetHeroPriority(priority, hero.charName)
-        end
-    end
-end
- 
-function Exhaust:ArrangePrioriti()
-    for i, enemy in ipairs(GetEnemyHeroes()) do
-        self:SetPriorityTable(self.PriorityTable.First,   enemy, 1)
-        self:SetPriorityTable(self.PriorityTable.Second,  enemy, 2)
-        self:SetPriorityTable(self.PriorityTable.Third,   enemy, 3)
-        self:SetPriorityTable(self.PriorityTable.Fourth,  enemy, 4)
-        self:SetPriorityTable(self.PriorityTable.Fifth,   enemy, 5)
-    end
-end
- 
-function Exhaust:TargetPrioriti()
-    if heroManager.iCount < 10 then
-        self:Message("Exhaust", "Warning! Too few champions to arrange priority.", 5)   
-    else
-        self:ArrangePrioriti()
     end
 end
  
@@ -779,14 +742,15 @@ end
 
 function Heal:Loader()
     self.NoHealSpamMsg = 0
+    self.invul = {"undyingrage", "sionpassivezombie", "aatroxpassivedeath", "chronoshift", "judicatorintervention"}
     AddTickCallback(function() self:OnTick() end)
     AddDrawCallback(function() self:OnDraw() end)
 end
 
 function Heal:OnTick()
-    if (self.Menu.Enable and not self.Menu.ComboEnable) then
+    if (self.Menu.Enable) then
         self:AutoHeal()
-    elseif self.Menu.Enable and self.Menu.ComboEnable and self.Menu.Key then
+    elseif (self.Menu.Enable and self.Menu.ComboEnable and self.Menu.Key) then
         self:AutoHeal()
     end
     if (self.Menu.Enable and self.Menu.AllyHeal) then
@@ -798,6 +762,15 @@ function Heal:OnDraw()
     if not myHero.dead and self.Menu.Draw and myHero:CanUseSpell(SummunerHeal) == READY then
         _G.DrawFPSCircle(myHero.x, myHero.z, 840, RGB(0, 153, 0), 7)
     end
+end
+
+function Heal:CheckFail(unit)
+    for i, buff in pairs(self.invul) do
+        if TargetHaveBuff(buff, unit) then
+            return true
+        end
+    end
+    return false
 end
 
 function Heal:AutoHeal()
@@ -813,7 +786,7 @@ end
 
 function Heal:AllyAutoHeal()
     for k, ally in pairs(GetAllyHeroes()) do
-        if not ally.dead and ally.visible then
+        if not ally.dead and ally.visible and not self:CheckFail(ally) then
             if SummunerHeal ~= nil and GetDistance(myHero, ally) <= 840 and myHero:CanUseSpell(SummunerHeal) == READY then
                 if ((ally.health*100)/ally.maxHealth) <= self.Menu.AllyMinHealth and not ally.dead then
                     CastSpell(SummunerHeal)
