@@ -8,7 +8,7 @@ local SummonerSmite = nil
 local SummonerFlash = nil
 local SummonerM = nil
 
-_G.SSScriptVersion = {1.4, "1.4"}
+_G.SSScriptVersion = {1.41, "1.41"}
 _G.SSScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -513,7 +513,7 @@ end
 
 
 function Cleanse:OnApplyBuff(unit, sourse, buff)
-    if sourse and sourse.isMe end self.Menu.Enable then
+    if sourse and sourse.isMe and self.Menu.Enable then
         if buff.name == "SummonerExhaust" and  self.Menu.DeBuff_List.Exhaust then
             self:AutoCleanse("Exhaust")
         end
@@ -598,8 +598,8 @@ function Exhaust:Global_Menu()
     self.Menu:addParam("Draw", "Enable Exhaust Range Draw:", SCRIPT_PARAM_ONOFF, true)
 
     ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_PHYSICAL)
-    self.Menu.:addTS(ts)
-    ts.name = "Exhaust Targeting"
+    --self.Menu.:addTS(ts)
+    --ts.name = "Exhaust Targeting"
     ------------------------------------------------------------------------------------------------------------------
     self.Menu:addParam("b", "", SCRIPT_PARAM_INFO, "")
     if VIP_USER then
