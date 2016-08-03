@@ -8,8 +8,8 @@ local SummonerSmite = nil
 local SummonerFlash = nil
 local SummonerM = nil
 
-_G.ScriptVersion = {1.4, "1.4"}
-_G.ScriptAuthor = "HeRoBaNd"
+_G.SSScriptVersion = {1.4, "1.4"}
+_G.SSScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
 assert(load(Base64Decode("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"), nil, "bt", _ENV))()
@@ -18,7 +18,7 @@ TrackerLoad("B5YWDGqBAUGrO1AT")
 
 function OnLoad()
     local ToUpdate = {}
-    ToUpdate.Version = _G.ScriptVersion[1]
+    ToUpdate.Version = _G.SSScriptVersion[1]
     ToUpdate.UseHttps = true
     ToUpdate.Host = "raw.githubusercontent.com"
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/HeRo%20Classe's.version"
@@ -106,8 +106,8 @@ function Flash:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
-    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.SSScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.SSScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
 function Flash:Loader()
@@ -228,8 +228,8 @@ function Smite:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
-    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.SSScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.SSScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
 function Smite:Loader()
@@ -331,8 +331,8 @@ function Poro_Shoot:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
-    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.SSScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.SSScriptAuthor, SCRIPT_PARAM_INFO, "")
        
 end
 
@@ -406,8 +406,8 @@ function Clarity:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
-    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.SSScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.SSScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
 function Clarity:Loader()
@@ -502,8 +502,8 @@ function Cleanse:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
-    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.SSScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.SSScriptAuthor, SCRIPT_PARAM_INFO, "")
 end 
 
 function Cleanse:Loader()
@@ -607,8 +607,8 @@ function Exhaust:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
-    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.SSScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.SSScriptAuthor, SCRIPT_PARAM_INFO, "")
 end 
  
 function Exhaust:Loader()
@@ -674,8 +674,8 @@ function Barrier:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
-    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.SSScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.SSScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
 function Barrier:Loader()
@@ -736,8 +736,8 @@ function Heal:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
-    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.SSScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.SSScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
 function Heal:Loader()
@@ -829,8 +829,8 @@ function Ignite:Global_Menu()
     else
         self.Menu:addParam("b2", "User: "..GetUser().." (FREE)", SCRIPT_PARAM_INFO, "")
     end
-    self.Menu:addParam("b3", "Script Version: ".._G.ScriptVersion[2], SCRIPT_PARAM_INFO, "")
-    self.Menu:addParam("b4", "Script Author: ".._G.ScriptAuthor, SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b3", "Script Version: ".._G.SSScriptVersion[2], SCRIPT_PARAM_INFO, "")
+    self.Menu:addParam("b4", "Script Author: ".._G.SSScriptAuthor, SCRIPT_PARAM_INFO, "")
 end
 
 
