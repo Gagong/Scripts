@@ -1,7 +1,7 @@
 if myHero.charName ~= "Vayne" then return end
 
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.16, "1.16"}
+_G.VayneScriptVersion = {1.17, "1.17"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -35,7 +35,7 @@ class("MyHeRoVayne")
 function MyHeRoVayne:__init()
 
     self:Message("Loaded!")
-    ts = TargetSelector(TARGET_PRIORITY, 1500, DAMAGE_PHYSICAL)
+    ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_PHYSICAL)
     self:Tables()
     self:Global_Menu()
     self:Loader()
@@ -58,7 +58,7 @@ function MyHeRoVayne:Tables()
         ['XenZhaoSweep']            = {true, Champ = 'XinZhao',     spellKey = 'E'},
         ['blindmonkqtwo']           = {true, Champ = 'LeeSin',      spellKey = 'Q'},
         ['FizzPiercingStrike']      = {true, Champ = 'Fizz',        spellKey = 'Q'},
-        ['RengarLeap']              = {true, Champ = 'Rengar',      spellKey = 'Q/R'},
+        ['RengarLeap']              = {true, Champ = 'Rengar',      spellKey = 'AA'},
     }
 
     self.isAGapcloserUnitNoTarget = {
@@ -113,7 +113,7 @@ function MyHeRoVayne:Global_Menu()
             self.Menu.Combo.Items:addParam("BWC", "Use Bilgewater Cutlass in Combo:", SCRIPT_PARAM_ONOFF, true)
             self.Menu.Combo.Items:addParam("YGB", "Use Youmu in Combo:", SCRIPT_PARAM_ONOFF, true)
 
-    --[[self.Menu:addSubMenu('[Vayne] - AntiGapCloser Settings', 'AntiGapClosers')
+    self.Menu:addSubMenu('[Vayne] - AntiGapCloser Settings', 'AntiGapClosers')
     self.Menu:addSubMenu('[Vayne] - Auto Stun Target', 'ASTarget')
     self.Menu:addSubMenu('[Vayne] - Interrupt Settings', 'Interrupt')
 
@@ -159,6 +159,7 @@ function MyHeRoVayne:Global_Menu()
         self.Menu.ASTarget[enemy.charName]:addParam('Always', 'Auto Stun Always:', SCRIPT_PARAM_ONOFF, false)
         FoundStunTarget = true
     end
+    self.Menu.ASTarget:addParam("PushDistance", "Push Distance:", SCRIPT_PARAM_SLICE, 440, 440, 450, 0)
     if not FoundStunTarget then self.Menu.ASTarget:addParam('nil','No Enemies to Stun found!', SCRIPT_PARAM_INFO, '') end
 
     local Foundinterrupt = false
@@ -176,12 +177,7 @@ function MyHeRoVayne:Global_Menu()
             end
         end
     end
-    if not Foundinterrupt then self.Menu.Interrupt:addParam('nil','No Enemies to Interrupt found!', SCRIPT_PARAM_INFO, '') end]]--
-
-    self.Menu:addSubMenu("[Vayne] - Condemn Settings", "Condemn")
-        --self.Menu.Condemn:addParam("AfterAACondemn", "Use Condemn After Next Attack:", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("E"))
-        --self.Menu.Condemn:addParam("AutoStun", "Enable Auto Stun:", SCRIPT_PARAM_ONOFF, true)
-        self.Menu.Condemn:addParam("PushDistance", "Push Distance:", SCRIPT_PARAM_SLICE, 440, 440, 450, 0)
+    if not Foundinterrupt then self.Menu.Interrupt:addParam('nil','No Enemies to Interrupt found!', SCRIPT_PARAM_INFO, '') end
 
     self.Menu:addSubMenu("[Vayne] - Lane Clear", "LaneClear")
         self.Menu.LaneClear:addParam("ClearKey", "Lane Clear Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("V"))
@@ -195,13 +191,17 @@ function MyHeRoVayne:Global_Menu()
 
     self.Menu:addSubMenu("[Vayne] - Harass", "Harass")
         self.Menu.Harass:addParam("HarassKey", "Harass Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C"))
-        --self.Menu.Harass:addParam("BurstHarass", "Use Burst Harass (AA+Q+E):", SCRIPT_PARAM_ONOFF, true) (This released soon)
+        self.Menu.Harass:addParam("BurstHarass", "Use Burst Harass (AA+Q+E):", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Harass:addParam("HarassQ", "Use Q in Harass:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Harass:addParam("HarassMana", "Min mana % to use Q in Harass:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
     self.Menu:addSubMenu("[Vayne] - Drawings", "Drawings")
         self.Menu.Drawings:addParam("DrawCircleAA", "Draw AA Range:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Drawings:addParam("DrawCircleE", "Draw E Range:", SCRIPT_PARAM_ONOFF, true)
+        self.Menu.Drawings:addParam("Quality", "Draw Quality", SCRIPT_PARAM_SLICE, 5, 1, 10, 0)
+
+        self.Menu.Drawings:addParam("2222", "", SCRIPT_PARAM_INFO, "")
+        self.Menu.Drawings:addParam("1111", "High quality - reduce the FPS", SCRIPT_PARAM_INFO, "")
     ------------------------------------------------------------------------------------------------------------------
     self.Menu:addParam("b", "", SCRIPT_PARAM_INFO, "")
     if VIP_USER then
@@ -214,18 +214,24 @@ function MyHeRoVayne:Global_Menu()
 end
 
 function MyHeRoVayne:Loader()
+    self.W_Stacks = {}
+    for _, v in ipairs(GetEnemyHeroes()) do
+        self.W_Stacks[v.networkID] = 0
+    end
     self.LastTarget = nil
     AddTickCallback(function() self:OnTick() end)
     AddDrawCallback(function() self:OnDraw() end)
-    --AddProcessSpellCallback(function(unit, spell) self:OnProcessSpell(unit, spell) end)
+    AddProcessSpellCallback(function(unit, spell) self:OnProcessSpell(unit, spell) end)
     AddProcessAttackCallback(function(unit, spell) self:OnProcessAttack(unit, spell) end)
+    AddUpdateBuffCallback(function(unit, buff, stacks) self:OnUpdateBuff(unit, buff, stacks) end)
+    AddRemoveBuffCallback(function(unit, buff) self:OnRemoveBuff(unit, buff) end)
 end
 
 function MyHeRoVayne:OnTick()
     ts:update()
     self:BotRK()
     self:BilgeWater()
-    --self:CondemnStun()
+    self:CondemnStun()
     self:ComboREnemy()
 end
 
@@ -283,22 +289,37 @@ function MyHeRoVayne:ComboREnemy()
     end
 end
 
+function MyHeRoVayne:CheckModesActive(kMenu)
+    if kMenu.FightMode and self.Menu.Combo.ComboKey then
+        return true
+    elseif kMenu.HarassMode and self.Menu.Harass.HarassKey then
+        return true
+    elseif kMenu.LaneClear and self.Menu.LaneClear.ClearKey then
+        return true
+    elseif kMenu.LastHit and self.Menu.LastHit.LastHitKey then
+        return true
+    elseif kMenu.Always then
+        return true
+    else
+        return false
+    end
+end
+
+function MyHeRoVayne:OnUpdateBuff(unit, buff, stacks)
+    if not unit or not buff then return end
+    if buff.name:lower():find("vaynesilvereddebuff") then
+        self.W_Stacks[unit.networkID] = stacks
+    end
+end
+
+function MyHeRoVayne:OnRemoveBuff(unit, buff)
+    if not unit or not buff then return end
+    if buff.name == "vaynesilvereddebuff" then
+        self.W_Stacks[unit.networkID] = 0
+    end
+end
+
 function MyHeRoVayne:OnProcessAttack(unit, spell)
-    --[[if self.Menu.Harass.HarassKey and self.Menu.Harass.BurstHarass and myHero:CanUseSpell(_Q) == READY and myHero:CanUseSpell(_E) == READY then
-        if unit.isMe and spell.name:lower():find("attack") then
-            SpellTarget = spell.target
-            if SpellTarget.type == myHero.type then
-                CastSpell(_Q, mousePos.x, mousePos.z)
-            end
-        end
-        if unit.isMe and spell.name:lower():find("vaynetumbleattack") then
-            SpellTarget = spell.target
-            if SpellTarget.type == myHero.type then
-                print("TumbleAttack find")
-                CastSpell(_E, SpellTarget)
-            end
-        end
-    end]]--
 
     if unit.isMe and spell.name:lower():find("attack") then
         if self.Menu.Combo.ComboKey and self.Menu.Combo.ComboQ then
@@ -308,13 +329,7 @@ function MyHeRoVayne:OnProcessAttack(unit, spell)
             end
         end
 
-        if spell.target then self.LastTarget = spell.target end
-        if self.Menu.Condemn.AfterAACondemn and self.LastTarget.type == myHero.type and myHero:CanUseSpell(_Q) and myHero:CanUseSpell(_E) then
-            CastSpell(_E, self.LastTarget)
-            self.Menu.Condemn.AfterAACondemn = false
-        end
-
-        if self.Menu.Harass.HarassQ and self.Menu.Harass.HarassKey and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01)) then
+        if self.Menu.Harass.HarassQ and (not self.Menu.Harass.BurstHarass) and self.Menu.Harass.HarassKey and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01)) then
             SpellTarget = spell.target
             if (SpellTarget.type ~= myHero.type) or (SpellTarget.type == myHero.type) and myHero:CanUseSpell(_Q) == READY then
                 CastSpell(_Q, mousePos.x, mousePos.z)
@@ -327,73 +342,61 @@ function MyHeRoVayne:OnProcessAttack(unit, spell)
                 CastSpell(_Q, mousePos.x, mousePos.z)
             end
         end
+
+        if self.Menu.Harass.HarassKey and self.Menu.Harass.BurstHarass and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01))then
+            SpellTarget = spell.target
+            self.W_Stacks[SpellTarget.networkID] = 1
+            if SpellTarget.type == myHero.type then
+                CastSpell(_Q, mousePos.x, mousePos.z)
+                self.W_Stacks[SpellTarget.networkID] = 2
+            end
+            if self.W_Stacks[SpellTarget.networkID] == 2 then
+                CastSpell(_E, SpellTarget)
+            end
+        end
     end
 end
 
---[[function MyHeRoVayne:OnProcessSpell(unit, spell)
+function MyHeRoVayne:OnProcessSpell(unit, spell)
     if unit.team ~= myHero.team then
         if self.isAGapcloserUnitTarget[spell.name] then
             if spell.target and spell.target.networkID == myHero.networkID then
-                if (self.Menu.AntiGapClosers[unit.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.AntiGapClosers[unit.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.AntiGapClosers[unit.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.AntiGapClosers[unit.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.AntiGapClosers[unit.charName].Always then 
+                if self:CheckModesActive(self.Menu.AntiGapClosers[unit.charName]) then 
                     CastSpell(_E, unit) 
                 end
             end
         end
 
         if self.isAChampToInterrupt[spell.name] and GetDistance(unit) <= 770 then
-            if (self.Menu.Interrupt[unit.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.Interrupt[unit.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.Interrupt[unit.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.Interrupt[unit.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.Interrupt[unit.charName].Always then 
+            if self:CheckModesActive(self.Menu.Interrupt[unit.charName]) then 
                 CastSpell(_E, unit) 
             end
         end
 
-        if self.isAGapcloserUnitNoTarget[spell.name] and GetDistance(unit) <= 2000 and (spell.target == nil or (spell.target and spell.target.isMe)) then
-            if (self.Menu.AntiGapClosers[unit.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.AntiGapClosers[unit.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.AntiGapClosers[unit.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.AntiGapClosers[unit.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.AntiGapClosers[unit.charName].Always then
-                SpellInfo = {
-                    Source = unit,
-                    CastTime = os.clock(),
-                    Direction = (spell.endPos - spell.startPos):normalized(),
-                    StartPos = Point(unit.pos.x, unit.pos.z),
-                    Range = self.isAGapcloserUnitNoTarget[spell.name].range,
-                    Speed = self.isAGapcloserUnitNoTarget[spell.name].projSpeed,
-                }
-                self:CondemnGapCloser(SpellInfo)
+        if self.isAGapcloserUnitNoTarget[spell.name] and GetDistance(unit) <= 770 and (spell.target == nil or (spell.target and spell.target.isMe)) then
+            if self:CheckModesActive(self.Menu.AntiGapClosers[unit.charName]) then
+                CastSpell(_E, unit)
             end
         end
     end
-end]]--
-
---[[function MyHeRoVayne:CondemnGapCloser(SpellInfo)
-    if (os.clock() - SpellInfo.CastTime) <= (SpellInfo.Range/SpellInfo.Speed) and myHero:CanUseSpell(_E) == READY then
-        local EndPosition = Vector(SpellInfo.StartPos) + (Vector(SpellInfo.StartPos) - SpellInfo.EndPos):normalized()*(SpellInfo.Range)
-        local StartPosition = SpellInfo.StartPos + SpellInfo.Direction
-        local EndPosition   = SpellInfo.StartPos + (SpellInfo.Direction * SpellInfo.Range)
-        local MyPosition = Point(myHero.x, myHero.z)
-        local SkillShot = LineSegment(Point(StartPosition.x, StartPosition.y), Point(EndPosition.x, EndPosition.y))
-        if GetDistanceSqr(MyPosition,SkillShot) <= 400*400 then
-            self.CondemnTarget = SpellInfo.Source
-            CastSpell(_E, self.CondemnTarget)
-        else
-            DelayAction(function() self:CondemnGapCloser(SpellInfo) end)
-        end
-    end
-end]]--
+end
 
 function MyHeRoVayne:OnDraw()
     if self.Menu.Drawings.DrawCircleE and myHero:CanUseSpell(_E) == READY then
-        _G.VayneDrawFPSCircle(myHero.x, myHero.z, 770, RGB(255, 0, 0), 7)
+        _G.VayneDrawFPSCircle(myHero.x, myHero.z, 770, RGB(255, 0, 0), self.Menu.Drawings.Quality)
     end
     if self.Menu.Drawings.DrawCircleAA then
-        _G.VayneDrawFPSCircle(myHero.x, myHero.z, 620, RGB(0, 255, 0), 7)
+        _G.VayneDrawFPSCircle(myHero.x, myHero.z, 620, RGB(0, 255, 0), self.Menu.Drawings.Quality)
     end
 end
 
---[[function MyHeRoVayne:CheckWallStun(Target)
+function MyHeRoVayne:CheckWallStun(Target)
     local Pos, Hitchance, PredictPos = VP:GetLineCastPosition(Target, 0.250, 0, 770, 2200, myHero, false)
     if Hitchance > 1 then
-        local checks = 30
-        local CheckD = math.ceil(self.Menu.Condemn.PushDistance / checks)
+        local checks = 65
+        local CheckD = math.ceil(self.Menu.ASTarget.PushDistance / checks)
         local FoundGrass = false
-        for i = 1, checks  do
+        for i = 1, checks, 1  do
             local CheckWallPos = Vector(PredictPos) + Vector(Vector(PredictPos) - Vector(myHero)):normalized()*(CheckD*i)
             if not FoundGrass and IsWallOfGrass(D3DXVECTOR3(CheckWallPos.x, CheckWallPos.y, CheckWallPos.z)) then
                 FoundGrass = CheckWallPos
@@ -406,20 +409,17 @@ end
         end
     end
 end
-
 function MyHeRoVayne:CondemnStun()
     if myHero:CanUseSpell(_E) == READY then
-        if self.Menu.Condemn.AutoStun then
-            local Target = ts.target
-            if Target and Target.type == myHero.type and ValidTarget(Target, 770) and ((self.Menu.ASTarget[Target.charName].FightMode and self.Menu.Combo.ComboKey) or (self.Menu.ASTarget[Target.charName].HarassMode and self.Menu.Harass.HarassKey) or (self.Menu.ASTarget[Target.charName].LaneClear and self.Menu.LaneClear.ClearKey) or (self.Menu.ASTarget[Target.charName].LastHit and self.Menu.LastHit.LastHitKey) or self.Menu.ASTarget[Target.charName].Always) then
-                self:CheckWallStun(Target)
-            end
+        local Target = ts.target
+        if Target and Target.type == myHero.type and ValidTarget(Target, 770) and self:CheckModesActive(self.Menu.ASTarget[Target.charName]) then
+            self:CheckWallStun(Target)
         end
     end
-end]]--
+end
 
-function MyHeRoVayne:Message(msg)
-    PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>")
+function MyHeRoVayne:Message(msg, time)
+     DelayAction(function() PrintChat("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: ".. msg .."</font></b>") end, time)
 end
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
