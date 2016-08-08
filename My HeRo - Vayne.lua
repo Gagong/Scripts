@@ -34,7 +34,7 @@ class("MyHeRoVayne")
 
 function MyHeRoVayne:__init()
 
-    self:Message("Loaded!")
+    self:Message("Loaded!", 3)
     ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_PHYSICAL)
     self:Tables()
     self:Global_Menu()
