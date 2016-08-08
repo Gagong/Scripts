@@ -1,7 +1,7 @@
 if myHero.charName ~= "Vayne" then return end
 
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.17, "1.17"}
+_G.VayneScriptVersion = {1.18, "1.18"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -38,7 +38,11 @@ function MyHeRoVayne:__init()
     ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_PHYSICAL)
     self:Tables()
     self:Global_Menu()
+    self.Menu.Utility.skin.changeSkin = false
     self:Loader()
+    if VIP_USER then
+        self:SkinLoad() 
+    end
 
 end
 
@@ -99,7 +103,54 @@ function MyHeRoVayne:Tables()
         ['LucianR']                     = {true, Champ = 'Lucian',      spellKey = 'R'},
         ['JhinR']                       = {true, Champ = 'Jhin',        spellKey = 'R'}
     }
+
+    self.PotList = {
+        P_1 = {id = 2003, slot = nil},
+        P_2 = {id = 2031, slot = nil},
+        P_3 = {id = 2032, slot = nil},
+        P_4 = {id = 2033, slot = nil},
+        P_5 = {id = 2009, slot = nil},
+        P_6 = {id = 2010, slot = nil}
+    }
+
+    self.QSSList = {
+        QSS = {id = 3140, slot = nil},
+        MCS = {id = 3139, slot = nil}
+    }
+
+    self.PotNameBuff = {
+        "ItemCrystalFlask", 
+        "RegenerationPotion", 
+        "ItemMiniRegenPotion", 
+        "ItemCrystalFlaskJungle", 
+        "ItemDarkCrystalFlask",
+    }
+
+    self.xBase = {
+        ["x"] = 406, 
+        ["z"] = 424
+    }
+
+    self.zBase = {
+        ["x"] = 14322, 
+        ["z"] = 14394
+    }
+
+    self.SkinList = {
+        "Vindicator", 
+        "Aristocrat", 
+        "Dragonslayer", 
+        "Heartseeker", 
+        "SKT T1", 
+        "Arclight", 
+        "Chroma Pack: Green", 
+        "Chroma Pack: Red", 
+        "Chroma Pack: Silver", 
+        "Hextech", 
+        "Classic"
+    }
 end
+
 function MyHeRoVayne:Global_Menu()
     self.Menu = scriptConfig('My HeRo - Vayne', 'MHV')
 
@@ -195,6 +246,29 @@ function MyHeRoVayne:Global_Menu()
         self.Menu.Harass:addParam("HarassQ", "Use Q in Harass:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Harass:addParam("HarassMana", "Min mana % to use Q in Harass:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
+    self.Menu:addSubMenu("[Vayne] - Utility Settings", "Utility")
+        self.Menu.Utility:addSubMenu("Skin Changer", "skin")
+
+        self.Menu.Utility:addSubMenu("Potions", "Potions")
+            self.Menu.Utility.Potions:addParam("EnablePot", "Enable Auto Potions:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.Potions:addParam("EnableCPot", "Use Only in Combo Mode:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.Potions:addParam("EnableCKeyPot", "You Combo Mode Key:", SCRIPT_PARAM_ONKEYDOWN, false, 32)
+            self.Menu.Utility.Potions:addParam("PotMinHealth", "Health to Use Auto Potions:", SCRIPT_PARAM_SLICE, 25, 0, 100, 0)
+        
+        self.Menu.Utility:addSubMenu("RemoveCC Settings", "RemoveCC")
+            self.Menu.Utility.RemoveCC:addParam("EnableQSS", "Enable QSS:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.RemoveCC:addParam("QSSHumanizer", "Use Humanizer:", SCRIPT_PARAM_SLICE, 100, 0, 1000, 0)
+
+            self.Menu.Utility.RemoveCC:addParam("xxx", "", SCRIPT_PARAM_INFO, "")
+
+            self.Menu.Utility.RemoveCC:addParam("Stun", "Remove Stun:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.RemoveCC:addParam("Taunt", "Remove Taunt:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.RemoveCC:addParam("Root", "Remove Root:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.RemoveCC:addParam("Fear", "Remove Fear:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.RemoveCC:addParam("Charm", "Remove Charm:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.RemoveCC:addParam("Suppression", "Remove Suppression:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.RemoveCC:addParam("KnockUp", "Remove Knock-Up:", SCRIPT_PARAM_ONOFF, true)
+            
     self.Menu:addSubMenu("[Vayne] - Drawings", "Drawings")
         self.Menu.Drawings:addParam("DrawCircleAA", "Draw AA Range:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Drawings:addParam("DrawCircleE", "Draw E Range:", SCRIPT_PARAM_ONOFF, true)
@@ -221,10 +295,17 @@ function MyHeRoVayne:Loader()
     self.LastTarget = nil
     AddTickCallback(function() self:OnTick() end)
     AddDrawCallback(function() self:OnDraw() end)
+    AddUnloadCallback(function() self:OnUnload() end)
     AddProcessSpellCallback(function(unit, spell) self:OnProcessSpell(unit, spell) end)
     AddProcessAttackCallback(function(unit, spell) self:OnProcessAttack(unit, spell) end)
+    AddApplyBuffCallback(function(unit, source, buff) self:OnApplyBuff(unit, source, buff) end)
     AddUpdateBuffCallback(function(unit, buff, stacks) self:OnUpdateBuff(unit, buff, stacks) end)
     AddRemoveBuffCallback(function(unit, buff) self:OnRemoveBuff(unit, buff) end)
+end
+
+function MyHeRoVayne:OnUnload()
+    self.Menu.Utility.skin.changeSkin = false
+    SetSkin(myHero, -1)
 end
 
 function MyHeRoVayne:OnTick()
@@ -233,6 +314,64 @@ function MyHeRoVayne:OnTick()
     self:BilgeWater()
     self:CondemnStun()
     self:ComboREnemy()
+    self:BaseCheck()
+
+    if (self.Menu.Utility.Potions.EnablePot and not self.Menu.Utility.Potions.EnableCPot) then
+        self:AutoPotions()
+    elseif self.Menu.Utility.Potions.EnablePot and self.Menu.Utility.Potions.EnableCPot and self.Menu.Utility.Potions.EnableCKeyPot then
+        self:AutoPotions()
+    end
+end
+
+function MyHeRoVayne:SkinLoad()
+    self.Menu.Utility.skin:addParam('changeSkin', 'Change Skin', SCRIPT_PARAM_ONOFF, false)
+    self.Menu.Utility.skin:setCallback('changeSkin', function(nV)
+        if (nV) then
+            SetSkin(myHero, self.Menu.Utility.skin.skinID)
+        else
+            SetSkin(myHero, -1)
+        end
+    end)
+        self.Menu.Utility.skin:addParam('skinID', 'Skin', SCRIPT_PARAM_LIST, 1, self.SkinList)
+    self.Menu.Utility.skin:setCallback('skinID', function(nV)
+        if (self.Menu.Utility.skin.changeSkin) then
+            SetSkin(myHero, nV)
+        end
+    end)
+    
+    if (self.Menu.Utility.skin.changeSkin) then
+        SetSkin(myHero, self.Menu.Utility.skin.skinID)
+    end
+end
+
+function MyHeRoVayne:BaseCheck()
+    if not GetGame().map.index == 15 then return end
+    if myHero.team == 100 then
+        local DistanceDown = math.sqrt((myHero.x - self.xBase.x) * (myHero.x - self.xBase.x) + (myHero.z - self.xBase.z) * (myHero.z - self.xBase.z))
+        if DistanceDown < 900 then
+            F = true
+        else
+            F = false
+        end
+    elseif myHero.team == 200 then
+        local DistanceUp = math.sqrt((myHero.x - self.zBase.x) * (myHero.x - self.zBase.x) + (myHero.z - self.zBase.z) * (myHero.z - self.zBase.z))
+        if DistanceUp < 900 then
+            F = true
+        else
+            F = false
+        end
+    end
+end
+
+function MyHeRoVayne:AutoPotions()
+    if self.Menu.Utility.Potions.EnablePot and myHero.health / myHero.maxHealth * 100 <= self.Menu.Utility.Potions.PotMinHealth then
+        for _, item in pairs(self.PotList) do
+            item.slot = GetInventorySlotItem(item.id)
+            if item.slot ~= nil and (not F) and (not ActivePot) then
+                CastSpell(item.slot)
+            end
+        end
+    end
 end
 
 function MyHeRoVayne:BotRK()
@@ -305,6 +444,49 @@ function MyHeRoVayne:CheckModesActive(kMenu)
     end
 end
 
+function MyHeRoVayne:OnApplyBuff(unit, source, buff)
+    for i=1, 5 do
+        if (buff.name == self.PotNameBuff[i] and unit.isMe) then
+            ActivePot = true
+        end
+    end
+    if source and source.isMe then
+        if buff.name == "SummonerExhaust" and self.Menu.Utility.RemoveCC.Exhaust then
+            self:AutoQSS("Exhaust")
+        end
+        if buff.type == 5 and self.Menu.Utility.RemoveCC.Stun then
+            self:AutoQSS("Stun")
+        end
+        if buff.type == 8 and self.Menu.Utility.RemoveCC.Taunt then
+            self:AutoQSS("Taunt")
+        end
+        if buff.type == 10 and self.Menu.Utility.RemoveCC.Fear then
+            self:AutoQSS("Fear")
+        end
+        if buff.type == 11 and self.Menu.Utility.RemoveCC.Root then
+            self:AutoQSS("Root")
+        end
+        if buff.type == 21 and self.Menu.Utility.RemoveCC.Charm then
+            self:AutoQSS("Charm")
+        end
+        if buff.type == 24 and self.Menu.Utility.RemoveCC.Suppression then
+            self:AutoQSS("Suppression")
+        end
+        if buff.type == 29 and self.Menu.Utility.RemoveCC.KnockUp then
+            self:AutoQSS("KnockUp")
+        end
+    end
+end
+
+function MyHeRoVayne:AutoQSS(BuffType)
+    for _, item in pairs(self.QSSList) do
+        item.slot = GetInventorySlotItem(item.id)
+        if item.slot ~= nil and self.Menu.Utility.RemoveCC.EnableQSS then
+            DelayAction(function() CastSpell(item.slot) end, self.Menu.Utility.RemoveCC.QSSHumanizer/1000)
+        end
+    end
+end
+
 function MyHeRoVayne:OnUpdateBuff(unit, buff, stacks)
     if not unit or not buff then return end
     if buff.name:lower():find("vaynesilvereddebuff") then
@@ -316,6 +498,11 @@ function MyHeRoVayne:OnRemoveBuff(unit, buff)
     if not unit or not buff then return end
     if buff.name == "vaynesilvereddebuff" then
         self.W_Stacks[unit.networkID] = 0
+    end
+    for i=1, 5 do
+        if (buff.name == self.PotNameBuff[i] and unit.isMe) then
+            ActivePot = false
+        end
     end
 end
 
