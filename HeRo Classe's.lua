@@ -8,7 +8,7 @@ local SummonerSmite = nil
 local SummonerFlash = nil
 local SummonerM = nil
 
-_G.SSScriptVersion = {1.41, "1.41"}
+_G.SSScriptVersion = {1.42, "1.42"}
 _G.SSScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -213,6 +213,7 @@ function Smite:Global_Menu()
         else
             self.Menu.Smite:addParam("Dragon", "Use Smite on: Dragon", SCRIPT_PARAM_ONOFF, true)
             self.Menu.Smite:addParam("Baron", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Smite:addParam("RiftHerald", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
             self.Menu.Smite:addParam("Razorbeak", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, false)
             self.Menu.Smite:addParam("Murkwolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, false)
             self.Menu.Smite:addParam("Krug", "Use Smite on: Krug", SCRIPT_PARAM_ONOFF, false)
@@ -748,7 +749,7 @@ function Heal:Loader()
 end
 
 function Heal:OnTick()
-    if (self.Menu.Enable) then
+    if (self.Menu.Enable and not self.Menu.ComboEnable) then
         self:AutoHeal()
     elseif (self.Menu.Enable and self.Menu.ComboEnable and self.Menu.Key) then
         self:AutoHeal()
