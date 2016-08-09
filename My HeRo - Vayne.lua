@@ -1,7 +1,7 @@
 if myHero.charName ~= "Vayne" then return end
 
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.18, "1.18"}
+_G.VayneScriptVersion = {1.19, "1.19"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -39,11 +39,11 @@ function MyHeRoVayne:__init()
     self:Tables()
     self:Global_Menu()
     self.Menu.Utility.skin.changeSkin = false
+    self.Menu.Utility.LvLUp.Enable = false
     self:Loader()
     if VIP_USER then
-        self:SkinLoad() 
+        self:SkinLoad()
     end
-
 end
 
 function MyHeRoVayne:Tables()
@@ -104,6 +104,48 @@ function MyHeRoVayne:Tables()
         ['JhinR']                       = {true, Champ = 'Jhin',        spellKey = 'R'}
     }
 
+    self.Sequences = {
+        [0]             =   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        [1]             =   {_Q, _W, _E, _Q, _Q, _R, _Q, _W, _Q, _W, _R, _W, _W, _E, _E, _R, _E, _E}, 
+        [2]             =   {_Q, _E, _W, _Q, _Q, _R, _Q, _E, _Q, _E, _R, _E, _E, _W, _W, _R, _W, _W}, 
+        [3]             =   {_W, _Q, _E, _W, _W, _R, _W, _Q, _W, _Q, _R, _Q, _Q, _E, _E, _R, _E, _E}, 
+        [4]             =   {_W, _E, _Q, _W, _W, _R, _W, _E, _W, _E, _R, _E, _E, _Q, _Q, _R, _Q, _Q}, 
+        [5]             =   {_E, _Q, _W, _E, _E, _R, _E, _Q, _E, _Q, _R, _Q, _Q, _W, _W, _R, _W, _W}, 
+        [6]             =   {_E, _W, _Q, _E, _E, _R, _E, _W, _E, _W, _R, _W, _W, _Q, _Q, _R, _Q, _Q},
+        ["Vayne"]       =   {_Q, _W, _E, _W, _W, _R, _W, _Q, _W, _Q, _R, _Q, _Q, _E, _E, _R, _E, _E}
+    }
+
+    self.SequencesName = {
+        [0]             =   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        [1]             =   {"Q", "W", "E", "Q", "Q", "R", "Q", "W", "Q", "W", "R", "W", "W", "E", "E", "R", "E", "E"}, 
+        [2]             =   {"Q", "E", "W", "Q", "Q", "R", "Q", "E", "Q", "E", "R", "E", "E", "W", "W", "R", "W", "W"}, 
+        [3]             =   {"W", "Q", "E", "W", "W", "R", "W", "Q", "W", "Q", "R", "Q", "Q", "E", "E", "R", "E", "E"}, 
+        [4]             =   {"W", "E", "Q", "W", "W", "R", "W", "E", "W", "E", "R", "E", "E", "Q", "Q", "R", "Q", "Q"}, 
+        [5]             =   {"E", "Q", "W", "E", "E", "R", "E", "Q", "E", "Q", "R", "Q", "Q", "W", "W", "R", "W", "W"}, 
+        [6]             =   {"E", "W", "Q", "E", "E", "R", "E", "W", "E", "W", "R", "W", "W", "Q", "Q", "R", "Q", "Q"},
+        ["Vayne"]       =   {"Q", "W", "E", "W", "W", "R", "W", "Q", "W", "Q", "R", "Q", "Q", "E", "E", "R", "E", "E"}
+    }
+
+    self.SpellVarTable = {
+        "Q-W-E",  
+        "Q-E-W",  
+        "W-Q-E",  
+        "W-E-Q",  
+        "E-Q-W",  
+        "E-W-Q"
+    }
+
+    self.invul = {
+        "sionpassivezombie"
+    }
+
+    self.Skills = {
+        "Q", 
+        "W", 
+        "E", 
+        "R"
+    }
+
     self.PotList = {
         P_1 = {id = 2003, slot = nil},
         P_2 = {id = 2031, slot = nil},
@@ -149,6 +191,33 @@ function MyHeRoVayne:Tables()
         "Hextech", 
         "Classic"
     }
+    Smite = nil
+    Heal = nil
+    Barrier = nil
+    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSmite") then 
+        Smite = SUMMONER_1 
+    elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerSmite") then 
+        Smite = SUMMONER_2 
+    end
+    if Smite ~= nil then
+        self:Message("Auto Smite by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
+    end
+    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerHeal") then 
+        Heal = SUMMONER_1 
+    elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerHeal") then 
+        Heal = SUMMONER_2 
+    end
+    if Heal ~= nil then
+        self:Message("Auto Heal by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
+    end
+    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerBarrier") then 
+        Barrier = SUMMONER_1
+    elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerBarrier") then 
+        Barrier = SUMMONER_2 
+    end
+    if Barrier ~= nil then
+        self:Message("Auto Barrier by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
+    end
 end
 
 function MyHeRoVayne:Global_Menu()
@@ -159,6 +228,7 @@ function MyHeRoVayne:Global_Menu()
         self.Menu.Combo:addParam("ComboQ", "Use Q in Combo:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Combo:addParam("ComboR", "Use R in Combo:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Combo:addParam("ComboRRange", "Enemies in Range for R:", SCRIPT_PARAM_SLICE, 2, 0, 5, 0)
+        self.Menu.Combo:addParam("ComboRange", "Range for R:", SCRIPT_PARAM_SLICE, 1000, 500, 3000, 0)
         self.Menu.Combo:addSubMenu("Item usage:", "Items")
             self.Menu.Combo.Items:addParam("BOTRK", "Use BOTRK in Combo:", SCRIPT_PARAM_ONOFF, true)
             self.Menu.Combo.Items:addParam("BWC", "Use Bilgewater Cutlass in Combo:", SCRIPT_PARAM_ONOFF, true)
@@ -231,30 +301,92 @@ function MyHeRoVayne:Global_Menu()
     if not Foundinterrupt then self.Menu.Interrupt:addParam('nil','No Enemies to Interrupt found!', SCRIPT_PARAM_INFO, '') end
 
     self.Menu:addSubMenu("[Vayne] - Lane Clear", "LaneClear")
-        self.Menu.LaneClear:addParam("ClearKey", "Lane Clear Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("V"))
+        self.Menu.LaneClear:addParam("ClearKey", "Lane Clear Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
         self.Menu.LaneClear:addParam("ClearQ", "Use Q in Lane Clear:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.LaneClear:addParam("LaneClearMana", "Min mana % to use Q in Lane Clear:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
+    self.Menu:addSubMenu("[Vayne] - Jungle Clear", "JungleClear")
+        self.Menu.JungleClear:addParam("JClearKey", "Jungle Clear Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
+        self.Menu.JungleClear:addParam("JClearQ", "Use Q in Jungle Clear:", SCRIPT_PARAM_ONOFF, true)
+        self.Menu.JungleClear:addParam("JungleClearMana", "Min mana % to use Q:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
+
     self.Menu:addSubMenu("[Vayne] - Last Hit", "LastHit")
-        self.Menu.LastHit:addParam("LastHitKey", "Last Hit Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("V"))
+        self.Menu.LastHit:addParam("LastHitKey", "Last Hit Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("A"))
         self.Menu.LastHit:addParam("LastHitQ", "Use Q in Last Hit:", SCRIPT_PARAM_ONOFF, true)
-        self.Menu.LastHit:addParam("LastHitMana", "Min mana % to use Q in LastHit:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
+        self.Menu.LastHit:addParam("LastHitMana", "Min mana % to use Q:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
     self.Menu:addSubMenu("[Vayne] - Harass", "Harass")
         self.Menu.Harass:addParam("HarassKey", "Harass Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C"))
         self.Menu.Harass:addParam("BurstHarass", "Use Burst Harass (AA+Q+E):", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Harass:addParam("HarassQ", "Use Q in Harass:", SCRIPT_PARAM_ONOFF, true)
-        self.Menu.Harass:addParam("HarassMana", "Min mana % to use Q in Harass:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
+        self.Menu.Harass:addParam("HarassMana", "Min mana % to use Q:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
     self.Menu:addSubMenu("[Vayne] - Utility Settings", "Utility")
-        self.Menu.Utility:addSubMenu("Skin Changer", "skin")
+        if Smite ~= nil then
+        self.Menu.Utility:addSubMenu("Auto Smite", "Smite")
+            self.Menu.Utility.Smite:addParam("Enable", "Enable Auto Smite:", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("H"))
+            self.Menu.Utility.Smite:addParam("DrawSmiteRange", "Draw Smite Range:" , SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.Smite:addParam("DrawSmiteProcess", "Draw Smite Process:", SCRIPT_PARAM_ONOFF, true)
+            self.Menu.Utility.Smite:addParam("y", "", SCRIPT_PARAM_INFO, "")
+
+        self.Menu.Utility.Smite:addParam("z", "Smite Monsters:", SCRIPT_PARAM_INFO, "")
+
+        self.Menu.Utility.Smite:addParam("y", "", SCRIPT_PARAM_INFO, "")
+            if GetGame().map.shortName == "twistedTreeline" then
+                self.Menu.Utility.Smite:addParam("Wraith", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Smite:addParam("Golem", "Use Smite on: Golem", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Smite:addParam("Wolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Smite:addParam("Spiderboss", "Use Smite on: SpiderBoss", SCRIPT_PARAM_ONOFF, true)
+            else
+                self.Menu.Utility.Smite:addParam("Dragon", "Use Smite on: Dragon", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Smite:addParam("Baron", "Use Smite on: Baron", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Smite:addParam("RiftHerald", "Use Smite on: Rift Herald", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Smite:addParam("Razorbeak", "Use Smite on: Wraith", SCRIPT_PARAM_ONOFF, false)
+                self.Menu.Utility.Smite:addParam("Murkwolf", "Use Smite on: Wolf", SCRIPT_PARAM_ONOFF, false)
+                self.Menu.Utility.Smite:addParam("Krug", "Use Smite on: Krug", SCRIPT_PARAM_ONOFF, false)
+                self.Menu.Utility.Smite:addParam("Crab", "Use Smite on: Crab", SCRIPT_PARAM_ONOFF, false)
+                self.Menu.Utility.Smite:addParam("Gromp", "Use Smite on: Gromp", SCRIPT_PARAM_ONOFF, false)
+                self.Menu.Utility.Smite:addParam("Red", "Use Smite on: Red Buff", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Smite:addParam("Blue", "Use Smite on: Blue Buff", SCRIPT_PARAM_ONOFF, true)
+            end 
+        end
+
+        if VIP_USER then
+            self.Menu.Utility:addSubMenu("Skin Changer", "skin")
+
+            self.Menu.Utility:addSubMenu("Auto Level - Up", "LvLUp")
+                self.Menu.Utility.LvLUp:addParam("Enable", "Enable Auto Level - Up:", SCRIPT_PARAM_ONOFF, false)
+                self.Menu.Utility.LvLUp:addParam("Humanizer", "Use Humanizer:", SCRIPT_PARAM_SLICE, 100, 0, 1000, 0)
+                self.Menu.Utility.LvLUp:addParam("Mod", "Mode:", SCRIPT_PARAM_LIST, 1, {"Auto", "Manual"})
+                self.Menu.Utility.LvLUp:addParam("Level13", "Level 1-3:", SCRIPT_PARAM_LIST, 1, self.SpellVarTable)
+                self.Menu.Utility.LvLUp:addParam("Level418", "Level 4-18:", SCRIPT_PARAM_LIST, 1, self.SpellVarTable)
+        end
 
         self.Menu.Utility:addSubMenu("Potions", "Potions")
             self.Menu.Utility.Potions:addParam("EnablePot", "Enable Auto Potions:", SCRIPT_PARAM_ONOFF, true)
             self.Menu.Utility.Potions:addParam("EnableCPot", "Use Only in Combo Mode:", SCRIPT_PARAM_ONOFF, true)
             self.Menu.Utility.Potions:addParam("EnableCKeyPot", "You Combo Mode Key:", SCRIPT_PARAM_ONKEYDOWN, false, 32)
             self.Menu.Utility.Potions:addParam("PotMinHealth", "Health to Use Auto Potions:", SCRIPT_PARAM_SLICE, 25, 0, 100, 0)
-        
+
+        if Heal ~= nil then
+            self.Menu.Utility:addSubMenu("Auto Heal", "Heal")
+                self.Menu.Utility.Heal:addParam("Enable", "Enable Auto Heal:", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Heal:addParam("MinHealth", "Health to Use Auto Heal:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
+                self.Menu.Utility.Heal:addParam("ComboEnable", "Use only in Combo Mode:", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Heal:addParam("Key", "You Combo Mode Key:", SCRIPT_PARAM_ONKEYDOWN, false, 32)
+                self.Menu.Utility.Heal:addParam("AllyHeal", "Use on Ally:", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Heal:addParam("AllyMinHealth", "Ally Health to Use Auto Heal:", SCRIPT_PARAM_SLICE, 10, 0, 100, 0)
+                self.Menu.Utility.Heal:addParam("Draw", "Enable Heal Range Draw:", SCRIPT_PARAM_ONOFF, true)
+        end
+
+        if Barrier ~= nil then
+            self.Menu.Utility:addSubMenu("Auto Barrier", "Barrier")
+                self.Menu.Utility.Barrier:addParam("Enable", "Enable Auto Barrier:", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Barrier:addParam("MinHealth", "Health to Use Auto Barrier:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
+                self.Menu.Utility.Barrier:addParam("ComboEnable", "Use only in Combo Mode:", SCRIPT_PARAM_ONOFF, true)
+                self.Menu.Utility.Barrier:addParam("Key", "You Combo Mode Key:", SCRIPT_PARAM_ONKEYDOWN, false, 32)
+        end
+                
         self.Menu.Utility:addSubMenu("RemoveCC Settings", "RemoveCC")
             self.Menu.Utility.RemoveCC:addParam("EnableQSS", "Enable QSS:", SCRIPT_PARAM_ONOFF, true)
             self.Menu.Utility.RemoveCC:addParam("QSSHumanizer", "Use Humanizer:", SCRIPT_PARAM_SLICE, 100, 0, 1000, 0)
@@ -289,10 +421,14 @@ end
 
 function MyHeRoVayne:Loader()
     self.W_Stacks = {}
-    for _, v in ipairs(GetEnemyHeroes()) do
-        self.W_Stacks[v.networkID] = 0
-    end
     self.LastTarget = nil
+    self.LastLevel = 0
+    self.F = false
+    self.ActivePot = false
+    self.NoHealSpamMsg = 0
+    self.NoBarrierSpamMsg = 0
+    AddTickCallback(function() self:OnTick() end)
+    AddDrawCallback(function() self:OnDraw() end)
     AddTickCallback(function() self:OnTick() end)
     AddDrawCallback(function() self:OnDraw() end)
     AddUnloadCallback(function() self:OnUnload() end)
@@ -304,22 +440,176 @@ function MyHeRoVayne:Loader()
 end
 
 function MyHeRoVayne:OnUnload()
-    self.Menu.Utility.skin.changeSkin = false
     SetSkin(myHero, -1)
 end
 
 function MyHeRoVayne:OnTick()
     ts:update()
-    self:BotRK()
-    self:BilgeWater()
     self:CondemnStun()
     self:ComboREnemy()
     self:BaseCheck()
+    self:CastItems()
+    self:LevelUpSpell()
+
+    if Heal ~= nil then
+        self:AutoHealDetect()
+    end
+
+    if Barrier ~= nil then
+        self:AutoBarrierDetect()
+    end
+
+    if Smite ~= nil then
+        self:AutoSmite()
+    end
 
     if (self.Menu.Utility.Potions.EnablePot and not self.Menu.Utility.Potions.EnableCPot) then
         self:AutoPotions()
     elseif self.Menu.Utility.Potions.EnablePot and self.Menu.Utility.Potions.EnableCPot and self.Menu.Utility.Potions.EnableCKeyPot then
         self:AutoPotions()
+    end
+end
+
+function MyHeRoVayne:AutoBarrierDetect()
+    if (self.Menu.Utility.Barrier.Enable and not self.Menu.Utility.Barrier.ComboEnable) then
+        self:AutoBarrier()
+    elseif self.Menu.Utility.Barrier.Enable and self.Menu.Utility.Barrier.ComboEnable and self.Menu.Utility.Barrier.Key then
+        self:AutoBarrier()
+    end
+end
+
+function MyHeRoVayne:AutoBarrier()
+    if Barrier == nil then return end
+    if ((myHero.health*100)/myHero.maxHealth) <= self.Menu.Utility.Barrier.MinHealth and myHero:CanUseSpell(Barrier) == READY then
+        CastSpell(Barrier)
+        if os.clock() - self.NoBarrierSpamMsg > 2 then
+            self.NoBarrierSpamMsg = os.clock()
+            self:Message("Barrier Casted on: Yourself!", 0)
+        end
+    end
+end
+
+function MyHeRoVayne:AutoHealDetect()
+    if (self.Menu.Utility.Heal.Enable) then
+        self:AutoHeal()
+    elseif (self.Menu.Utility.Heal.Enable and self.Menu.Utility.Heal.ComboEnable and self.Menu.Utility.Heal.Key) then
+        self:AutoHeal()
+    end
+    if (self.Menu.Utility.Heal.Enable and self.Menu.Utility.Heal.AllyHeal) then
+        self:AllyAutoHeal()
+    end
+end
+
+function MyHeRoVayne:CheckFail(unit)
+    for i, buff in pairs(self.invul) do
+        if TargetHaveBuff(buff, unit) then
+            return true
+        end
+    end
+    return false
+end
+
+function MyHeRoVayne:AutoHeal()
+    if Heal == nil then return end
+    if ((myHero.health*100)/myHero.maxHealth) <= self.Menu.Utility.Heal.MinHealth and myHero:CanUseSpell(Heal) == READY then
+        CastSpell(Heal)
+        if os.clock() - self.NoHealSpamMsg > 2 then
+            self.NoHealSpamMsg = os.clock()
+            self:Message("Heal Casted on: Yourself!", 0)
+        end
+    end
+end
+
+function MyHeRoVayne:AllyAutoHeal()
+    for k, ally in pairs(GetAllyHeroes()) do
+        if not ally.dead and ally.visible and not self:CheckFail(ally) then
+            if Heal ~= nil and GetDistance(myHero, ally) <= 840 and myHero:CanUseSpell(Heal) == READY then
+                if ((ally.health*100)/ally.maxHealth) <= self.Menu.Utility.Heal.AllyMinHealth and not ally.dead then
+                    CastSpell(Heal)
+                    if os.clock() - self.NoHealSpamMsg > 2 then
+                        self.NoHealSpamMsg = os.clock()
+                        self:Message("Heal", "Heal Casted on: "..ally.charName.."!", 0)
+                    end
+                end
+            end
+        end
+    end
+end
+
+function MyHeRoVayne:LevelUpSpell()
+    if VIP_USER and self.Menu.Utility.LvLUp.Enable then
+        if (self.LastLevel < myHero.level) then
+            self:LevelUp()
+        end
+    end
+end
+
+function MyHeRoVayne:LevelUp()
+    if self.Menu.Utility.LvLUp.Enable then
+        if self.Menu.Utility.LvLUp.Mod == 1 then
+            self.Sequence = self.Sequences[myHero.charName]
+            self.SequenceName = self.SequencesName[myHero.charName]
+        elseif myHero.level < 4 then
+            self.Sequence = self.Sequences[self.Menu.Utility.LvLUp.Level13]
+            self.SequenceName = self.SequencesName[self.Menu.Utility.LvLUp.Level13]
+        else
+            self.Sequence = self.Sequences[self.Menu.Utility.LvLUp.Level418]
+            self.SequenceName = self.SequencesName[self.Menu.Utility.LvLUp.Level418]
+        end
+            
+        DelayAction(function() LevelSpell(self.Sequence[myHero.level]) end, self.Menu.Utility.LvLUp.Humanizer/1000)
+        
+        if myHero.level < 18 then
+            self:Message("This Level: "..self.SequenceName[myHero.level].." ===> Next Level: "..self.SequenceName[myHero.level + 1], 0)
+        end     
+        self.LastLevel = myHero.level
+    end
+end
+
+function MyHeRoVayne:GetSmiteDamage()
+    self.level = myHero.level
+    return math.max(20 * self.level + 370, 30 * self.level + 330, 40 * self.level + 240, 50 * self.level + 100)
+end
+
+function MyHeRoVayne:AutoSmite()
+    if Smite ~= nil then
+        SmiteDmg = self:GetSmiteDamage()
+        for _, jminions in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
+            if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
+                    local name = jminions.charName
+                    local name = name:sub(name:find("_")+1, name:len())
+                    local name = name:sub(1, (name:find("_") or name:len()+1)-1)
+                    if self.Menu.Utility.Smite[name] then
+                    if myHero:CanUseSpell(Smite) == READY and GetDistance(myHero, jminions) <= 560 and SmiteDmg >= jminions.health then
+                        CastSpell(Smite, jminions)
+                    end
+                end
+            end
+        end
+    end
+end
+
+function MyHeRoVayne:DrawSmiteable()
+    if Smite ~= nil then
+        if (not myHero.dead and myHero:CanUseSpell(Smite) == READY) then
+            SmiteDmg = self:GetSmiteDamage()
+            for _, jminion in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
+                if not jminion.dead and jminion.visible and ValidTarget(jminion, 560) then
+                    local name = jminion.charName
+                    local name = name:sub(name:find("_")+1, name:len())
+                    local name = name:sub(1, (name:find("_") or name:len()+1)-1)
+                    if self.Menu.Utility.Smite[name] then
+                        posMinion = WorldToScreen(D3DXVECTOR3(jminion.x, jminion.y, jminion.z))
+                        SmiteProcess = math.round(100 - 100 * (jminion.health - SmiteDmg)/jminion.maxHealth)
+                        if GetDistance(myHero, jminion) <= 560 then
+                            DrawText("Smite Process - "..SmiteProcess.."%", 20, posMinion.x - GetTextArea("Smite Process - "..SmiteProcess.."%", 20).x/2, posMinion.y, ARGB(255,255,0,0))
+                            DrawCircle(jminion.x, jminion.y, jminion.z, 1.5 * SmiteProcess, ARGB(255, 255 * (1 - SmiteProcess/100), 255 * SmiteProcess/100, 255*(1 - SmiteProcess/100)))
+                            DrawCircle(jminion.x, jminion.y, jminion.z, 150, ARGB(55, 55, 155, 55))
+                        end
+                    end
+                end
+            end
+        end
     end
 end
 
@@ -349,16 +639,16 @@ function MyHeRoVayne:BaseCheck()
     if myHero.team == 100 then
         local DistanceDown = math.sqrt((myHero.x - self.xBase.x) * (myHero.x - self.xBase.x) + (myHero.z - self.xBase.z) * (myHero.z - self.xBase.z))
         if DistanceDown < 900 then
-            F = true
+            self.F = true
         else
-            F = false
+            self.F = false
         end
     elseif myHero.team == 200 then
         local DistanceUp = math.sqrt((myHero.x - self.zBase.x) * (myHero.x - self.zBase.x) + (myHero.z - self.zBase.z) * (myHero.z - self.zBase.z))
         if DistanceUp < 900 then
-            F = true
+            self.F = true
         else
-            F = false
+            self.F = false
         end
     end
 end
@@ -367,10 +657,18 @@ function MyHeRoVayne:AutoPotions()
     if self.Menu.Utility.Potions.EnablePot and myHero.health / myHero.maxHealth * 100 <= self.Menu.Utility.Potions.PotMinHealth then
         for _, item in pairs(self.PotList) do
             item.slot = GetInventorySlotItem(item.id)
-            if item.slot ~= nil and (not F) and (not ActivePot) then
+            if item.slot ~= nil and (not self.F) and (not self.ActivePot) then
                 CastSpell(item.slot)
             end
         end
+    end
+end
+
+function MyHeRoVayne:CastItems()
+    if self.Menu.Combo.ComboKey then
+        self:BotRK()
+        self:BilgeWater()
+        self:Youmuus()
     end
 end
 
@@ -419,7 +717,7 @@ function MyHeRoVayne:CountEnemy(range, object)
 end
 
 function MyHeRoVayne:ComboREnemy()
-    if self:CountEnemy(1000, myHero) >= self.Menu.Combo.ComboRRange then
+    if self:CountEnemy(self.Menu.Combo.ComboRange, myHero) >= self.Menu.Combo.ComboRRange then
         if self.Menu.Combo.ComboKey then
             if myHero:CanUseSpell(_R) == READY then
                 CastSpell(_R)
@@ -447,7 +745,7 @@ end
 function MyHeRoVayne:OnApplyBuff(unit, source, buff)
     for i=1, 5 do
         if (buff.name == self.PotNameBuff[i] and unit.isMe) then
-            ActivePot = true
+            self.ActivePot = true
         end
     end
     if source and source.isMe then
@@ -489,19 +787,20 @@ end
 
 function MyHeRoVayne:OnUpdateBuff(unit, buff, stacks)
     if not unit or not buff then return end
-    if buff.name:lower():find("vaynesilvereddebuff") then
+    if buff.name:lower():find("vaynesilvereddebuff") and unit.type == myHero.type and GetDistance(unit) < 1500 then
         self.W_Stacks[unit.networkID] = stacks
+        print(unit.charName.." Have "..self.W_Stacks[unit.networkID])
     end
 end
 
 function MyHeRoVayne:OnRemoveBuff(unit, buff)
     if not unit or not buff then return end
-    if buff.name == "vaynesilvereddebuff" then
+    if buff.name == "vaynesilvereddebuff" and unit.type == myHero.type and GetDistance(unit) < 1500  then
         self.W_Stacks[unit.networkID] = 0
     end
     for i=1, 5 do
         if (buff.name == self.PotNameBuff[i] and unit.isMe) then
-            ActivePot = false
+            self.ActivePot = false
         end
     end
 end
@@ -509,29 +808,32 @@ end
 function MyHeRoVayne:OnProcessAttack(unit, spell)
 
     if unit.isMe and spell.name:lower():find("attack") then
+        SpellTarget = spell.target
         if self.Menu.Combo.ComboKey and self.Menu.Combo.ComboQ then
-            SpellTarget = spell.target
             if SpellTarget.type == myHero.type and myHero:CanUseSpell(_Q) == READY then
                 CastSpell(_Q, mousePos.x, mousePos.z)
             end
         end
 
-        if self.Menu.Harass.HarassQ and (not self.Menu.Harass.BurstHarass) and self.Menu.Harass.HarassKey and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01)) then
-            SpellTarget = spell.target
+        if self.Menu.Harass.HarassQ and (not self.Menu.Harass.BurstHarass or not myHero:CanUseSpell(_E) == READY) and self.Menu.Harass.HarassKey and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01)) then
             if (SpellTarget.type ~= myHero.type) or (SpellTarget.type == myHero.type) and myHero:CanUseSpell(_Q) == READY then
                 CastSpell(_Q, mousePos.x, mousePos.z)
             end
         end
 
         if self.Menu.LaneClear.ClearQ and self.Menu.LaneClear.ClearKey and myHero.mana >= (myHero.maxMana*(self.Menu.LaneClear.LaneClearMana*0.01)) then
-            SpellTarget = spell.target
-            if SpellTarget.type ~= myHero.type and myHero:CanUseSpell(_Q) == READY then
+            if (SpellTarget.type ~= myHero.type) or (SpellTarget.type == myHero.type) and myHero:CanUseSpell(_Q) == READY then
                 CastSpell(_Q, mousePos.x, mousePos.z)
             end
         end
 
-        if self.Menu.Harass.HarassKey and self.Menu.Harass.BurstHarass and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01))then
-            SpellTarget = spell.target
+        if self.Menu.JungleClear.JClearQ and self.Menu.JungleClear.JClearKey and myHero.mana >= (myHero.maxMana*(self.Menu.JungleClear.JungleClearMana*0.01)) then
+            if (SpellTarget.type ~= myHero.type) or (SpellTarget.type == myHero.type) and myHero:CanUseSpell(_Q) == READY then
+                CastSpell(_Q, mousePos.x, mousePos.z)
+            end
+        end
+
+        if self.Menu.Harass.HarassKey and self.Menu.Harass.BurstHarass and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01)) then
             self.W_Stacks[SpellTarget.networkID] = 1
             if SpellTarget.type == myHero.type then
                 CastSpell(_Q, mousePos.x, mousePos.z)
@@ -574,6 +876,19 @@ function MyHeRoVayne:OnDraw()
     end
     if self.Menu.Drawings.DrawCircleAA then
         _G.VayneDrawFPSCircle(myHero.x, myHero.z, 620, RGB(0, 255, 0), self.Menu.Drawings.Quality)
+    end
+    if Smite ~= nil then
+        if self.Menu.Utility.Smite.DrawSmiteProcess then
+            self:DrawSmiteable()
+        end
+        if self.Menu.Utility.Smite.DrawSmiteRange and myHero:CanUseSpell(Smite) then
+            _G.VayneDrawFPSCircle(myHero.x, myHero.z, 560, ARGB(255, 100, 100, 80), self.Menu.Drawings.Quality)
+        end
+    end
+    if Heal ~= nil then
+        if self.Menu.Utility.Heal.Draw and myHero:CanUseSpell(Heal) == READY then
+            _G.VayneDrawFPSCircle(myHero.x, myHero.z, 840, RGB(0, 153, 0), self.Menu.Drawings.Quality)
+        end
     end
 end
 
