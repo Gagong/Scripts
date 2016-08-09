@@ -35,6 +35,30 @@ class("MyHeRoVayne")
 function MyHeRoVayne:__init()
 
     self:Message("Loaded!", 3)
+    self.Smite = false
+    self.Heal = false
+    self.Barrier = false
+    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSmite") then 
+        SummonerSmite = SUMMONER_1 
+        self.Smite = true 
+    elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerSmite") then 
+        SummonerSmite = SUMMONER_2 
+        self.Smite = true 
+    end
+    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerHeal") then 
+        SummonerHeal = SUMMONER_1 
+        self.Heal = true
+    elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerHeal") then 
+        SummonerHeal = SUMMONER_2 
+        self.Heal = true
+    end
+    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerBarrier") then 
+        SummonerBarrier = SUMMONER_1
+        self.Barrier = true
+    elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerBarrier") then 
+        SummonerBarrier = SUMMONER_2 
+        self.Barrier = true
+    end
     ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_PHYSICAL)
     self:Tables()
     self:Global_Menu()
@@ -191,33 +215,6 @@ function MyHeRoVayne:Tables()
         "Hextech", 
         "Classic"
     }
-    Smite = nil
-    Heal = nil
-    Barrier = nil
-    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSmite") then 
-        Smite = SUMMONER_1 
-    elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerSmite") then 
-        Smite = SUMMONER_2 
-    end
-    if Smite ~= nil then
-        self:Message("Auto Smite by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
-    end
-    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerHeal") then 
-        Heal = SUMMONER_1 
-    elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerHeal") then 
-        Heal = SUMMONER_2 
-    end
-    if Heal ~= nil then
-        self:Message("Auto Heal by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
-    end
-    if myHero:GetSpellData(SUMMONER_1).name:find("SummonerBarrier") then 
-        Barrier = SUMMONER_1
-    elseif myHero:GetSpellData(SUMMONER_2).name:find("SummonerBarrier") then 
-        Barrier = SUMMONER_2 
-    end
-    if Barrier ~= nil then
-        self:Message("Auto Barrier by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
-    end
 end
 
 function MyHeRoVayne:Global_Menu()
@@ -322,7 +319,8 @@ function MyHeRoVayne:Global_Menu()
         self.Menu.Harass:addParam("HarassMana", "Min mana % to use Q:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
     self.Menu:addSubMenu("[Vayne] - Utility Settings", "Utility")
-        if Smite ~= nil then
+        if self.Smite then
+            self:Message("Auto Smite by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
         self.Menu.Utility:addSubMenu("Auto Smite", "Smite")
             self.Menu.Utility.Smite:addParam("Enable", "Enable Auto Smite:", SCRIPT_PARAM_ONKEYTOGGLE, true, string.byte("H"))
             self.Menu.Utility.Smite:addParam("DrawSmiteRange", "Draw Smite Range:" , SCRIPT_PARAM_ONOFF, true)
@@ -368,7 +366,8 @@ function MyHeRoVayne:Global_Menu()
             self.Menu.Utility.Potions:addParam("EnableCKeyPot", "You Combo Mode Key:", SCRIPT_PARAM_ONKEYDOWN, false, 32)
             self.Menu.Utility.Potions:addParam("PotMinHealth", "Health to Use Auto Potions:", SCRIPT_PARAM_SLICE, 25, 0, 100, 0)
 
-        if Heal ~= nil then
+        if self.Heal then
+            self:Message("Auto Heal by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
             self.Menu.Utility:addSubMenu("Auto Heal", "Heal")
                 self.Menu.Utility.Heal:addParam("Enable", "Enable Auto Heal:", SCRIPT_PARAM_ONOFF, true)
                 self.Menu.Utility.Heal:addParam("MinHealth", "Health to Use Auto Heal:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
@@ -379,7 +378,8 @@ function MyHeRoVayne:Global_Menu()
                 self.Menu.Utility.Heal:addParam("Draw", "Enable Heal Range Draw:", SCRIPT_PARAM_ONOFF, true)
         end
 
-        if Barrier ~= nil then
+        if self.Heal then
+            self:Message("Auto Barrier by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
             self.Menu.Utility:addSubMenu("Auto Barrier", "Barrier")
                 self.Menu.Utility.Barrier:addParam("Enable", "Enable Auto Barrier:", SCRIPT_PARAM_ONOFF, true)
                 self.Menu.Utility.Barrier:addParam("MinHealth", "Health to Use Auto Barrier:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
@@ -451,15 +451,15 @@ function MyHeRoVayne:OnTick()
     self:CastItems()
     self:LevelUpSpell()
 
-    if Heal ~= nil then
+    if self.Heal then
         self:AutoHealDetect()
     end
 
-    if Barrier ~= nil then
+    if self.Barrier then
         self:AutoBarrierDetect()
     end
 
-    if Smite ~= nil then
+    if self.Smite then
         self:AutoSmite()
     end
 
@@ -479,9 +479,9 @@ function MyHeRoVayne:AutoBarrierDetect()
 end
 
 function MyHeRoVayne:AutoBarrier()
-    if Barrier == nil then return end
-    if ((myHero.health*100)/myHero.maxHealth) <= self.Menu.Utility.Barrier.MinHealth and myHero:CanUseSpell(Barrier) == READY then
-        CastSpell(Barrier)
+    if SummonerBarrier == nil then return end
+    if ((myHero.health*100)/myHero.maxHealth) <= self.Menu.Utility.Barrier.MinHealth and myHero:CanUseSpell(SummonerBarrier) == READY then
+        CastSpell(SummonerBarrier)
         if os.clock() - self.NoBarrierSpamMsg > 2 then
             self.NoBarrierSpamMsg = os.clock()
             self:Message("Barrier Casted on: Yourself!", 0)
@@ -490,7 +490,7 @@ function MyHeRoVayne:AutoBarrier()
 end
 
 function MyHeRoVayne:AutoHealDetect()
-    if (self.Menu.Utility.Heal.Enable) then
+    if (self.Menu.Utility.Heal.Enable and not self.Menu.Utility.Heal.ComboEnable) then
         self:AutoHeal()
     elseif (self.Menu.Utility.Heal.Enable and self.Menu.Utility.Heal.ComboEnable and self.Menu.Utility.Heal.Key) then
         self:AutoHeal()
@@ -510,9 +510,9 @@ function MyHeRoVayne:CheckFail(unit)
 end
 
 function MyHeRoVayne:AutoHeal()
-    if Heal == nil then return end
-    if ((myHero.health*100)/myHero.maxHealth) <= self.Menu.Utility.Heal.MinHealth and myHero:CanUseSpell(Heal) == READY then
-        CastSpell(Heal)
+    if SummonerHeal == nil then return end
+    if ((myHero.health*100)/myHero.maxHealth) <= self.Menu.Utility.Heal.MinHealth and myHero:CanUseSpell(SummonerHeal) == READY then
+        CastSpell(SummonerHeal)
         if os.clock() - self.NoHealSpamMsg > 2 then
             self.NoHealSpamMsg = os.clock()
             self:Message("Heal Casted on: Yourself!", 0)
@@ -523,9 +523,9 @@ end
 function MyHeRoVayne:AllyAutoHeal()
     for k, ally in pairs(GetAllyHeroes()) do
         if not ally.dead and ally.visible and not self:CheckFail(ally) then
-            if Heal ~= nil and GetDistance(myHero, ally) <= 840 and myHero:CanUseSpell(Heal) == READY then
+            if Heal ~= nil and GetDistance(myHero, ally) <= 840 and myHero:CanUseSpell(SummonerHeal) == READY then
                 if ((ally.health*100)/ally.maxHealth) <= self.Menu.Utility.Heal.AllyMinHealth and not ally.dead then
-                    CastSpell(Heal)
+                    CastSpell(SummonerHeal)
                     if os.clock() - self.NoHealSpamMsg > 2 then
                         self.NoHealSpamMsg = os.clock()
                         self:Message("Heal", "Heal Casted on: "..ally.charName.."!", 0)
@@ -572,7 +572,7 @@ function MyHeRoVayne:GetSmiteDamage()
 end
 
 function MyHeRoVayne:AutoSmite()
-    if Smite ~= nil then
+    if SummonerSmite ~= nil then
         SmiteDmg = self:GetSmiteDamage()
         for _, jminions in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
             if not jminions.dead and jminions.visible and ValidTarget(jminions, 560) then
@@ -580,8 +580,8 @@ function MyHeRoVayne:AutoSmite()
                     local name = name:sub(name:find("_")+1, name:len())
                     local name = name:sub(1, (name:find("_") or name:len()+1)-1)
                     if self.Menu.Utility.Smite[name] then
-                    if myHero:CanUseSpell(Smite) == READY and GetDistance(myHero, jminions) <= 560 and SmiteDmg >= jminions.health then
-                        CastSpell(Smite, jminions)
+                    if myHero:CanUseSpell(SummonerSmite) == READY and GetDistance(myHero, jminions) <= 560 and SmiteDmg >= jminions.health then
+                        CastSpell(SummonerSmite, jminions)
                     end
                 end
             end
@@ -590,8 +590,8 @@ function MyHeRoVayne:AutoSmite()
 end
 
 function MyHeRoVayne:DrawSmiteable()
-    if Smite ~= nil then
-        if (not myHero.dead and myHero:CanUseSpell(Smite) == READY) then
+    if SummonerSmite ~= nil then
+        if (not myHero.dead and myHero:CanUseSpell(SummonerSmite) == READY) then
             SmiteDmg = self:GetSmiteDamage()
             for _, jminion in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
                 if not jminion.dead and jminion.visible and ValidTarget(jminion, 560) then
@@ -877,16 +877,16 @@ function MyHeRoVayne:OnDraw()
     if self.Menu.Drawings.DrawCircleAA then
         _G.VayneDrawFPSCircle(myHero.x, myHero.z, 620, RGB(0, 255, 0), self.Menu.Drawings.Quality)
     end
-    if Smite ~= nil then
+    if SummonerSmite ~= nil then
         if self.Menu.Utility.Smite.DrawSmiteProcess then
             self:DrawSmiteable()
         end
-        if self.Menu.Utility.Smite.DrawSmiteRange and myHero:CanUseSpell(Smite) then
+        if self.Menu.Utility.Smite.DrawSmiteRange and myHero:CanUseSpell(SummonerSmite) then
             _G.VayneDrawFPSCircle(myHero.x, myHero.z, 560, ARGB(255, 100, 100, 80), self.Menu.Drawings.Quality)
         end
     end
-    if Heal ~= nil then
-        if self.Menu.Utility.Heal.Draw and myHero:CanUseSpell(Heal) == READY then
+    if SummonerHeal ~= nil then
+        if self.Menu.Utility.Heal.Draw and myHero:CanUseSpell(SummonerHeal) == READY then
             _G.VayneDrawFPSCircle(myHero.x, myHero.z, 840, RGB(0, 153, 0), self.Menu.Drawings.Quality)
         end
     end
