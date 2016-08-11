@@ -1,7 +1,7 @@
 if myHero.charName ~= "Vayne" then return end
 
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.20, "1.20"}
+_G.VayneScriptVersion = {1.21, "1.21"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -9,35 +9,20 @@ assert(load(Base64Decode("G0x1YVIAAQQEBAgAGZMNChoKAAAAAAAAAAAAAQQfAAAAAwAAAEQAAA
 TrackerLoad("SthOtiPosir5RwpV")
 -- BoL Tools Tracker --
 
-function OnLoad()
-    require 'VPrediction'
-    VP = VPrediction()
-
-    local ToUpdate = {}
-    ToUpdate.Version = _G.VayneScriptVersion[1]
-    ToUpdate.UseHttps = true
-    ToUpdate.Host = "raw.githubusercontent.com"
-    ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/My%20HeRo%20-%20Vayne.version"
-    ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/My%20HeRo%20-%20Vayne.lua"
-    ToUpdate.SavePath = SCRIPT_PATH.."/My HeRo - Vayne.lua"
-    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: "..NewVersion.."</font></b>") end
-    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: No Updates Found!</font></b>") end
-    ToUpdate.CallbackNewVersion = function(NewVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: New Version Found ("..NewVersion.."). Please wait until it's Downloaded!</font></b>") end
-    ToUpdate.CallbackError = function(NewVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: Error while Downloading! Please try again!</font></b>") end
-    ScriptUpdate(ToUpdate.Version, ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate, ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion, ToUpdate.CallbackError)
-    
+function OnLoad() 
     MyHeRoVayne()
-
 end
 
 class("MyHeRoVayne")
 
 function MyHeRoVayne:__init()
 
+    self:AutoUpdater()
     self:Message("Loaded!", 3)
     self.Smite = false
     self.Heal = false
     self.Barrier = false
+    self:LoadLib()
     if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSmite") then 
         SummonerSmite = SUMMONER_1 
         self.Smite = true 
@@ -64,9 +49,56 @@ function MyHeRoVayne:__init()
     self:Global_Menu()
     self.Menu.Utility.skin.changeSkin = false
     self.Menu.Utility.LvLUp.Enable = false
+    self.Menu.LaneClear.ClearKey = false
+    self.Menu.JungleClear.JClearKey = false
     self:Loader()
     if VIP_USER then
         self:SkinLoad()
+    end
+end
+
+function MyHeRoVayne:AutoUpdater()
+    local ToUpdate = {}
+    ToUpdate.Version = _G.VayneScriptVersion[1]
+    ToUpdate.UseHttps = true
+    ToUpdate.Host = "raw.githubusercontent.com"
+    ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/My%20HeRo%20-%20Vayne.version"
+    ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/My%20HeRo%20-%20Vayne.lua"
+    ToUpdate.SavePath = SCRIPT_PATH.."/My HeRo - Vayne.lua"
+    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: "..NewVersion.."</font></b>") end
+    ToUpdate.CallbackNoUpdate = function(OldVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: No Updates Found!</font></b>") end
+    ToUpdate.CallbackNewVersion = function(NewVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: New Version Found ("..NewVersion.."). Please wait until it's Downloaded!</font></b>") end
+    ToUpdate.CallbackError = function(NewVersion) print("<b><font color=\"#6A56EB\">[</font><font color=\"#F7CB72\">My HeRo - </font> <font color=\"#F7CB72\">Vayne</font><font color=\"#c0392b\"></font><font color=\"#27ae60\"></font><font color=\"#6A56EB\">]</font><font color=\"#FFCCE5\">: Error while Downloading! Please try again!</font></b>") end
+    ScriptUpdate(ToUpdate.Version, ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate, ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion, ToUpdate.CallbackError)
+end
+
+function MyHeRoVayne:LoadLib()
+    self.CPSPath = LIB_PATH.."CustomPermaShow.lua"
+    if not FileExist(self.CPSPath) then
+        self:Message("Custom Perma Show not found, wait Download...", 0)
+        self.CPSHost = "raw.github.com"
+        self.CPSWebPath = "Superx321/BoL/master/common/CustomPermaShow.lua".."?rand="..math.random(1,10000)
+        DownloadFile("https://"..self.CPSHost..self.CPSWebPath, self.CPSPath, function ()  end)
+        DelayAction(function() require("CustomPermaShow") end, 5)
+        self:Message("Custom Perma Show Downloaded and Loaded!", 5)
+    else
+        require("CustomPermaShow")
+        self:Message("Custom Perma Show Found!", 5)
+    end
+
+    self.VPPath = LIB_PATH.."CustomPermaShow.lua"
+    if not FileExist(self.VPPath) then
+        self:Message("VPrediction not found, wait Download...", 0)
+        self.VPHost = "raw.github.com"
+        self.VPWebPath = "Superx321/BoL/master/common/CustomPermaShow.lua".."?rand="..math.random(1,10000)
+        DownloadFile("https://"..self.VPHost..self.VPWebPath, self.VPPath, function ()  end)
+        DelayAction(function() require("VPrediction") end, 5)
+        self.VP = VPrediction()
+        self:Message("VPrediction Downloaded and Loaded!", 5)
+    else
+        require("VPrediction")
+        self.VP = VPrediction()
+        self:Message("VPrediction found!", 5)
     end
 end
 
@@ -306,7 +338,7 @@ function MyHeRoVayne:Global_Menu()
     self.Menu:addSubMenu("[Vayne] - Lane Clear", "LaneClear")
         self.Menu.LaneClear:addParam("ClearKey", "Lane Clear Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
         self.Menu.LaneClear:addParam("ClearQ", "Use Q in Lane Clear:", SCRIPT_PARAM_ONOFF, true)
-        self.Menu.LaneClear:addParam("LaneClearMana", "Min mana % to use Q in Lane Clear:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
+        self.Menu.LaneClear:addParam("LaneClearMana", "Min mana % to use Q:", SCRIPT_PARAM_SLICE, 20, 0, 100, 0)
 
     self.Menu:addSubMenu("[Vayne] - Jungle Clear", "JungleClear")
         self.Menu.JungleClear:addParam("JClearKey", "Jungle Clear Key:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
@@ -451,6 +483,7 @@ end
 
 function MyHeRoVayne:OnTick()
     ts:update()
+    self:PermaShow()
     self:CondemnStun()
     self:ComboREnemy()
     self:BaseCheck()
@@ -473,6 +506,21 @@ function MyHeRoVayne:OnTick()
         self:AutoPotions()
     elseif self.Menu.Utility.Potions.EnablePot and self.Menu.Utility.Potions.EnableCPot and self.Menu.Utility.Potions.EnableCKeyPot then
         self:AutoPotions()
+    end
+end
+
+function MyHeRoVayne:PermaShow()
+    CustomPermaShow("                  My HeRo - Vayne", "", true, nil, nil, nil, 2)
+    if self.Menu.Combo.ComboKey then
+        CustomPermaShow("Current Mode:", "        Combo", true, RGB(153, 0, 153), nil, nil, 1)
+    elseif self.Menu.Harass.HarassKey then
+        CustomPermaShow("Current Mode:", "       Harass", true, RGB(153, 0, 153), nil, nil, 1)
+    elseif (self.Menu.LaneClear.ClearKey or self.Menu.JungleClear.JClearKey) then
+        CustomPermaShow("Current Mode:", "   Wave Clear", true, RGB(153, 0, 153), nil, nil, 1)
+    elseif self.Menu.LastHit.LastHitKey then
+        CustomPermaShow("Current Mode:", "       Last Hit", true, RGB(153, 0, 153), nil, nil, 1)
+    else
+        CustomPermaShow("Current Mode:", "         None", true, RGB(153, 0, 153), nil, nil, 1)
     end
 end
 
@@ -900,7 +948,7 @@ end
 
 function MyHeRoVayne:CheckWallStun(Target)
     if GetDistance(Target, myHero) < 1000 then
-        local Pos, Hitchance, PredictPos = VP:GetLineCastPosition(Target, 0.250, 0, 770, 2200, myHero, false)
+        local Pos, Hitchance, PredictPos = self.VP:GetLineCastPosition(Target, 0.250, 0, 770, 2200, myHero, false)
         if Hitchance > 1 then
             local checks = 65
             local CheckD = math.ceil(self.Menu.ASTarget.PushDistance / checks)
@@ -965,6 +1013,7 @@ function _G.VayneDrawFPSCircle(x, z, radius, color, quality)
         end
         if (c.x > 0 and c.x < WINDOW_W) and (c.y > 0 and c.y < WINDOW_H) and (n.x > 0 and n.x < WINDOW_W) and (n.y > 0 and n.y < WINDOW_H) then
             _G.VayneDrawLineA(c.x, c.y, n.x, n.y, color)
+
         end
     end
 end
