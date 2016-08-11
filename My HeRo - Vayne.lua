@@ -1,7 +1,8 @@
 if myHero.charName ~= "Vayne" then return end
 
+_G.FixBugSplat = false
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.21, "1.21"}
+_G.VayneScriptVersion = {1.22, "1.22"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -47,6 +48,7 @@ function MyHeRoVayne:__init()
     ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_PHYSICAL)
     self:Tables()
     self:Global_Menu()
+    self.Menu.Drawings.PermaShow = false
     self.Menu.Utility.skin.changeSkin = false
     self.Menu.Utility.LvLUp.Enable = false
     self.Menu.LaneClear.ClearKey = false
@@ -261,6 +263,7 @@ function MyHeRoVayne:Global_Menu()
     self.Menu:addSubMenu("[Vayne] - Combo", "Combo")
         self.Menu.Combo:addParam("ComboKey", "Combo Key:", SCRIPT_PARAM_ONKEYDOWN, false, 32)
         self.Menu.Combo:addParam("ComboQ", "Use Q in Combo:", SCRIPT_PARAM_ONOFF, true)
+        self.Menu.Combo:addParam("EAA", "Cast E after Next AA:", SCRIPT_PARAM_ONKEYTOGGLE, false, GetKey("E"))
         self.Menu.Combo:addParam("ComboR", "Use R in Combo:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Combo:addParam("ComboRRange", "Enemies in Range for R:", SCRIPT_PARAM_SLICE, 2, 0, 5, 0)
         self.Menu.Combo:addParam("ComboRange", "Range for R:", SCRIPT_PARAM_SLICE, 1000, 500, 3000, 0)
@@ -442,6 +445,7 @@ function MyHeRoVayne:Global_Menu()
     self.Menu:addSubMenu("[Vayne] - Drawings", "Drawings")
         self.Menu.Drawings:addParam("DrawCircleAA", "Draw AA Range:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Drawings:addParam("DrawCircleE", "Draw E Range:", SCRIPT_PARAM_ONOFF, true)
+        self.Menu.Drawings:addParam("PermaShow", "Enable Perma Show:", SCRIPT_PARAM_ONOFF, true)
         self.Menu.Drawings:addParam("Quality", "Draw Quality", SCRIPT_PARAM_SLICE, 5, 1, 10, 0)
 
         self.Menu.Drawings:addParam("2222", "", SCRIPT_PARAM_INFO, "")
@@ -465,6 +469,7 @@ function MyHeRoVayne:Loader()
     self.ActivePot = false
     self.NoHealSpamMsg = 0
     self.NoBarrierSpamMsg = 0
+    self.NoFixSpamMsg = 0
     AddTickCallback(function() self:OnTick() end)
     AddDrawCallback(function() self:OnDraw() end)
     AddTickCallback(function() self:OnTick() end)
@@ -483,12 +488,24 @@ end
 
 function MyHeRoVayne:OnTick()
     ts:update()
-    self:PermaShow()
     self:CondemnStun()
     self:ComboREnemy()
     self:BaseCheck()
     self:CastItems()
-    self:LevelUpSpell()
+
+    if not _G.FixBugSplat then
+        self:LevelUpSpell()
+    elseif self.Menu.Utility.LvLUp.Enable then
+        if os.clock() - self.NoFixSpamMsg > 2 then
+            self.NoFixSpamMsg = os.clock()
+            self:Message("Try [_G.FixBugSplat = false] if you haven't BugSplat and(or) Bol Fully Updated!", 0)
+            self.Menu.Utility.LvLUp.Enable = false
+        end
+    end
+
+    if self.Menu.Drawings.PermaShow then
+        self:PermaShow()
+    end
 
     if self.Heal then
         self:AutoHealDetect()
@@ -510,17 +527,19 @@ function MyHeRoVayne:OnTick()
 end
 
 function MyHeRoVayne:PermaShow()
-    CustomPermaShow("                  My HeRo - Vayne", "", true, nil, nil, nil, 2)
-    if self.Menu.Combo.ComboKey then
-        CustomPermaShow("Current Mode:", "        Combo", true, RGB(153, 0, 153), nil, nil, 1)
-    elseif self.Menu.Harass.HarassKey then
-        CustomPermaShow("Current Mode:", "       Harass", true, RGB(153, 0, 153), nil, nil, 1)
-    elseif (self.Menu.LaneClear.ClearKey or self.Menu.JungleClear.JClearKey) then
-        CustomPermaShow("Current Mode:", "   Wave Clear", true, RGB(153, 0, 153), nil, nil, 1)
-    elseif self.Menu.LastHit.LastHitKey then
-        CustomPermaShow("Current Mode:", "       Last Hit", true, RGB(153, 0, 153), nil, nil, 1)
-    else
-        CustomPermaShow("Current Mode:", "         None", true, RGB(153, 0, 153), nil, nil, 1)
+    if self.Menu.Drawings.PermaShow then
+        CustomPermaShow("                  My HeRo - Vayne", "", true, nil, nil, nil, 2)
+        if self.Menu.Combo.ComboKey then
+            CustomPermaShow("Current Mode:", "        Combo", true, RGB(153, 0, 153), nil, nil, 1)
+        elseif self.Menu.Harass.HarassKey then
+            CustomPermaShow("Current Mode:", "       Harass", true, RGB(153, 0, 153), nil, nil, 1)
+        elseif (self.Menu.LaneClear.ClearKey or self.Menu.JungleClear.JClearKey) then
+            CustomPermaShow("Current Mode:", "   Wave Clear", true, RGB(153, 0, 153), nil, nil, 1)
+        elseif self.Menu.LastHit.LastHitKey then
+            CustomPermaShow("Current Mode:", "       Last Hit", true, RGB(153, 0, 153), nil, nil, 1)
+        else
+            CustomPermaShow("Current Mode:", "         None", true, RGB(153, 0, 153), nil, nil, 1)
+        end
     end
 end
 
@@ -727,8 +746,8 @@ function MyHeRoVayne:CastItems()
 end
 
 function MyHeRoVayne:BotRK()
-    local Target = ts.target
     if self.Menu.Combo.Items.BOTRK and GetInventorySlotItem(3153) ~= nil then
+        local Target = ts.target
         if Target and ValidTarget(Target, 610) then
             if myHero:CanUseSpell(GetInventorySlotItem(3153)) == READY then
                 CastSpell(GetInventorySlotItem(3153), Target)
@@ -738,8 +757,8 @@ function MyHeRoVayne:BotRK()
 end
 
 function MyHeRoVayne:BilgeWater()
-    local Target = ts.target
     if self.Menu.Combo.Items.BWC and GetInventorySlotItem(3144) ~= nil then
+        local Target = ts.target
         if Target and ValidTarget(Target, 610) then
             if myHero:CanUseSpell(GetInventorySlotItem(3144)) == READY then
                 CastSpell(GetInventorySlotItem(3144), Target)
@@ -863,6 +882,12 @@ function MyHeRoVayne:OnProcessAttack(unit, spell)
 
     if unit.isMe and spell.name:lower():find("attack") then
         SpellTarget = spell.target
+        if self.Menu.Combo.EAA then
+            if SpellTarget.type == myHero.type and myHero:CanUseSpell(_E) == READY then
+                CastSpell(_E, SpellTarget)
+                self.Menu.Combo.EAA = false
+            end
+        end
         if self.Menu.Combo.ComboKey and self.Menu.Combo.ComboQ then
             if SpellTarget.type == myHero.type and myHero:CanUseSpell(_Q) == READY then
                 CastSpell(_Q, mousePos.x, mousePos.z)
@@ -930,6 +955,9 @@ function MyHeRoVayne:OnDraw()
     end
     if self.Menu.Drawings.DrawCircleAA then
         _G.VayneDrawFPSCircle(myHero.x, myHero.z, 620, RGB(0, 255, 0), self.Menu.Drawings.Quality)
+    end
+    if self.Menu.Combo.EAA and myHero:CanUseSpell(_E) == READY then
+        DrawText ("Cast E on next AA: On", 20, 1125, 885, ARGB(255, 255, 0, 0))
     end
     if SummonerSmite ~= nil then
         if self.Menu.Utility.Smite.DrawSmiteProcess then
