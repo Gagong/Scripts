@@ -1,7 +1,7 @@
 if myHero.charName ~= "Vayne" then return end
 
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.19, "1.19"}
+_G.VayneScriptVersion = {1.20, "1.20"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -168,6 +168,12 @@ function MyHeRoVayne:Tables()
         "W", 
         "E", 
         "R"
+    }
+
+    self.ItemList = {
+        BoTRK = {id = 3153, slot = nil},
+        BWC   = {id = 3152, slot = nil},
+        Youmu = {id = 3142, slot = nil},
     }
 
     self.PotList = {
@@ -378,7 +384,7 @@ function MyHeRoVayne:Global_Menu()
                 self.Menu.Utility.Heal:addParam("Draw", "Enable Heal Range Draw:", SCRIPT_PARAM_ONOFF, true)
         end
 
-        if self.Heal then
+        if self.Barrier then
             self:Message("Auto Barrier by My Summoner Spells Script Loaded! You Can Download full Script (FREE) on forum!", 90)
             self.Menu.Utility:addSubMenu("Auto Barrier", "Barrier")
                 self.Menu.Utility.Barrier:addParam("Enable", "Enable Auto Barrier:", SCRIPT_PARAM_ONOFF, true)
@@ -673,8 +679,8 @@ function MyHeRoVayne:CastItems()
 end
 
 function MyHeRoVayne:BotRK()
+    local Target = ts.target
     if self.Menu.Combo.Items.BOTRK and GetInventorySlotItem(3153) ~= nil then
-        local Target = ts.target
         if Target and ValidTarget(Target, 610) then
             if myHero:CanUseSpell(GetInventorySlotItem(3153)) == READY then
                 CastSpell(GetInventorySlotItem(3153), Target)
@@ -684,11 +690,11 @@ function MyHeRoVayne:BotRK()
 end
 
 function MyHeRoVayne:BilgeWater()
-    if self.Menu.Combo.Items.BWC and GetInventorySlotItem(3152) ~= nil then
-        local Target = ts.target
+    local Target = ts.target
+    if self.Menu.Combo.Items.BWC and GetInventorySlotItem(3144) ~= nil then
         if Target and ValidTarget(Target, 610) then
-            if myHero:CanUseSpell(GetInventorySlotItem(3152)) == READY then
-                CastSpell(GetInventorySlotItem(3152), Target)
+            if myHero:CanUseSpell(GetInventorySlotItem(3144)) == READY then
+                CastSpell(GetInventorySlotItem(3144), Target)
             end
         end
 
@@ -696,7 +702,8 @@ function MyHeRoVayne:BilgeWater()
 end
 
 function MyHeRoVayne:Youmuus()
-    if self.Menu.Combo.Items.YGB and GetInventorySlotItem(3142) ~= nil then
+    local Target = ts.target
+    if self.Menu.Combo.Items.YGB and ValidTarget(Target, 1000) and GetInventorySlotItem(3142) ~= nil then
         if myHero:CanUseSpell(GetInventorySlotItem(3142)) == READY then
             CastSpell(GetInventorySlotItem(3142))
         end
@@ -787,15 +794,14 @@ end
 
 function MyHeRoVayne:OnUpdateBuff(unit, buff, stacks)
     if not unit or not buff then return end
-    if buff.name:lower():find("vaynesilvereddebuff") and unit.type == myHero.type and GetDistance(unit) < 1500 then
+    if buff.name:lower():find("vaynesilvereddebuff") and unit.type == myHero.type and GetDistance(unit, myHero) < 1500 then
         self.W_Stacks[unit.networkID] = stacks
-        print(unit.charName.." Have "..self.W_Stacks[unit.networkID])
     end
 end
 
 function MyHeRoVayne:OnRemoveBuff(unit, buff)
     if not unit or not buff then return end
-    if buff.name == "vaynesilvereddebuff" and unit.type == myHero.type and GetDistance(unit) < 1500  then
+    if buff.name == "vaynesilvereddebuff" and unit.type == myHero.type and GetDistance(unit, myHero) < 1500  then
         self.W_Stacks[unit.networkID] = 0
     end
     for i=1, 5 do
@@ -856,13 +862,13 @@ function MyHeRoVayne:OnProcessSpell(unit, spell)
             end
         end
 
-        if self.isAChampToInterrupt[spell.name] and GetDistance(unit) <= 770 then
+        if self.isAChampToInterrupt[spell.name] and GetDistance(unit, myHero) <= 770 then
             if self:CheckModesActive(self.Menu.Interrupt[unit.charName]) then 
                 CastSpell(_E, unit) 
             end
         end
 
-        if self.isAGapcloserUnitNoTarget[spell.name] and GetDistance(unit) <= 770 and (spell.target == nil or (spell.target and spell.target.isMe)) then
+        if self.isAGapcloserUnitNoTarget[spell.name] and GetDistance(unit, myHero) <= 770 and (spell.target == nil or (spell.target and spell.target.isMe)) then
             if self:CheckModesActive(self.Menu.AntiGapClosers[unit.charName]) then
                 CastSpell(_E, unit)
             end
@@ -893,28 +899,31 @@ function MyHeRoVayne:OnDraw()
 end
 
 function MyHeRoVayne:CheckWallStun(Target)
-    local Pos, Hitchance, PredictPos = VP:GetLineCastPosition(Target, 0.250, 0, 770, 2200, myHero, false)
-    if Hitchance > 1 then
-        local checks = 65
-        local CheckD = math.ceil(self.Menu.ASTarget.PushDistance / checks)
-        local FoundGrass = false
-        for i = 1, checks, 1  do
-            local CheckWallPos = Vector(PredictPos) + Vector(Vector(PredictPos) - Vector(myHero)):normalized()*(CheckD*i)
-            if not FoundGrass and IsWallOfGrass(D3DXVECTOR3(CheckWallPos.x, CheckWallPos.y, CheckWallPos.z)) then
-                FoundGrass = CheckWallPos
-            end
-            local WallPoint = IsWall(D3DXVECTOR3(CheckWallPos.x, CheckWallPos.y, CheckWallPos.z))
-            if WallPoint then
-                CastSpell(_E, Target)
-                break
+    if GetDistance(Target, myHero) < 1000 then
+        local Pos, Hitchance, PredictPos = VP:GetLineCastPosition(Target, 0.250, 0, 770, 2200, myHero, false)
+        if Hitchance > 1 then
+            local checks = 65
+            local CheckD = math.ceil(self.Menu.ASTarget.PushDistance / checks)
+            local FoundGrass = false
+            for i = 1, checks, 1  do
+                local CheckWallPos = Vector(PredictPos) + Vector(Vector(PredictPos) - Vector(myHero)):normalized()*(CheckD*i)
+                if not FoundGrass and IsWallOfGrass(D3DXVECTOR3(CheckWallPos.x, CheckWallPos.y, CheckWallPos.z)) then
+                    FoundGrass = CheckWallPos
+                end
+                local WallPoint = IsWall(D3DXVECTOR3(CheckWallPos.x, CheckWallPos.y, CheckWallPos.z))
+                if WallPoint then
+                    CastSpell(_E, Target)
+                    break
+                end
             end
         end
     end
 end
+
 function MyHeRoVayne:CondemnStun()
     if myHero:CanUseSpell(_E) == READY then
         local Target = ts.target
-        if Target and Target.type == myHero.type and ValidTarget(Target, 770) and self:CheckModesActive(self.Menu.ASTarget[Target.charName]) then
+        if Target and Target.type == myHero.type and ValidTarget(Target, 770) and GetDistance(Target, myHero) < 1000 and self:CheckModesActive(self.Menu.ASTarget[Target.charName]) then
             self:CheckWallStun(Target)
         end
     end
