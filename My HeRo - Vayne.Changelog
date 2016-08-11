@@ -2,6 +2,13 @@
 
 Changelog = {
   
+  [1.22] = {
+    Fix Items bug
+    Add Cast E After Next AA
+    Add _G.FixBugSplat if you have BugSplat after new LoL Patch on the LvL-Up function
+    Add Enable PermaShow (If you need Disable it after Enable - reload Scripts) (Disable by default)
+  }
+  
   [1.21] = {
     Menu tweak
     Core tweak
