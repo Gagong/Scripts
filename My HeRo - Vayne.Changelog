@@ -1,0 +1,60 @@
+--[[Changelog list:]]--
+
+Changelog = {
+  
+  [1.21] = {
+    Menu tweak
+    Core tweak
+    Add Perma Show
+    Add Lib Auto Downloader
+    Fix Lane Clear | Jungle Clear override
+  }
+  
+  [1.20] = {
+    Fix all FPS issue
+    Fix Barrier loader
+    Items tweak
+  }
+
+  [1.19] = {
+    Harass tweak (Burs Harass fasters)
+    Fix some FPS Drop - now FPS increased(a little)
+    Fix Skin Changer override
+    Add Auto Smite for Jungle Vayne
+    Add Jungle Clear Settings
+    Add Slider for R Range Activated
+    Add Auto Level - Up(It is have ovverride)
+    Add Auto Heal by my SS Script
+    Add Auto Barrier by my SS Script
+    Other tweaks
+  }
+
+  [1.18] = {
+    Add Auto QSS
+    Add Auto Potions Usage
+    Add Skin Changer
+  }
+
+  [1.17] = {
+    Fix AntiGapCloser | Auto Stun | Auto Interrupter
+    Add Quality Changer for Draw Settings
+    Add Fast Burst Harass (AA-Q-AA-E)
+  }
+
+  [1.16] = {
+    Remove AntiGapCloser | Auto Stun | Auto Interrupter
+  }
+  
+  [1.15] = {
+    Fix Loading Issue (1.15)
+  }
+  
+  [1.1] = {
+    Add Script Status Tracker (1.1)
+  }
+  
+  [1.0] = {
+    Release (1.0)
+  }
+}
+--[[Changelog list:]]--
