@@ -39,8 +39,8 @@ end
 
 function MyHeRoJarvan:LoadLib()  
 	self.CPSPath = LIB_PATH.."CustomPermaShow.lua"
-	self.CPSHost = "raw.github.com"
-    self.CPSWebPath = "Superx321/BoL/master/common/CustomPermaShow.lua".."?rand="..math.random(1,10000)  
+	self.CPSHost = "raw.githubusercontent.com"
+    self.CPSWebPath = "/Superx321/BoL/master/common/CustomPermaShow.lua".."?rand="..math.random(1,10000)  
     if not FileExist(self.CPSPath) then
         self:Message("Custom Perma Show not found, wait Download...", 0)
         DownloadFile("https://"..self.CPSHost..self.CPSWebPath, self.CPSPath, function ()  end)
