@@ -2,7 +2,7 @@ if myHero.charName ~= "Vayne" then return end
 
 _G.FixBugSplat = false
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.23, "1.23"}
+_G.VayneScriptVersion = {1.24, "1.24"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -78,8 +78,8 @@ function MyHeRoVayne:LoadLib()
     self.CPSPath = LIB_PATH.."CustomPermaShow.lua"
     if not FileExist(self.CPSPath) then
         self:Message("Custom Perma Show not found, wait Download...", 0)
-        self.CPSHost = "raw.github.com"
-        self.CPSWebPath = "Superx321/BoL/master/common/CustomPermaShow.lua".."?rand="..math.random(1,10000)
+        self.CPSHost = "raw.githubusercontent.com"
+        self.CPSWebPath = "/Superx321/BoL/common/CustomPermaShow.lua".."?rand="..math.random(1,10000)
         DownloadFile("https://"..self.CPSHost..self.CPSWebPath, self.CPSPath, function ()  end)
         DelayAction(function() require("CustomPermaShow") end, 5)
         self:Message("Custom Perma Show Downloaded and Loaded!", 5)
@@ -91,8 +91,8 @@ function MyHeRoVayne:LoadLib()
     self.VPPath = LIB_PATH.."VPrediction.lua"
     if not FileExist(self.VPPath) then
         self:Message("VPrediction not found, wait Download...", 0)
-        self.VPHost = "raw.github.com"
-        self.VPWebPath = "/SidaBoL/Scripts/master/Common/VPrediction.lua".."?rand="..math.random(1,10000)
+        self.VPHost = "raw.githubusercontent.com"
+        self.VPWebPath = "/SidaBoL/Scripts/Common/VPrediction.lua".."?rand="..math.random(1,10000)
         DownloadFile("https://"..self.VPHost..self.VPWebPath, self.VPPath, function ()  end)
         DelayAction(function() require("VPrediction") end, 5)
         self.VP = VPrediction()
