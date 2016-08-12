@@ -2,6 +2,7 @@ if myHero.charName ~= "JarvanIV" then return end
 
 _G.JScriptVersion = {2.0, "2.0"}
 _G.JScriptAuthor = "HeRoBaNd"
+local VP, DP, SP, HP, KP = nil
 
 -- BoL Tools Tracker --
 assert(load(Base64Decode("G0x1YVIAAQQEBAgAGZMNChoKAAAAAAAAAAAAAQQfAAAAAwAAAEQAAACGAEAA5QAAAJ1AAAGGQEAA5UAAAJ1AAAGlgAAACIAAgaXAAAAIgICBhgBBAOUAAQCdQAABhkBBAMGAAQCdQAABhoBBAOVAAQCKwICDhoBBAOWAAQCKwACEhoBBAOXAAQCKwICEhoBBAOUAAgCKwACFHwCAAAsAAAAEEgAAAEFkZFVubG9hZENhbGxiYWNrAAQUAAAAQWRkQnVnc3BsYXRDYWxsYmFjawAEDAAAAFRyYWNrZXJMb2FkAAQNAAAAQm9sVG9vbHNUaW1lAAQQAAAAQWRkVGlja0NhbGxiYWNrAAQGAAAAY2xhc3MABA4AAABTY3JpcHRUcmFja2VyAAQHAAAAX19pbml0AAQSAAAAU2VuZFZhbHVlVG9TZXJ2ZXIABAoAAABzZW5kRGF0YXMABAsAAABHZXRXZWJQYWdlAAkAAAACAAAAAwAAAAAAAwkAAAAFAAAAGABAABcAAIAfAIAABQAAAAxAQACBgAAAHUCAAR8AgAADAAAAAAQSAAAAU2VuZFZhbHVlVG9TZXJ2ZXIABAcAAAB1bmxvYWQAAAAAAAEAAAABAQAAAAAAAAAAAAAAAAAAAAAEAAAABQAAAAAAAwkAAAAFAAAAGABAABcAAIAfAIAABQAAAAxAQACBgAAAHUCAAR8AgAADAAAAAAQSAAAAU2VuZFZhbHVlVG9TZXJ2ZXIABAkAAABidWdzcGxhdAAAAAAAAQAAAAEBAAAAAAAAAAAAAAAAAAAAAAUAAAAHAAAAAQAEDQAAAEYAwACAAAAAXYAAAUkAAABFAAAATEDAAMGAAABdQIABRsDAAKUAAADBAAEAXUCAAR8AgAAFAAAABA4AAABTY3JpcHRUcmFja2VyAAQSAAAAU2VuZFZhbHVlVG9TZXJ2ZXIABAUAAABsb2FkAAQMAAAARGVsYXlBY3Rpb24AAwAAAAAAQHpAAQAAAAYAAAAHAAAAAAADBQAAAAUAAAAMAEAAgUAAAB1AgAEfAIAAAgAAAAQSAAAAU2VuZFZhbHVlVG9TZXJ2ZXIABAgAAAB3b3JraW5nAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAEBAAAAAAAAAAAAAAAAAAAAAAAACAAAAA0AAAAAAAYyAAAABgBAAB2AgAAaQEAAF4AAgEGAAABfAAABF0AKgEYAQQBHQMEAgYABAMbAQQDHAMIBEEFCAN0AAAFdgAAACECAgUYAQQBHQMEAgYABAMbAQQDHAMIBEMFCAEbBQABPwcICDkEBAt0AAAFdgAAACEAAhUYAQQBHQMEAgYABAMbAQQDHAMIBBsFAAA9BQgIOAQEARoFCAE/BwgIOQQEC3QAAAV2AAAAIQACGRsBAAIFAAwDGgEIAAUEDAEYBQwBWQIEAXwAAAR8AgAAOAAAABA8AAABHZXRJbkdhbWVUaW1lcgADAAAAAAAAAAAECQAAADAwOjAwOjAwAAQGAAAAaG91cnMABAcAAABzdHJpbmcABAcAAABmb3JtYXQABAYAAAAlMDIuZgAEBQAAAG1hdGgABAYAAABmbG9vcgADAAAAAAAgrEAEBQAAAG1pbnMAAwAAAAAAAE5ABAUAAABzZWNzAAQCAAAAOgAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AAAATAAAAAAAIKAAAAAEAAABGQEAAR4DAAIEAAAAhAAiABkFAAAzBQAKAAYABHYGAAVgAQQIXgAaAR0FBAhiAwQIXwAWAR8FBAhkAwAIXAAWARQGAAFtBAAAXQASARwFCAoZBQgCHAUIDGICBAheAAYBFAQABTIHCAsHBAgBdQYABQwGAAEkBgAAXQAGARQEAAUyBwgLBAQMAXUGAAUMBgABJAYAAIED3fx8AgAANAAAAAwAAAAAAAPA/BAsAAABvYmpNYW5hZ2VyAAQLAAAAbWF4T2JqZWN0cwAECgAAAGdldE9iamVjdAAABAUAAAB0eXBlAAQHAAAAb2JqX0hRAAQHAAAAaGVhbHRoAAQFAAAAdGVhbQAEBwAAAG15SGVybwAEEgAAAFNlbmRWYWx1ZVRvU2VydmVyAAQGAAAAbG9vc2UABAQAAAB3aW4AAAAAAAMAAAAAAAEAAQEAAAAAAAAAAAAAAAAAAAAAFAAAABQAAAACAAICAAAACkAAgB8AgAABAAAABAoAAABzY3JpcHRLZXkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAABUAAAACAAUKAAAAhgBAAMAAgACdgAABGEBAARfAAICFAIAAjIBAAQABgACdQIABHwCAAAMAAAAEBQAAAHR5cGUABAcAAABzdHJpbmcABAoAAABzZW5kRGF0YXMAAAAAAAIAAAAAAAEBAAAAAAAAAAAAAAAAAAAAABYAAAAlAAAAAgATPwAAAApAAICGgEAAnYCAAAqAgICGAEEAxkBBAAaBQQAHwUECQQECAB2BAAFGgUEAR8HBAoFBAgBdgQABhoFBAIfBQQPBgQIAnYEAAcaBQQDHwcEDAcICAN2BAAEGgkEAB8JBBEECAwAdggABFgECAt0AAAGdgAAACoCAgYaAQwCdgIAACoCAhgoAxIeGQEQAmwAAABdAAIAKgMSHFwAAgArAxIeGQEUAh4BFAQqAAIqFAIAAjMBFAQEBBgBBQQYAh4FGAMHBBgAAAoAAQQIHAIcCRQDBQgcAB0NAAEGDBwCHw0AAwcMHAAdEQwBBBAgAh8RDAFaBhAKdQAACHwCAACEAAAAEBwAAAGFjdGlvbgAECQAAAHVzZXJuYW1lAAQIAAAAR2V0VXNlcgAEBQAAAGh3aWQABA0AAABCYXNlNjRFbmNvZGUABAkAAAB0b3N0cmluZwAEAwAAAG9zAAQHAAAAZ2V0ZW52AAQVAAAAUFJPQ0VTU09SX0lERU5USUZJRVIABAkAAABVU0VSTkFNRQAEDQAAAENPTVBVVEVSTkFNRQAEEAAAAFBST0NFU1NPUl9MRVZFTAAEEwAAAFBST0NFU1NPUl9SRVZJU0lPTgAECwAAAGluZ2FtZVRpbWUABA0AAABCb2xUb29sc1RpbWUABAYAAABpc1ZpcAAEAQAAAAAECQAAAFZJUF9VU0VSAAMAAAAAAADwPwMAAAAAAAAAAAQJAAAAY2hhbXBpb24ABAcAAABteUhlcm8ABAkAAABjaGFyTmFtZQAECwAAAEdldFdlYlBhZ2UABA4AAABib2wtdG9vbHMuY29tAAQXAAAAL2FwaS9ldmVudHM/c2NyaXB0S2V5PQAECgAAAHNjcmlwdEtleQAECQAAACZhY3Rpb249AAQLAAAAJmNoYW1waW9uPQAEDgAAACZib2xVc2VybmFtZT0ABAcAAAAmaHdpZD0ABA0AAAAmaW5nYW1lVGltZT0ABAgAAAAmaXNWaXA9AAAAAAACAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAmAAAAKgAAAAMACiEAAADGQEAAAYEAAN2AAAHHwMAB3YCAAArAAIDHAEAAzADBAUABgACBQQEA3UAAAscAQADMgMEBQcEBAIABAAHBAQIAAAKAAEFCAgBWQYIC3UCAAccAQADMgMIBQcECAIEBAwDdQAACxwBAAMyAwgFBQQMAgYEDAN1AAAIKAMSHCgDEiB8AgAASAAAABAcAAABTb2NrZXQABAgAAAByZXF1aXJlAAQHAAAAc29ja2V0AAQEAAAAdGNwAAQIAAAAY29ubmVjdAADAAAAAAAAVEAEBQAAAHNlbmQABAUAAABHRVQgAAQSAAAAIEhUVFAvMS4wDQpIb3N0OiAABAUAAAANCg0KAAQLAAAAc2V0dGltZW91dAADAAAAAAAAAAAEAgAAAGIAAwAAAPyD15dBBAIAAAB0AAQKAAAATGFzdFByaW50AAQBAAAAAAQFAAAARmlsZQAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAAA="), nil, "bt", _ENV))()
@@ -24,7 +25,7 @@ function MyHeRoJarvan:__init()
 	self.Menu.Utility.skin.changeSkin = false
 	self.Menu.Utility.LvLUp.Enable = false
 	self:Loader()
-	--self:PermaShow()
+	self:PermaShow()
 
 	if VIP_USER then
 		self:SkinLoad()
@@ -200,6 +201,22 @@ function MyHeRoJarvan:Variables()
 	self.SP = nil
 	self.HP = nil
 	self.KP = nil
+	self.flags = {}
+
+	self.CmodeTable = {
+		"Smart", 
+		"E+Q", 
+		"Q or E", 
+		"Q Only", 
+		"E Only"
+	}
+
+	self.HModeTable = {
+		"E+Q", 
+		"Q or E", 
+		"Q Only", 
+		"E Only"
+	}
 end
 
 function MyHeRoJarvan:AutoUpdater()
@@ -224,20 +241,17 @@ function MyHeRoJarvan:Global_Menu()
 	self.Menu:addSubMenu("[Jarvan] - Combo", "Combo")
 		self.Menu.Combo:addParam("ComboMode", "Combo Mode:", SCRIPT_PARAM_ONKEYDOWN, false, 32)
 		self.Menu.Combo:addParam("ChangeCombo", "Change Combo Mode Key:", SCRIPT_PARAM_ONKEYTOGGLE, false, 89)
-		self.Menu.Combo:addParam("Cmode", "Combo Q and E Mode:", SCRIPT_PARAM_LIST, 1, {"Smart", "E+Q", "Q or E", "Q Only", "E Only"})
-    	self.Menu.Combo:addParam("Burst", "All In/Burst Combo:", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("S"))
+		self.Menu.Combo:addParam("Cmode", "Combo Q and E Mode:", SCRIPT_PARAM_LIST, 1, self.CmodeTable)
 
 		self.Menu.Combo:addParam("ComboQ", "Use Q in Combo:", SCRIPT_PARAM_ONOFF, true)
 		self.Menu.Combo:addParam("ComboW", "Use W in Combo:", SCRIPT_PARAM_ONOFF, true)
 		self.Menu.Combo:addParam("ComboE", "Use E in Combo:", SCRIPT_PARAM_ONOFF, true)
 		self.Menu.Combo:addParam("ComboR", "Use R in Combo:", SCRIPT_PARAM_ONOFF, false)
-
-		self.Menu.Combo:addParam("UseFocus", "Use Cistom Target Selector:", SCRIPT_PARAM_ONOFF, true)
 	
 	self.Menu:addSubMenu("[Jarvan] - Harass", "Harass")
 		self.Menu.Harass:addParam("HS", "Harass:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("C"))
 		self.Menu.Harass:addParam("ChangeHarass", "Change Harass Mode Key:", SCRIPT_PARAM_ONKEYTOGGLE, false, 84)
-		self.Menu.Harass:addParam("Hmode", "Harass Q and E Mode:", SCRIPT_PARAM_LIST, 1, {"E+Q", "Q or E", "Q Only", "E Only"})		
+		self.Menu.Harass:addParam("Hmode", "Harass Q and E Mode:", SCRIPT_PARAM_LIST, 1, self.HModeTable)		
 		self.Menu.Harass:addParam("HarassQ", "Use Q in Harass:", SCRIPT_PARAM_ONOFF, true)
 		self.Menu.Harass:addParam("HarassE", "Use E in Harass:", SCRIPT_PARAM_ONOFF, true)
 		self.Menu.Harass:addParam("HarassMana", "% Mana for Harass:", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
@@ -247,10 +261,16 @@ function MyHeRoJarvan:Global_Menu()
 		self.Menu.KillSteal:addParam("QSteal", "Use Q:", SCRIPT_PARAM_ONOFF, true)
 		self.Menu.KillSteal:addParam("ESteal", "Use E:", SCRIPT_PARAM_ONOFF, true)
 		self.Menu.KillSteal:addParam("RSteal", "Use R:", SCRIPT_PARAM_ONOFF, false)
+		self.Menu.KillSteal:addParam("EQRSteal", "Use E+Q+R:", SCRIPT_PARAM_ONOFF, true)
 
 		if self.SIgnite then
-			self.Menu.KillSteal:addParam("UseIgnite", "Use Ignite", SCRIPT_PARAM_ONOFF, true)
+			self.Menu.KillSteal:addParam("I", "Use Ignite", SCRIPT_PARAM_ONOFF, true)
 		end
+
+		if self.SSmite then
+			self.Menu.KillSteal:addParam("S", "Use Ignite", SCRIPT_PARAM_ONOFF, true)
+		end
+
 	
 	self.Menu:addSubMenu("[Jarvan] - Lane Clear", "Clear")
 		self.Menu.Clear:addParam("LaneClear", "Lane Clear:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
@@ -267,7 +287,7 @@ function MyHeRoJarvan:Global_Menu()
 		self.Menu.JClear:addParam("JClearMana", "% Mana for Jungle Clear:", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 
 	self.Menu:addSubMenu("[Jarvan] - Last Hit", "LastHit")
-		self.Menu.LastHit:addParam("LastHitKey", "Jungle Clear:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("A"))
+		self.Menu.LastHit:addParam("LastHitKey", "Last Hit:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("A"))
 	
 	self.Menu:addSubMenu("[Jarvan] - Escape", "Escape")
 		self.Menu.Escape:addParam("EnableEscape", "Escape:", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("N"))
@@ -282,7 +302,8 @@ function MyHeRoJarvan:Global_Menu()
 
 		self.Menu.Utility:addSubMenu("Item Settings", "Item")
 			self.Menu.Utility.Item:addParam("UseItem", "Enable Item Usage:", SCRIPT_PARAM_ONOFF, true)
-			self.Menu.Utility.Item:addParam("Tiamat", "Use Tiamat/Hydra:", SCRIPT_PARAM_ONOFF, true)
+			self.Menu.Utility.Item:addParam("Tiamat", "Use Tiamat:", SCRIPT_PARAM_ONOFF, true)
+			self.Menu.Utility.Item:addParam("Hydra", "Use Hydra:", SCRIPT_PARAM_ONOFF, true)
 			self.Menu.Utility.Item:addParam("Titanic", "Use Titanic Hydra:", SCRIPT_PARAM_ONOFF, true)
 			self.Menu.Utility.Item:addParam("Cutlass", "Use Bilgewater Cutlass:", SCRIPT_PARAM_ONOFF, true)
 			self.Menu.Utility.Item:addParam("BOTRK", "Use BOTRK:", SCRIPT_PARAM_ONOFF, true)
@@ -444,7 +465,7 @@ function MyHeRoJarvan:Loader()
     AddDrawCallback(function() self:OnDraw() end)
     AddUnloadCallback(function() self:OnUnload() end)
     --AddProcessSpellCallback(function(unit, spell) self:OnProcessSpell(unit, spell) end)
-    --AddProcessAttackCallback(function(unit, spell) self:OnProcessAttack(unit, spell) end)
+    AddProcessAttackCallback(function(unit, spell) self:OnProcessAttack(unit, spell) end)
     AddApplyBuffCallback(function(unit, source, buff) self:OnApplyBuff(unit, source, buff) end)
     AddRemoveBuffCallback(function(unit, buff) self:OnRemoveBuff(unit, buff) end)
     AddCreateObjCallback(function(object) self:OnCreateObj(object) end)
@@ -462,6 +483,99 @@ function MyHeRoJarvan:OnTick()
 	self:CheckUlt()
 	self:AutoPot()
 	self:AutoSmite()
+	self:KillSteal()
+	self:Combo()
+	self:Harass()
+	self:LaneClear()
+	self:JungleClear()
+	self:LastHit()
+end
+
+function MyHeRoVayne:CastItems()
+    if self.Menu.Combo.ComboMode then
+        self:BotRK()
+        self:BilgeWater()
+        self:Youmuus()
+        self:Tiamat()
+        self:Hydra()
+        self:Titanic()
+    end
+end
+
+function MyHeRoVayne:Tiamat()
+    if self.Menu.Utility.Item.Tiamat and GetInventorySlotItem(3077) ~= nil then
+        local Target = ts.target
+        if Target and ValidTarget(Target, 200) then
+            if myHero:CanUseSpell(GetInventorySlotItem(3077)) == READY then
+                CastSpell(GetInventorySlotItem(3077))
+            end
+        end
+    end
+end
+
+function MyHeRoVayne:Hydra()
+    if self.Menu.Utility.Item.Hydra and GetInventorySlotItem(3074) ~= nil then
+        local Target = ts.target
+        if Target and ValidTarget(Target, 200) then
+            if myHero:CanUseSpell(GetInventorySlotItem(3074)) == READY then
+                CastSpell(GetInventorySlotItem(3074))
+            end
+        end
+    end
+end
+
+function MyHeRoVayne:Titanic()
+    if self.Menu.Utility.Item.Titanic and GetInventorySlotItem(3748) ~= nil then
+        local Target = ts.target
+        if Target and ValidTarget(Target, 200) then
+            if myHero:CanUseSpell(GetInventorySlotItem(3848)) == READY then
+                CastSpell(GetInventorySlotItem(3748))
+            end
+        end
+    end
+end
+
+function MyHeRoVayne:BotRK()
+    if self.Menu.Combo.Items.BOTRK and GetInventorySlotItem(3153) ~= nil then
+        local Target = ts.target
+        if Target and ValidTarget(Target, 610) then
+            if myHero:CanUseSpell(GetInventorySlotItem(3153)) == READY then
+                CastSpell(GetInventorySlotItem(3153), Target)
+            end
+        end
+    end
+end
+
+function MyHeRoVayne:BilgeWater()
+    if self.Menu.Combo.Items.BWC and GetInventorySlotItem(3144) ~= nil then
+        local Target = ts.target
+        if Target and ValidTarget(Target, 610) then
+            if myHero:CanUseSpell(GetInventorySlotItem(3144)) == READY then
+                CastSpell(GetInventorySlotItem(3144), Target)
+            end
+        end
+
+    end
+end
+
+function MyHeRoVayne:Youmuus()
+    local Target = ts.target
+    if self.Menu.Combo.Items.YGB and ValidTarget(Target, 1000) and GetInventorySlotItem(3142) ~= nil then
+        if myHero:CanUseSpell(GetInventorySlotItem(3142)) == READY then
+            CastSpell(GetInventorySlotItem(3142))
+        end
+    end
+end
+
+function MyHeRoJarvan:OnProcessAttack(unit, spell)
+    if unit.isMe and spell.name:lower():find("attack") then
+        SpellTarget = spell.target
+        if self.Menu.Utility.Item then
+            if SpellTarget.type == myHero.type then
+                self:CastItems()
+            end
+        end
+    end
 end
 
 function MyHeRoJarvan:PermaShow()
@@ -575,35 +689,233 @@ function MyHeRoJarvan:OnCreateObj(object)
 	if not object and not object ~= nil then return end
 	if object.name:lower():find("jarvancataclysm_sound.troy") then
 		self.UltActive = true
-		print("Ult Find")
 	end
-
-	if object.name:lower():find("beacon") then
-		self.EObj = object
-		print("E Find")
+	if object.name == "JarvanDemacianStandard_buf_green.troy" then 
+		self.numflags = #self.flags+1
+		for x = 1, self.numflags do
+			if self.flags[x] == nil then
+				self.flags[x] = object
+				break
+			end
+    	end
 	end
 end
 
 function MyHeRoJarvan:OnDeleteObj(object)
 	if object ~= nil and object.name:lower():find("jarvan_rock.troy") then
 		self.UltActive = false
-		print("Ult Remove")
 	end
-
-	if object ~= nil and object.name:lower():find("beacon") then
-		self.EObj = nil
-		print("E Remove")
+	if object.name == "JarvanDemacianStandard_buf_green.troy" then
+		for x, flag in pairs(self.flags) do
+			if object.networkID == flag.networkID then
+				self.flags[x] = nil
+			end
+    	end
 	end
 end
 
-function MyHeRoJarvan:BetaE(t)
-	local Vec2 = Vector(t.x - myHero.x, t.y - myHero.y, t.z - myHero.z):normalized()
-	local lenght = GetDistance(t)*1.5
-	local Vec3 = Vec2 * lenght
-	if myHero:CanUseSpell(_E) == READY and self.Menu.Combo.ComboMode then
-		CastSpell(_E, Vec1.x, Vec1.y, Vec1.z)
-	end		
+function MyHeRoJarvan:AutoKnockUp(target)
+	if target ~= nil and GetDistance(target) < 1000 then
+		self.PredTarget = VP:GetCircularCastPosition(target, 0.1, 400, 1000, math.huge, myHero, false)
+		for _, flag in pairs(self.flags) do
+			self.KnockUpPoint = VectorPointProjectionOnLine(myHero, flag, target)
+			if GetDistance(self.PredTarget, self.KnockUpPoint) < 150 and GetDistance(flag) < 770 and myHero:CanUseSpell(_Q) == READY then
+				CastSpell(_Q, flag.x, flag.z)
+			end
+		end
+	end
 end
+
+function MyHeRoJarvan:QtoE(FromPos, TooPos, PlaceRange, CheckRange)
+    self.FirstPos = Vector(FromPos.x, FromPos.z)
+    self.SecondPos = Vector(TooPos.x, TooPos.z)
+    self.NextRange = Vector(self.FirstPos + (self.SecondPos-self.FirstPos):normalized() * PlaceRange)
+    self.NextSpot = Vector(self.NextRange.x, myHero.y, self.NextRange.y)
+    if GetDistance(self.NextSpot) < CheckRange and myHero:CanUseSpell(_E) == READY then
+        CastSpell(_E, self.NextSpot.x, self.NextSpot.z)
+        self.CastX = self.NextSpot.x
+        self.CastZ = self.NextSpot.z
+        DelayAction(function() CastSpell(_Q, self.CastX, self.CastZ) end, 0.01)
+        return "casted"
+    else
+      	return nil
+    end
+end
+
+function MyHeRoJarvan:JungleClear()
+	if self.Menu.JClear.JungleClear and myHero.mana >= (myHero.maxMana*(self.Menu.JClear.JClearMana*0.01)) then
+		for _, jminions in pairs(minionManager(MINION_JUNGLE, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
+			if jminions ~= nil and minions.visible then
+				if self.Menu.JClear.JungleClearQ and myHero:CanUseSpell(_Q) == READY then
+					self:CastQ(jminions)
+				end
+				if self.Menu.JClear.JungleClearW then
+					if GetDistance(jminions) < self.SpellInfo.W.Range and myHero:CanUseSpell(_W) == READY then
+					CastSpell(_W)
+				end
+				if self.Menu.JClear.JungleClearE and myHero:CanUseSpell(_E) == READY then
+					self:CastE(jminions)
+				end
+			end
+		end
+	end
+end
+
+function MyHeRoJarvan:LaneClear()
+	if self.Menu.Clear.LaneClear and myHero.mana >= (myHero.maxMana*(self.Menu.Clear.ClearMana*0.01)) then
+		for _, minions in pairs(minionManager(MINION_ENEMY, 1000, myHero, MINION_SORT_HEALTH_ASC).objects) do
+			if minions ~= nil and minions.visible then
+				if self.Menu.Clear.LaneClearQ and myHero:CanUseSpell(_Q) == READY then
+					self:CastQ(minions)
+				end
+				if self.Menu.Clear.LaneClearW then
+					if GetDistance(minions) < self.SpellInfo.W.Range and myHero:CanUseSpell(_W) == READY then
+					CastSpell(_W)
+				end
+				if self.Menu.Clear.LaneClearE and myHero:CanUseSpell(_E) == READY then
+					self:CastE(minions)
+				end
+			end
+		end
+	end
+end
+
+function MyHeRoJarvan:Harass()
+	if self.Menu.Harass.HS and myHero.mana >= (myHero.maxMana*(self.Menu.Harass.HarassMana*0.01)) then
+		if ts.target ~= nil and GetDistance(ts.target) < 1500 and not ts.target.dead and ts.target.visible and ValidTarget(ts.target, 1500) then
+			if self.Menu.Harass.Hmode == 1 and myHero:CanUseSpell(_E) == READY and myHero:CanUseSpell(_Q) == READY and self.Menu.Harass.HarassQ and self.Menu.Harass.HarassE then
+				self:QtoE(myHero, ts.target, GetDistance(ts.target)+70, 770)
+			elseif self.Menu.Harass.Hmode == 2 and self.Menu.Harass.HarassQ and self.Menu.Harass.HarassE then
+				if myHero:CanUseSpell(_Q) == READY then
+					self:CastQ(ts.target)
+				end
+				if myHero:CanUseSpell(_E) == READY then
+					self:CastE(ts.target)
+				end
+			elseif self.Menu.Harass.Hmode == 3 and myHero:CanUseSpell(_Q) == READY and self.Menu.Harass.HarassQ then
+				self:CastQ(ts.target)
+			elseif self.Menu.Harass.Hmode == 4 and myHero:CanUseSpell(_E) == READY and self.Menu.Harass.HarassE then
+				self:CastE(ts.target)
+			end
+		end
+	end
+end
+
+function MyHeRoJarvan:Combo()
+	if self.Menu.Combo.ComboMode then
+		if ts.target ~= nil and GetDistance(ts.target) < 1500 and not ts.target.dead and ts.target.visible and ValidTarget(ts.target, 1500) then
+			if self.Menu.Combo.Cmode == 1 then
+				if self.Menu.Combo.ComboQ and self.Menu.Combo.ComboE then
+					if myHero:CanUseSpell(_E) == READY and myHero:CanUseSpell(_Q) == READY then
+						self:QtoE(myHero, ts.target, GetDistance(ts.target)+70, 770)
+					end
+					if myHero:CanUseSpell(_E) == READY then
+						self:CastE(ts.target)
+					end
+					if myHero:CanUseSpell(_Q) == READY then
+						self:CastQ(ts.target)
+					end
+				end
+				if self:CountEnemy(self.SpellInfo.W.Range, myHero) >= 1 and myHero:CanUseSpell(_W) == READY and self.Menu.Combo.ComboW then
+					CastSpell(_W)
+				end
+				if self.Menu.Combo.ComboR and myHero:CanUseSpell(_R) == READY and not self:BlockRCheck(ts.target) then
+					CastSpell(_R, ts.target)
+				end
+			elseif self.Menu.Combo.Cmode == 2 and myHero:CanUseSpell(_E) == READY and myHero:CanUseSpell(_Q) == READY and self.Menu.Combo.ComboQ and self.Menu.Combo.ComboE then
+				self:QtoE(myHero, ts.target, GetDistance(ts.target)+70, 770)
+				if self:CountEnemy(self.SpellInfo.W.Range, myHero) >= 1 and myHero:CanUseSpell(_W) == READY and self.Menu.Combo.ComboW then
+					CastSpell(_W)
+				end
+			elseif self.Menu.Combo.Cmode == 3 and self.Menu.Combo.ComboQ and self.Menu.Combo.ComboE then
+				if myHero:CanUseSpell(_Q) == READY then
+					self:CastQ(ts.target)
+				end
+				if myHero:CanUseSpell(_E) == READY then
+					self:CastE(ts.target)
+				end
+				if self:CountEnemy(self.SpellInfo.W.Range, myHero) >= 1 and myHero:CanUseSpell(_W) == READY and self.Menu.Combo.ComboW then
+					CastSpell(_W)
+				end
+			elseif self.Menu.Combo.Cmode == 4 and myHero:CanUseSpell(_Q) == READY and self.Menu.Combo.ComboQ then
+				self:CastQ(ts.target)
+				if self:CountEnemy(self.SpellInfo.W.Range, myHero) >= 1 and myHero:CanUseSpell(_W) == READY and self.Menu.Combo.ComboW then
+					CastSpell(_W)
+				end
+			elseif self.Menu.Combo.Cmode == 5 and myHero:CanUseSpell(_E) == READY and self.Menu.Combo.ComboE then
+				self:CastE(ts.target)
+				if self:CountEnemy(self.SpellInfo.W.Range, myHero) >= 1 and myHero:CanUseSpell(_W) == READY and self.Menu.Combo.ComboW then
+					CastSpell(_W)
+				end
+			end
+		end
+	end
+end
+
+function MyHeRoJarvan:KillSteal()
+	if self.Menu.KillSteal.Steal then 
+		for i, enemy in pairs(GetEnemyHeroes()) do
+	    		if not enemy.dead and enemy.visible then
+					if myHero:CanUseSpell(_Q) == READY then
+						if ValidTarget(enemy, 770) and self.Menu.KillSteal.QSteal then
+							if enemy.health < self:GetQDamage(enemy) then
+								self:CastQ(enemy)
+							end
+						end
+					end
+					if myHero:CanUseSpell(_E) == READY then
+						if ValidTarget(enemy, 830) and self.Menu.KillSteal.ESteal then
+							if enemy.health < self:GetEDamage(enemy) then
+								self:CastE(enemy)
+							end
+						end
+					end
+					if myHero:CanUseSpell(_R) == READY and self.UltActive == false then
+						if ValidTarget(enemy, 650) and self.Menu.KillSteal.RSteal then
+							if enemy.health < self:GetRDamage(enemy) then
+								CastSpell(_R, enemy)
+							end
+						end
+					if ValidTarget(enemy, 1350) and self.Menu.KillSteal.EQRSteal then
+							if enemy.health < self:GetRDamage(enemy) and myHero:CanUseSpell(_E) == READY and myHero:CanUseSpell(_Q) == READY then
+								self:QtoE(myHero, enemy, 760, 770)
+								CastSpell(_R, enemy)
+							end
+						end
+					if ValidTarget(enemy, 1350) and self.Menu.KillSteal.EQRSteal then
+							if enemy.health < self:GetRDamage(enemy) + self:GetQDamage(enemy) + self:GetEDamage(enemy) and myHero:CanUseSpell(_E) == READY and myHero:CanUseSpell(_Q) == READY and myHero:CanUseSpell(_R) == READY then
+								self:QtoE(myHero, enemy, enemy+70, 770)
+								CastSpell(_R, enemy)
+							end
+						end	
+					end
+					if self.SIgnite and myHero:CanUseSpell(Ignite) == READY and self.Menu.KillSteal.I then
+						self.IgniteDmg = (50 + 20 * myHero.level)
+						if enemy.health < sefl.IgniteDmg then
+							CastSpell(SummonerIgnite)
+						end
+					end
+					if self.SSmite then
+						if myHero:GetSpellData(SUMMONER_1).name:find("S5_SummonerSmitePlayerGanker") then 
+							KSSmite = SUMMONER_1
+							print("KSSmite find")
+						elseif myHero:GetSpellData(SUMMONER_2).name:find("S5_SummonerSmitePlayerGanker") then 
+							KSSmite = SUMMONER_2 	
+							print("KSSmite find")
+						end
+						if KSSmite ~= nil and myHero:CanUseSpell(KSSmite) == READY and self.Menu.KillSteal.S then
+							self.KsSmiteDmg = (20 + 8 * myHero.level)
+							if enemy.health < self.KsSmiteDmg then
+								CastSpell(KSSmite)
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 
 function MyHeRoJarvan:GetSmiteDamage()
     self.level = myHero.level
@@ -790,20 +1102,12 @@ function MyHeRoJarvan:EQEscape()
   		myHero:MoveTo(mousePos.x, mousePos.z)
 		if myHero:CanUseSpell(_Q) == READY and myHero:CanUseSpell(_E) == READY then
 			MousePos = Vector(mousePos.x, mousePos.y, mousePos.z)
+			self:QtoE(myHero, MousePos, GetDistance(MousePos, myHero), 770)
 			CastSpell(_E, MousePos.x, MousePos.z)
 			DelayAction(function() CastSpell(_Q, MousePos.x, MousePos.z) end, 0.3)
 		end
-	end
-end
-
-function MyHeRoJarvan:CastQtoE()
-	if self.Menu.Combo.ComboMode and self.EObj ~= nil then
-		local t = ts.target
-		if not t.dead and ValidTarget(t, 1000) then
-			if myHero:CanUseSpell(_E) == READY and myHero:CanUseSpell(_Q) == READY then
-				self:BetaE(t)
-				DelayAction(function() CastSpell(_Q, self.EObj) end, 0.3)
-			end
+		if self:CountEnemy(self.SpellInfo.W.Range, myHero) >= 1 and myHero:CanUseSpell(_W) == READY and self.Menu.Escape.WEscape then
+			CastSpell(_W)
 		end
 	end
 end
@@ -975,33 +1279,33 @@ function MyHeRoJarvan:CheckFail(unit)
 end
 
 function MyHeRoJarvan:GetQDamage(unit)
-  	self.Qlvl = myHero:GetSpellData(_Q).level
-  	if self.Qlvl < 1 then return 0 end
-  	self.QDmg = {70, 115, 160, 205, 250}
-  	self.QDmgMod = 1.2
-  	self.DmgRaw = self.QDmg[self.Qlvl] + myHero.totalDamage * self.QDmgMod
-  	self.Dmg = myHero:CalcDamage(unit, self.DmgRaw)
-  	return self.Dmg
+  	Qlvl = myHero:GetSpellData(_Q).level
+  	if Qlvl < 1 then return 0 end
+  	QDmg = {70, 115, 160, 205, 250}
+  	QDmgMod = 1.2
+  	DmgRaw = QDmg[Qlvl] + myHero.totalDamage * QDmgMod
+  	Dmg = myHero:CalcDamage(unit, DmgRaw)
+  	return Dmg
 end
 
 function MyHeRoJarvan:GetEDamage(unit)
-  	self.Elvl = myHero:GetSpellData(_E).level
-  	if self.Elvl < 1 then return 0 end
-  	self.EDmg = {60, 105, 150, 195, 240}
-  	self.EDmgMod = 0.8
-  	self.DmgRaw = self.EDmg[self.Elvl] + (myHero.ap * self.EDmgMod)
-  	self.Dmg = myHero:CalcDamage(unit, self.DmgRaw)
-  	return self.Dmg
+  	Elvl = myHero:GetSpellData(_E).level
+  	if Elvl < 1 then return 0 end
+  	EDmg = {60, 105, 150, 195, 240}
+  	EDmgMod = 0.8
+  	DmgRaw = EDmg[Elvl] + (myHero.ap * EDmgMod)
+  	Dmg = myHero:CalcDamage(unit, DmgRaw)
+  	return Dmg
 end
 
 function MyHeRoJarvan:GetRDamage(unit)
-  	self.Rlvl = myHero:GetSpellData(_R).level
-  	if self.Rlvl < 1 then return 0 end
-  	self.RDmg = {200, 325, 450}
-  	self.RDmgMod = 1.5
-  	self.DmgRaw = self.RDmg[self.Rlvl] + (myHero.totalDamage * self.RDmgMod)
-  	self.Dmg = myHero:CalcDamage(unit, self.DmgRaw)
-  	return self.Dmg
+  	Rlvl = myHero:GetSpellData(_R).level
+  	if Rlvl < 1 then return 0 end
+  	RDmg = {200, 325, 450}
+  	RDmgMod = 1.5
+  	DmgRaw = RDmg[Rlvl] + (myHero.totalDamage * RDmgMod)
+  	Dmg = myHero:CalcDamage(unit, DmgRaw)
+  	return Dmg
 end
 
 function MyHeRoJarvan:DrawLineHPBar(damage, text, unit, enemyteam)
@@ -1056,22 +1360,22 @@ end
 function MyHeRoJarvan:DrawHPbar()
   	for i, HPbarEnemyChamp in pairs(GetEnemyHeroes()) do
     	if not HPbarEnemyChamp.dead and HPbarEnemyChamp.visible then
-      		self.dmg = myHero:CalcDamage(HPbarEnemyChamp, myHero.totalDamage)
+      		dmg = myHero:CalcDamage(HPbarEnemyChamp, myHero.totalDamage)
       		if myHero:CanUseSpell(_Q) == READY == READY and not HPbarEnemyChamp.dead then
-        		self.dmg = self.dmg + self:GetQDamage(HPbarEnemyChamp)
+        		dmg = dmg + self:GetQDamage(HPbarEnemyChamp)
       		end
 	      	if myHero:CanUseSpell(_E) == READY == READY and not HPbarEnemyChamp.dead then
-	        	self.dmg = self.dmg + self:GetEDamage(HPbarEnemyChamp)
+	        	dmg = dmg + self:GetEDamage(HPbarEnemyChamp)
 	      	end
 	      	if myHero:CanUseSpell(_R) == READY == READY and not HPbarEnemyChamp.dead then
-	      		self.dmg = self.dmg + self:GetRDamage(HPbarEnemyChamp)
+	      		dmg = dmg + self:GetRDamage(HPbarEnemyChamp)
 	      	end
-	      	if Ignite ~= nil then
+	      	if self.SIgnite ~= nil then
 	        	if myHero:CanUseSpell(Ignite) then
-	          		self.dmg = self.dmg + (50 + 20*myHero.level)
+	          		dmg = dmg + (50 + 20*myHero.level)
 	        	end
 	      	end
-      		self:DrawLineHPBar(self.dmg, "", HPbarEnemyChamp, HPbarEnemyChamp.team)
+      		self:DrawLineHPBar(dmg, "", HPbarEnemyChamp, HPbarEnemyChamp.team)
     	end
   	end
 end
