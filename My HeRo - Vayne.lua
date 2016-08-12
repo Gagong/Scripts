@@ -2,7 +2,7 @@ if myHero.charName ~= "Vayne" then return end
 
 _G.FixBugSplat = false
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.22, "1.22"}
+_G.VayneScriptVersion = {1.23, "1.23"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -19,11 +19,11 @@ class("MyHeRoVayne")
 function MyHeRoVayne:__init()
 
     self:AutoUpdater()
+    self:LoadLib()
     self:Message("Loaded!", 3)
     self.Smite = false
     self.Heal = false
     self.Barrier = false
-    self:LoadLib()
     if myHero:GetSpellData(SUMMONER_1).name:find("SummonerSmite") then 
         SummonerSmite = SUMMONER_1 
         self.Smite = true 
@@ -92,7 +92,7 @@ function MyHeRoVayne:LoadLib()
     if not FileExist(self.VPPath) then
         self:Message("VPrediction not found, wait Download...", 0)
         self.VPHost = "raw.github.com"
-        self.VPWebPath = "Superx321/BoL/master/common/CustomPermaShow.lua".."?rand="..math.random(1,10000)
+        self.VPWebPath = "/SidaBoL/Scripts/master/Common/VPrediction.lua".."?rand="..math.random(1,10000)
         DownloadFile("https://"..self.VPHost..self.VPWebPath, self.VPPath, function ()  end)
         DelayAction(function() require("VPrediction") end, 5)
         self.VP = VPrediction()
@@ -472,11 +472,8 @@ function MyHeRoVayne:Loader()
     self.NoFixSpamMsg = 0
     AddTickCallback(function() self:OnTick() end)
     AddDrawCallback(function() self:OnDraw() end)
-    AddTickCallback(function() self:OnTick() end)
-    AddDrawCallback(function() self:OnDraw() end)
     AddUnloadCallback(function() self:OnUnload() end)
     AddProcessSpellCallback(function(unit, spell) self:OnProcessSpell(unit, spell) end)
-    AddProcessAttackCallback(function(unit, spell) self:OnProcessAttack(unit, spell) end)
     AddApplyBuffCallback(function(unit, source, buff) self:OnApplyBuff(unit, source, buff) end)
     AddUpdateBuffCallback(function(unit, buff, stacks) self:OnUpdateBuff(unit, buff, stacks) end)
     AddRemoveBuffCallback(function(unit, buff) self:OnRemoveBuff(unit, buff) end)
