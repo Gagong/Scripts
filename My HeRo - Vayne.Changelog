@@ -1,6 +1,10 @@
 --[[Changelog list]]--
 
 Changelog = {
+
+  [1.23] = {
+    Fix Lib Auto Downloader
+  }
   
   [1.22] = {
     Fix Items bug
