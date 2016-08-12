@@ -88,7 +88,7 @@ function MyHeRoVayne:LoadLib()
         self:Message("Custom Perma Show Found!", 5)
     end
 
-    self.VPPath = LIB_PATH.."CustomPermaShow.lua"
+    self.VPPath = LIB_PATH.."VPrediction.lua"
     if not FileExist(self.VPPath) then
         self:Message("VPrediction not found, wait Download...", 0)
         self.VPHost = "raw.github.com"
