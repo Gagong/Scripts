@@ -2,7 +2,7 @@ if myHero.charName ~= "Vayne" then return end
 
 _G.FixBugSplat = false
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.24, "1.24"}
+_G.VayneScriptVersion = {1.25, "1.25"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
@@ -53,6 +53,7 @@ function MyHeRoVayne:__init()
     self.Menu.Utility.LvLUp.Enable = false
     self.Menu.LaneClear.ClearKey = false
     self.Menu.JungleClear.JClearKey = false
+    self.Menu.Combo.EAA = false
     self:Loader()
     if VIP_USER then
         self:SkinLoad()
@@ -474,6 +475,7 @@ function MyHeRoVayne:Loader()
     AddDrawCallback(function() self:OnDraw() end)
     AddUnloadCallback(function() self:OnUnload() end)
     AddProcessSpellCallback(function(unit, spell) self:OnProcessSpell(unit, spell) end)
+    AddProcessAttackCallback(function(unit, spell) self:OnProcessAttack(unit, spell) end)
     AddApplyBuffCallback(function(unit, source, buff) self:OnApplyBuff(unit, source, buff) end)
     AddUpdateBuffCallback(function(unit, buff, stacks) self:OnUpdateBuff(unit, buff, stacks) end)
     AddRemoveBuffCallback(function(unit, buff) self:OnRemoveBuff(unit, buff) end)
@@ -481,6 +483,7 @@ end
 
 function MyHeRoVayne:OnUnload()
     SetSkin(myHero, -1)
+    self.Menu.Utility.skin.changeSkin = false
 end
 
 function MyHeRoVayne:OnTick()
@@ -878,15 +881,18 @@ end
 function MyHeRoVayne:OnProcessAttack(unit, spell)
 
     if unit.isMe and spell.name:lower():find("attack") then
+        --print("Attack")
         SpellTarget = spell.target
-        if self.Menu.Combo.EAA then
+        if self.Menu.Combo.EAA and self.Menu.Combo.ComboKey then
             if SpellTarget.type == myHero.type and myHero:CanUseSpell(_E) == READY then
+                print("E")
                 CastSpell(_E, SpellTarget)
                 self.Menu.Combo.EAA = false
             end
         end
         if self.Menu.Combo.ComboKey and self.Menu.Combo.ComboQ then
             if SpellTarget.type == myHero.type and myHero:CanUseSpell(_Q) == READY then
+                print("Attack")
                 CastSpell(_Q, mousePos.x, mousePos.z)
             end
         end
