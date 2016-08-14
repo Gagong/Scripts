@@ -2,6 +2,10 @@
 
 Changelog = {
 
+  [1.25] = {
+    Fix AA-Q reset function
+  }
+
   [1.24] = {
     Fix Lib Auto Downloader
   }
