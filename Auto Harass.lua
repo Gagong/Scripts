@@ -1,5 +1,5 @@
 _G.HSVersion = {1.0, "1.0"}
-_G.HSName = "HeRo Auto Harass"
+_G.HSName = "Auto Harass"
 _G.HSAuthor = "HeRoBaNd"
 
 local Support = {"Caitlyn", "Ezrael", "Tristana", "Lucian"}
@@ -29,11 +29,12 @@ function AutoUpdater:__init()
     ToUpdate.VersionPath = "/HeRoBaNd/Scripts/master/Auto%20Harass.version"
     ToUpdate.ScriptPath =  "/HeRoBaNd/Scripts/master/Auto%20Harass.lua"
     ToUpdate.SavePath = SCRIPT_PATH.."/Auto Harass.lua"
-    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) self:Message("Auto Harass.lua", "Version: "..NewVersion) end
+    ToUpdate.CallbackUpdate = function(NewVersion,OldVersion) self:Message("Auto Harass.lua", "Auto Updater - Version: "..NewVersion.." Downloaded! Please, reload script!") end
     ToUpdate.CallbackNoUpdate = function(OldVersion) self:Message("Auto Harass.lua", "Auto Updater - No Updates Found!") end
     ToUpdate.CallbackNewVersion = function(NewVersion) self:Message("Auto Harass.lua", "Auto Updater - New Version Found: ("..NewVersion.."). Please wait until it's Downloaded!") end
     ToUpdate.CallbackError = function(NewVersion) self:Message("Auto Harass.lua", "Auto Updater - Error while Downloading! Please try again!") end
     ScriptUpdate(ToUpdate.Version, ToUpdate.UseHttps, ToUpdate.Host, ToUpdate.VersionPath, ToUpdate.ScriptPath, ToUpdate.SavePath, ToUpdate.CallbackUpdate, ToUpdate.CallbackNoUpdate, ToUpdate.CallbackNewVersion, ToUpdate.CallbackError)
+    self:Message("Auto Harass.lua", "Version: ".._G.HSVersion[2].." Loaded!", 1)
 end
 
 function AutoUpdater:Message(Msg, msg, time)
