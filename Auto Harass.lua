@@ -1,17 +1,18 @@
 _G.HSVersion = {1.0, "1.0"}
-_G.HSName = "Auto Harass"
+_G.HSName = "HeRo Auto Harass"
 _G.HSAuthor = "HeRoBaNd"
 
-local Support = {"Caitlyn", "Ezrael", "Tristana", "Lucian"}
+local Support = {"Caitlyn", "Ezreal", "Tristana", "Lucian"}
 
 if not (myHero.charName ~= Support[1] or myHero.charName ~= Support[2] or myHero.charName ~= Support[3] or myHero.charName ~= Support[4]) then return end 
 
 function OnLoad()
+	print(myHero.charName)
 	AutoUpdater()
 	if myHero.charName == Support[1] then
 		Caitlyn()
 	elseif myHero.charName == Support[2] then
-		Ezrael()
+		Ezreal()
 	elseif myHero.charName == Support[3] then
 		Tristana()
 	elseif myHero.charName == Support[4] then
@@ -69,7 +70,7 @@ function Caitlyn:Message(Msg, msg, time)
 end
 
 function Caitlyn:Global_Menu()
-	self.Menu = scriptConfig("[HeRo] Auto Harass", "HeRoHS")
+	self.Menu = scriptConfig("[Caitlyn] Auto Harass", "CaitlynHS")
 
     self.Menu:addParam("b", "-----------------------------------------------------", SCRIPT_PARAM_INFO, "")
     self.Menu:addTS(self.ts)
@@ -83,8 +84,7 @@ function Caitlyn:Global_Menu()
     	self.Menu:addParam("Enable", "Enable Auto Harass:", SCRIPT_PARAM_ONKEYDOWN, false, GetKey("C"))
 	end
 
-	self.Menu:addSubMenu("Draw Settings:", "Draw")
-	self.Menu.Draw:addSubMenu("Draw Settings: [Caitlyn] - (Q)", "CaitlynQ")
+	self.Menu:addSubMenu("Draw Settings: [Caitlyn] - (Q)", "CaitlynQ")
 	self.Menu:addSubMenu("Spell Settings: [Caitlyn] - (Q)", "SetQ")
 	self.Menu:addSubMenu("-----------------------------------------------------", "")
 	
@@ -121,10 +121,10 @@ function Caitlyn:Global_Menu()
     end
     self.Menu.SetQ:addParam("ManaQ", "Mana Manager:", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 
-	self.Menu.Draw.CaitlynQ:addParam("Enable", "Enable (Q) Draw:", SCRIPT_PARAM_ONOFF, true)
-	self.Menu.Draw.CaitlunQ:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
-	self.Menu.Draw.CaitlunQ:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
-	self.Menu.Draw.CaitlynQ:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
+	self.Menu.CaitlynQ:addParam("Enable", "Enable (Q) Draw:", SCRIPT_PARAM_ONOFF, true)
+	self.Menu.CaitlunQ:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
+	self.Menu.CaitlunQ:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
+	self.Menu.CaitlynQ:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
 	self.Menu:permaShow("Enable")
 	--------------------------------------------------------------------------------------------------------------------------------- 
 	self.Menu:addParam("b", "-----------------------------------------------------", SCRIPT_PARAM_INFO, "")
@@ -138,8 +138,8 @@ function Caitlyn:Global_Menu()
 end
 
 function Caitlyn:OnDraw()
-	if self.Menu.Draw.CaitlynQ.Enable and myHero:CanUseSpell(_Q) == READY then
-		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.Q.Range, self.Menu.Draw.CaitlynQ.Width, ARGB(self.Menu.Draw.CaitlynQ.Color[1], self.Menu.Draw.CaitlynQ.Color[2], self.Menu.Draw.CaitlynQ.Color[3], self.Menu.Draw.CaitlynQ.Color[4]), self.Menu.Draw.CaitlynQ.Quality*10)
+	if self.Menu.CaitlynQ.EnableQ and myHero:CanUseSpell(_Q) == READY then
+		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.Q.Range, self.Menu.CaitlynQ.Width, ARGB(self.Menu.CaitlynQ.Color[1], self.Menu.CaitlynQ.Color[2], self.Menu.CaitlynQ.Color[3], self.Menu.CaitlynQ.Color[4]), self.Menu.CaitlynQ.Quality*10)
 	end
 end
 
@@ -188,9 +188,9 @@ function Caitlyn:GetQPredict(unit)
 	end
 end
 
-class('Ezrael')
+class('Ezreal')
 
-function Ezrael:__init()
+function Ezreal:__init()
 	self.Mode = {"Toggle", "Press Key"}
     self.PredList = {"VPred", "FHPred", "SPred", "KPred", "HPred"}
     self.ts = TargetSelector(TARGET_PRIORITY, 1000, DAMAGE_PHYSICAL)
@@ -205,19 +205,19 @@ function Ezrael:__init()
     	W = {Spell = _W, Range = 1000, Speed = 1600, Delay = 0.25, Radius = 40, Type = "DelayLine", Width = 80, Collision = false}
     }
 
-    self:Message("Ezrael", "Auto Harass loaded!", 3)
+    self:Message("Ezreal", "Auto Harass loaded!", 3)
     self:Global_Menu()
 
     AddTickCallback(function() self:OnTick() end)
     AddDrawCallback(function() self:OnDraw() end)
 end
 
-function Ezrael:Message(Msg, msg, time)
+function Ezreal:Message(Msg, msg, time)
     DelayAction(function() PrintChat("<b><font color=\"#FF0000\">["..Msg.."]: </font><font color=\"#F1D400\">".. msg .."</font></b>") end, time)
 end
 
-function Ezrael:Global_Menu()
-    self.Menu = scriptConfig("[HeRo] Auto Harass", "HeRoHS")
+function Ezreal:Global_Menu()
+    self.Menu = scriptConfig("[Ezreal] Auto Harass", "EzrealHS")
 
     self.Menu:addParam("b", "-----------------------------------------------------", SCRIPT_PARAM_INFO, "")
     self.Menu:addTS(self.ts)
@@ -231,11 +231,10 @@ function Ezrael:Global_Menu()
     	self.Menu:addParam("Enable", "Enable Auto Harass:", SCRIPT_PARAM_ONKEYDOWN, false, GetKey("C"))
 	end
 
-	self.Menu:addSubMenu("Draw Settings:", "Draw")
-	self.Menu.Draw:addSubMenu("Draw Settings: [Ezrael] - (Q)", "EzraelQ")
-	 self.Menu.Draw:addSubMenu("Draw Settings: [Ezrael] - (W)", "EzraelW")
-	self.Menu:addSubMenu("Spell Settings: [Ezrael] - (Q)", "SetQ")
-	self.Menu:addSubMenu("Spell Settings: [Ezrael] - (W)", "SetW")
+	self.Menu:addSubMenu("Draw Settings: [Ezreal] - (Q)", "EzrealQ")
+	self.Menu:addSubMenu("Draw Settings: [Ezreal] - (W)", "EzrealW")
+	self.Menu:addSubMenu("Spell Settings: [Ezreal] - (Q)", "SetQ")
+	self.Menu:addSubMenu("Spell Settings: [Ezreal] - (W)", "SetW")
 	self.Menu:addSubMenu("-----------------------------------------------------", "")
 	
 	self.Menu.SetQ:addParam("SelectPred", "(Require Reload!) Prediction:", SCRIPT_PARAM_LIST, 1, self.PredList)
@@ -304,15 +303,15 @@ function Ezrael:Global_Menu()
 	end
 	self.Menu.SetW:addParam("ManaW", "Mana Manager:", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 
-	self.Menu.Draw.EzraelQ:addParam("Enable", "Enable (Q) Draw:", SCRIPT_PARAM_ONOFF, true)
-	self.Menu.Draw.EzraelQ:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
-	self.Menu.Draw.EzraelQ:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
-	self.Menu.Draw.EzraelQ:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
+	self.Menu.EzrealQ:addParam("EnableQ", "Enable (Q) Draw:", SCRIPT_PARAM_ONOFF, true)
+	self.Menu.EzrealQ:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
+	self.Menu.EzrealQ:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
+	self.Menu.EzrealQ:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
 	 	
-	self.Menu.Draw.EzraelW:addParam("Enable", "Enable (W) Draw:", SCRIPT_PARAM_ONOFF, true)
-	self.Menu.Draw.EzraelW:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
-	self.Menu.Draw.EzraelW:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
-	self.Menu.Draw.EzraelW:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
+	self.Menu.EzrealW:addParam("EnableW", "Enable (W) Draw:", SCRIPT_PARAM_ONOFF, true)
+	self.Menu.EzrealW:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
+	self.Menu.EzrealW:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
+	self.Menu.EzrealW:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
 
 	self.Menu:permaShow("Enable")
 	--------------------------------------------------------------------------------------------------------------------------------- 
@@ -326,16 +325,16 @@ function Ezrael:Global_Menu()
     self.Menu:addParam("b4", "Script Author: ".._G.HSAuthor, SCRIPT_PARAM_INFO, "") 
 end
 
-function Ezrael:OnDraw()
-	if self.Menu.Draw.EzraelQ.Enable and myHero:CanUseSpell(_Q) == READY then
-		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.Q.Range, self.Menu.Draw.EzraelQ.Width, ARGB(self.Menu.Draw.EzraelQ.Color[1], self.Menu.Draw.EzraelQ.Color[2], self.Menu.Draw.EzraelQ.Color[3], self.Menu.Draw.EzraelQ.Color[4]), self.Menu.Draw.EzraelQ.Quality*10)
+function Ezreal:OnDraw()
+	if self.Menu.EzrealQ.EnableQ and myHero:CanUseSpell(_Q) == READY then
+		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.Q.Range, self.Menu.EzrealQ.Width, ARGB(self.Menu.EzrealQ.Color[1], self.Menu.EzrealQ.Color[2], self.Menu.EzrealQ.Color[3], self.Menu.EzrealQ.Color[4]), self.Menu.EzrealQ.Quality*10)
 	end
-	if self.Menu.Draw.EzraelW.Enable and myHero:CanUseSpell(_W) == READY then
-		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.W.Range, self.Menu.Draw.EzraelW.Width, ARGB(self.Menu.Draw.EzraelW.Color[1], self.Menu.Draw.EzraelW.Color[2], self.Menu.Draw.EzraelW.Color[3], self.Menu.Draw.EzraelW.Color[4]), self.Menu.Draw.EzraelW.Quality*10)
+	if self.Menu.EzrealW.EnableW and myHero:CanUseSpell(_W) == READY then
+		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.W.Range, self.Menu.EzrealW.Width, ARGB(self.Menu.EzrealW.Color[1], self.Menu.EzrealW.Color[2], self.Menu.EzrealW.Color[3], self.Menu.EzrealW.Color[4]), self.Menu.EzrealW.Quality*10)
 	end
 end
 
-function Ezrael:OnTick()
+function Ezreal:OnTick()
 	for _, enemy in pairs(GetEnemyHeroes()) do
 		if self.Menu.Enable then
 			if GetDistance(enemy) <= self.SpellInfo.Q.Range then
@@ -356,7 +355,7 @@ function Ezrael:OnTick()
 	end
 end
 
-function Ezrael:GetQPredict(unit)
+function Ezreal:GetQPredict(unit)
 	if unit == nil then return end
 	local Spell = {range = self.SpellInfo.Q.Range, speed = self.SpellInfo.Q.Speed, delay = self.SpellInfo.Q.Delay, radius = self.SpellInfo.Q.Radius, type = self.SpellInfo.Q.Type, width = self.SpellInfo.Q.Width, collision = self.SpellInfo.Q.Collision}
 	if VP ~= nil then
@@ -387,7 +386,7 @@ function Ezrael:GetQPredict(unit)
 	end
 end
 
-function Ezrael:GetWPredict(unit)
+function Ezreal:GetWPredict(unit)
 	if unit == nil then return end
 	local Spell = {range = self.SpellInfo.W.Range, speed = self.SpellInfo.W.Speed, delay = self.SpellInfo.W.Delay, radius = self.SpellInfo.W.Radius, type = self.SpellInfo.W.Type, width = self.SpellInfo.W.Width, collision = self.SpellInfo.W.Collision}
 	if VP ~= nil then
@@ -431,7 +430,7 @@ function Tristana:__init()
     self.HP = nil
 
     self.SpellInfo = {
-    	E = {Spell = _E, Range = 541 + 9 * myHero.level}
+    	E = {Spell = _E, Range = 590 + 9 * myHero.level}
     }
 
     self:Message("Tristana", "Auto Harass loaded!", 3)
@@ -460,17 +459,16 @@ function Tristana:Global_Menu()
     	self.Menu:addParam("Enable", "Enable Auto Harass:", SCRIPT_PARAM_ONKEYDOWN, false, GetKey("C"))
 	end
 
-	self.Menu:addSubMenu("Draw Settings:", "Draw")
-	self.Menu.Draw:addSubMenu("Draw Settings: [Tristana] - (E)", "TristanaE")
+	self.Menu:addSubMenu("Draw Settings: [Tristana] - (E)", "TristanaE")
 	self.Menu:addSubMenu("Spell Settings: [Tristana] - (E)", "SetE")
 	self.Menu:addSubMenu("-----------------------------------------------------", "")
 	
 	self.Menu.SetE:addParam("ManaE", "Mana Manager:", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 
-	self.Menu.Draw.TristanaE:addParam("Enable", "Enable (E) Draw:", SCRIPT_PARAM_ONOFF, true)
-	self.Menu.Draw.TristanaE:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
-	self.Menu.Draw.TristanaE:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
-	self.Menu.Draw.TristanaE:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
+	self.Menu.TristanaE:addParam("EnableE", "Enable (E) Draw:", SCRIPT_PARAM_ONOFF, true)
+	self.Menu.TristanaE:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
+	self.Menu.TristanaE:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
+	self.Menu.TristanaE:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
 
 	self.Menu:permaShow("Enable")
 	--------------------------------------------------------------------------------------------------------------------------------- 
@@ -485,8 +483,8 @@ function Tristana:Global_Menu()
 end
 
 function Tristana:OnDraw()
-	if self.Menu.Draw.TristanaE.Enable and myHero:CanUseSpell(_E) then
-		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.E.Range, self.Menu.Draw.TristanaE.Width, ARGB(self.Menu.Draw.TristanaE.Color[1], self.Menu.Draw.TristanaE.Color[2], self.Menu.Draw.TristanaE.Color[3], self.Menu.Draw.TristanaE.Color[4]), self.Menu.Draw.TristanaE.Quality*10)
+	if self.Menu.TristanaE.EnableE and myHero:CanUseSpell(_E) == READY then
+		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.E.Range, self.Menu.TristanaE.Width, ARGB(self.Menu.TristanaE.Color[1], self.Menu.TristanaE.Color[2], self.Menu.TristanaE.Color[3], self.Menu.TristanaE.Color[4]), self.Menu.TristanaE.Quality*10)
 	end
 end
 
@@ -554,9 +552,8 @@ function Lucian:Global_Menu()
     	self.Menu:addParam("Enable", "Enable Auto Harass:", SCRIPT_PARAM_ONKEYDOWN, false, GetKey("C"))
 	end
 
-	self.Menu:addSubMenu("Draw Settings:", "Draw")
-	self.Menu.Draw:addSubMenu("Draw Settings: [Lucian] - (Q)", "LucianQ")
-	self.Menu.Draw:addSubMenu("Draw Settings: [Lucian] - (W)", "LucianW")
+	self.Menu:addSubMenu("Draw Settings: [Lucian] - (Q)", "LucianQ")
+	self.Menu:addSubMenu("Draw Settings: [Lucian] - (W)", "LucianW")
 	self.Menu:addSubMenu("Spell Settings: [Lucian] - (Q)", "SetQ")
 	self.Menu:addSubMenu("Spell Settings: [Lucian] - (W)", "SetW")
 	self.Menu:addSubMenu("-----------------------------------------------------", "")
@@ -596,14 +593,14 @@ function Lucian:Global_Menu()
 	end
 	self.Menu.SetW:addParam("ManaW", "Mana Manager:", SCRIPT_PARAM_SLICE, 50, 0, 100, 0)
 
-	self.Menu.Draw.LucianQ:addParam("Enable", "Enable (Q) Draw:", SCRIPT_PARAM_ONOFF, true)
-	self.Menu.Draw.LucianQ:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
-	self.Menu.Draw.LucianQ:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
-	self.Menu.Draw.LucianQ:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
-	self.Menu.Draw.LucianW:addParam("Enable", "Enable (W) Draw:", SCRIPT_PARAM_ONOFF, true)
-	self.Menu.Draw.LucianW:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
-	self.Menu.Draw.LucianW:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
-	self.Menu.Draw.LucianW:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
+	self.Menu.LucianQ:addParam("EnableQ", "Enable (Q) Draw:", SCRIPT_PARAM_ONOFF, true)
+	self.Menu.LucianQ:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
+	self.Menu.LucianQ:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
+	self.Menu.LucianQ:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
+	self.Menu.LucianW:addParam("EnableW", "Enable (W) Draw:", SCRIPT_PARAM_ONOFF, true)
+	self.Menu.LucianW:addParam("Width", "Width Changer:", SCRIPT_PARAM_SLICE, 1, 1, 10, 0)
+	self.Menu.LucianW:addParam("Quality", "Quality Changer:", SCRIPT_PARAM_SLICE, 2, 2, 5, 0)
+	self.Menu.LucianW:addParam("Color", "Color Changer:", SCRIPT_PARAM_COLOR, {255, 255, 255, 255})
 
 	self.Menu:permaShow("Enable")
 	--------------------------------------------------------------------------------------------------------------------------------- 
@@ -618,11 +615,11 @@ function Lucian:Global_Menu()
 end
 
 function Lucian:OnDraw()
-	if self.Menu.Draw.LucianQ.Enable and myHero:CanUseSpell(_Q) == READY then
-		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.Q.Range, self.Menu.Draw.LucianQ.Width, ARGB(self.Menu.Draw.LucianQ.Color[1], self.Menu.Draw.LucianQ.Color[2], self.Menu.Draw.LucianQ.Color[3], self.Menu.Draw.LucianQ.Color[4]), self.Menu.Draw.LucianQ.Quality*10)
+	if self.Menu.LucianQ.EnableQ and myHero:CanUseSpell(_Q) == READY then
+		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.Q.Range, self.Menu.LucianQ.Width, ARGB(self.Menu.LucianQ.Color[1], self.Menu.LucianQ.Color[2], self.Menu.LucianQ.Color[3], self.Menu.LucianQ.Color[4]), self.Menu.LucianQ.Quality*10)
 	end
-	if self.Menu.Draw.LucianW.Enable and myHero:CanUseSpell(_W) == READY then
-		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.W.Range, self.Menu.Draw.LucianW.Width, ARGB(self.Menu.Draw.LucianW.Color[1], self.Menu.Draw.LucianW.Color[2], self.Menu.Draw.LucianW.Color[3], self.Menu.Draw.LucianW.Color[4]), self.Menu.Draw.LucianW.Quality*10)
+	if self.Menu.LucianW.EnableW and myHero:CanUseSpell(_W) == READY then
+		DrawCircle3D(myHero.x, myHero.y, myHero.z, self.SpellInfo.W.Range, self.Menu.LucianW.Width, ARGB(self.Menu.LucianW.Color[1], self.Menu.LucianW.Color[2], self.Menu.LucianW.Color[3], self.Menu.LucianW.Color[4]), self.Menu.LucianW.Quality*10)
 	end
 end
 
