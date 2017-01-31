@@ -2,7 +2,7 @@ if myHero.charName ~= "Vayne" then return end
 
 _G.FixBugSplat = false
 _G.VayneScriptName = "My HeRo - Vayne"
-_G.VayneScriptVersion = {1.25, "1.25"}
+_G.VayneScriptVersion = {1.25, "1.25", "|1.25|"}
 _G.VayneScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
