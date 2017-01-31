@@ -1,5 +1,5 @@
 _G.LvLFixBugSplat = false
-_G.LvLScriptVersion = {2.0, "2.0"}
+_G.LvLScriptVersion = {2.0, "2.0", "|2.0|"}
 _G.LvLScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
