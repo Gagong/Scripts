@@ -1,3 +1,4 @@
+--[[OUTDATED]]--
 local RangeSmite = 560
 local KillSmiteDmg = function() return myHero.level * 8 + 20 end
 local SCRIPT_NAME = "HeRo Jarvan"
