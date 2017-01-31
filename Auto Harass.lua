@@ -1,4 +1,4 @@
-_G.HSVersion = {1.0, "1.0"}
+_G.HSVersion = {1.0, "1.0", "|1.0|"}
 _G.HSName = "HeRo Auto Harass"
 _G.HSAuthor = "HeRoBaNd"
 
