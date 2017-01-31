@@ -1,6 +1,6 @@
 if myHero.charName ~= "JarvanIV" then return end
 
-_G.JScriptVersion = {2.0, "2.0"}
+_G.JScriptVersion = {2.0, "2.0", "|2.0|"}
 _G.JScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
