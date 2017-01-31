@@ -1,4 +1,4 @@
-_G.HextechScriptVersion = {1.1, "1.1"}
+_G.HextechScriptVersion = {1.1, "1.1", "|1.1|"}
 _G.HextechScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
