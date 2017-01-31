@@ -8,7 +8,7 @@ local SummonerSmite = nil
 local SummonerFlash = nil
 local SummonerM = nil
 
-_G.SSScriptVersion = {1.42, "1.42"}
+_G.SSScriptVersion = {1.42, "1.42", "|1.42|"}
 _G.SSScriptAuthor = "HeRoBaNd"
 
 -- BoL Tools Tracker --
