@@ -1,3 +1,3 @@
-Hi all! If you have suggestion or other - Add me in skype.
+Sorry for all. I'm close all my script. Thank for all support.
 
-#Slava Truks
+[18.05.2017]
